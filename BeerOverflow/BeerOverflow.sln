@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeerOverflowAPI", "BerrOverflowAPI\BeerOverflowAPI.csproj", "{AD9CB658-AC56-4A7C-B3D2-08D6C524EFEE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{AFFA356D-FCE4-44CB-A614-2197BE1BA942}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "Database\Database.csproj", "{2A842D06-E5C4-4B80-920B-2F55CCC32298}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeerOverflowUnitTest", "BeerOverflowUnitTest\BeerOverflowUnitTest.csproj", "{2C6F10F6-10A1-45DE-B442-EF80D5FCE949}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AD9CB658-AC56-4A7C-B3D2-08D6C524EFEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD9CB658-AC56-4A7C-B3D2-08D6C524EFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD9CB658-AC56-4A7C-B3D2-08D6C524EFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD9CB658-AC56-4A7C-B3D2-08D6C524EFEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFFA356D-FCE4-44CB-A614-2197BE1BA942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFFA356D-FCE4-44CB-A614-2197BE1BA942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFFA356D-FCE4-44CB-A614-2197BE1BA942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFFA356D-FCE4-44CB-A614-2197BE1BA942}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A842D06-E5C4-4B80-920B-2F55CCC32298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A842D06-E5C4-4B80-920B-2F55CCC32298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A842D06-E5C4-4B80-920B-2F55CCC32298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A842D06-E5C4-4B80-920B-2F55CCC32298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C6F10F6-10A1-45DE-B442-EF80D5FCE949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C6F10F6-10A1-45DE-B442-EF80D5FCE949}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C6F10F6-10A1-45DE-B442-EF80D5FCE949}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C6F10F6-10A1-45DE-B442-EF80D5FCE949}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3F4B3285-F969-4EE0-8830-FD5A71CDAA26}
+	EndGlobalSection
+EndGlobal
