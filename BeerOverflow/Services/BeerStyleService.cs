@@ -1,5 +1,6 @@
 ﻿using BeerOverflow.Models;
 using Services.Contracts;
+using Services.DTOs;
 using System;
 using System.Collections.Generic;
 
@@ -7,19 +8,19 @@ namespace Services
 {
     public class BeerStyleService : IBeerStyleService
     {
-        public BeerStyle CreateStyle(BeerStyle style)
+        public BeerStyleDTO CreateStyle(BeerStyleDTO style)
         {
-            var newStyle = new BeerStyle
+            BeerStyle theNewStyleDTO = new BeerStyle
             {
+                //TODO: use DTO here
                 ID = style.ID,
                 Name = style.Name,
-                Description = style.Description,
-                CreatedOn = style.CreatedOn,
-                ModifiedOn = style.ModifiedOn,
-                DeletedOn = style.DeletedOn,
-                IsDeleted = style.IsDeleted,
+                Description = style.Description
             };
-            throw new NotImplementedException();
+            // TODO: Database add: 
+            //Database.BeerStyles.Add(theNewStyleDTO);
+
+            return style;
         }
 
         public bool DeleteStyle()
@@ -27,17 +28,17 @@ namespace Services
             throw new NotImplementedException();
         }
 
-        public ICollection<BeerStyle> GetAllStyles()
+        public ICollection<BeerStyleDTO> GetAllStyles()
         {
             throw new NotImplementedException();
         }
 
-        public BeerStyle GetStyle(Guid id)
+        public BeerStyleDTO GetStyle(int id)
         {
             throw new NotImplementedException();
         }
 
-        public BeerStyle UpdateStyle(Guid id, string newName, string newDescription)
+        public BeerStyleDTO UpdateStyle(int id, string newName, string newDescription)
         {
             throw new NotImplementedException();
         }
