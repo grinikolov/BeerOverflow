@@ -30,11 +30,9 @@ namespace BeerOverflowAPI
             services.AddScoped<IBeerStyleService, BeerStyleService>();
 
             services.AddDbContext<BOContext>(options =>
-            options.UseSqlServer(
+                options.UseSqlServer(
                 Configuration.GetConnectionString("DefaultConnection")));
-        }//services.AddDbContext<BloggingContext>(options =>
-        //options.UseSqlServer(Configuration.GetConnectionString("BloggingDatabase")));
-
+        }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
