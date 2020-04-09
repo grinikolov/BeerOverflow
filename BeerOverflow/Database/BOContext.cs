@@ -7,7 +7,9 @@ namespace Database
 {
     public class BOContext : DbContext// IdentityDbContext<User, Role, Guid>
     {
-        
+        //public BOContext()
+        //{
+        //}
         public BOContext(DbContextOptions<BOContext> options)
             : base(options)
         {
@@ -34,12 +36,12 @@ namespace Database
             builder.Entity<WishList>()
                     .HasKey(wl => new { wl.BeerID, wl.UserID });
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            string connectionString = "Server-.\\SQLEXPRESS;Database=BeerOverflow.Database;Trusted_connection=True";
-            optionsBuilder.UseSqlServer(connectionString);
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
+        //    string connectionString = "Server-.\\SQLEXPRESS;Database=BeerOverflow.Database;Trusted_connection=True";
+        //    optionsBuilder.UseSqlServer(connectionString);
+        //}
 
     }
 }
