@@ -1,6 +1,6 @@
 using System;
 
-namespace BerrOverflowAPI.Models
+namespace BeerOverflowAPI.Models
 {
     public class ErrorViewModel
     {

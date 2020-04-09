@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using BerrOverflowAPI.Models;
+using BeerOverflowAPI.Models;
 
-namespace BerrOverflowAPI.Controllers
+namespace BeerOverflowAPI.Controllers
 {
     public class HomeController : Controller
     {
