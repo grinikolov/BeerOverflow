@@ -22,7 +22,7 @@ namespace Database
         public DbSet<Country> Countries { get; set; }
         public DbSet<DrankList> DrankLists { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        //public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<WishList> WishLists { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

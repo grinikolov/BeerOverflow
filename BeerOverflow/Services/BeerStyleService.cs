@@ -12,10 +12,10 @@ namespace Services
         {
             BeerStyle theNewStyleDTO = new BeerStyle
             {
-                //TODO: use DTO here
                 ID = style.ID,
                 Name = style.Name,
                 Description = style.Description
+                //TODO: CreatedOn should be set here, in Service, not in the model itself.
             };
             // TODO: Database add: 
             //Database.BeerStyles.Add(theNewStyleDTO);
@@ -30,6 +30,7 @@ namespace Services
 
         public ICollection<BeerStyleDTO> GetAllStyles()
         {
+            //TODO:
             throw new NotImplementedException();
         }
 
