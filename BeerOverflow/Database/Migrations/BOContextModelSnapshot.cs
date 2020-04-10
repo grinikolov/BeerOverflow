@@ -52,31 +52,27 @@ namespace Database.Migrations
                     b.Property<Guid>("StyleID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("StyleID1")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
 
                     b.HasIndex("BreweryID");
 
                     b.HasIndex("CountryID");
 
-                    b.HasIndex("StyleID1");
+                    b.HasIndex("StyleID");
 
                     b.ToTable("Beers");
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.BeerStyle", b =>
                 {
-                    b.Property<int?>("ID")
+                    b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DeletedOn")
+                    b.Property<DateTime>("DeletedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -85,7 +81,7 @@ namespace Database.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime?>("ModifiedOn")
+                    b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -268,7 +264,7 @@ namespace Database.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.WishList", b =>
@@ -305,7 +301,9 @@ namespace Database.Migrations
 
                     b.HasOne("BeerOverflow.Models.BeerStyle", "Style")
                         .WithMany()
-                        .HasForeignKey("StyleID1");
+                        .HasForeignKey("StyleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.Brewery", b =>
