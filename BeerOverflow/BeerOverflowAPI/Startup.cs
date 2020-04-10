@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Services;
 using Services.Contracts;
 
@@ -30,8 +31,10 @@ namespace BeerOverflowAPI
             services.AddScoped<IBeerStyleService, BeerStyleService>();
 
             services.AddDbContext<BOContext>(options =>
-            options.UseSqlServer(
-                Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")));
+
+            //services.AddDbContext<BOContext>(options =>
+            //options.UseSqlServer(connection, m => m.MigrationsAssembly("BeerOverflow.Models")));
         }//services.AddDbContext<BloggingContext>(options =>
         //options.UseSqlServer(Configuration.GetConnectionString("BloggingDatabase")));
 
