@@ -1,4 +1,5 @@
 ﻿using BeerOverflow.Models;
+using Database.ModelSettings;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,14 +8,10 @@ namespace Database
 {
     public class BOContext : DbContext// IdentityDbContext<User, Role, Guid>
     {
-        //public BOContext()
-        //{
-        //}
         public BOContext(DbContextOptions<BOContext> options)
             : base(options)
         {
         }
-
         public DbSet<Beer> Beers { get; set; }
         public DbSet<BeerStyle> BeerStyles { get; set; }
         public DbSet<Brewery> Breweries { get; set; }
@@ -27,21 +24,16 @@ namespace Database
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //builder.Seeder();
-            base.OnModelCreating(builder);
+            builder.ApplyConfiguration(new CountriesSetting());
+            builder.ApplyConfiguration(new BreweriesSettings());
             builder.Entity<Review>()
                 .HasKey(r => new { r.ID, r.BeerID, r.UserID });
             builder.Entity<DrankList>()
                    .HasKey(dl => new { dl.BeerID, dl.UserID });
             builder.Entity<WishList>()
                     .HasKey(wl => new { wl.BeerID, wl.UserID });
+            base.OnModelCreating(builder);
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    base.OnConfiguring(optionsBuilder);
-        //    string connectionString = "Server-.\\SQLEXPRESS;Database=BeerOverflow.Database;Trusted_connection=True";
-        //    optionsBuilder.UseSqlServer(connectionString);
-        //}
 
     }
 }

@@ -5,6 +5,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200409150012_Initial.cs" />
+    <Compile Remove="Migrations\20200409150012_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200409185909_InitialCreate.cs" />
+    <Compile Remove="Migrations\20200409185909_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20200411030940_Countries_Fix.cs" />
+    <Compile Remove="Migrations\20200411030940_Countries_Fix.Designer.cs" />
+    <Compile Remove="Migrations\20200411031446_Add-migration Countries_Fix.cs" />
+    <Compile Remove="Migrations\20200411031446_Add-migration Countries_Fix.Designer.cs" />
+    <Compile Remove="Migrations\20200411032512_Countries_Fix.cs" />
+    <Compile Remove="Migrations\20200411032512_Countries_Fix.Designer.cs" />
+    <Compile Remove="Migrations\20200411033827_Initial.cs" />
+    <Compile Remove="Migrations\20200411033827_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200411034804_Initial.cs" />
+    <Compile Remove="Migrations\20200411034804_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200411040513_Breweries_Fix.cs" />
+    <Compile Remove="Migrations\20200411040513_Breweries_Fix.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
