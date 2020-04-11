@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,12 +11,13 @@ namespace Database.Migrations
                 name: "BeerStyles",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    ModifiedOn = table.Column<DateTime>(nullable: false),
-                    DeletedOn = table.Column<DateTime>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(nullable: true),
+                    ModifiedOn = table.Column<DateTime>(nullable: true),
+                    DeletedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -28,12 +29,13 @@ namespace Database.Migrations
                 name: "Countries",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    ModifiedOn = table.Column<DateTime>(nullable: false),
-                    DeletedOn = table.Column<DateTime>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false)
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -41,7 +43,7 @@ namespace Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     UserID = table.Column<Guid>(nullable: false),
@@ -50,20 +52,21 @@ namespace Database.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.UserID);
+                    table.PrimaryKey("PK_Users", x => x.UserID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Breweries",
                 columns: table => new
                 {
-                    ID = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    CountryID = table.Column<Guid>(nullable: true),
-                    CreatedOn = table.Column<DateTime>(nullable: false),
-                    ModifiedOn = table.Column<DateTime>(nullable: false),
-                    DeletedOn = table.Column<DateTime>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false)
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false),
+                    CountryID = table.Column<int>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -73,7 +76,7 @@ namespace Database.Migrations
                         column: x => x.CountryID,
                         principalTable: "Countries",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -83,9 +86,12 @@ namespace Database.Migrations
                     ID = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     ABV = table.Column<float>(nullable: false),
+                    StyleID1 = table.Column<int>(nullable: true),
                     StyleID = table.Column<Guid>(nullable: false),
+                    CountryID1 = table.Column<int>(nullable: true),
                     CountryID = table.Column<Guid>(nullable: false),
                     BreweryID = table.Column<Guid>(nullable: false),
+                    BreweryID1 = table.Column<int>(nullable: true),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     ModifiedOn = table.Column<DateTime>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: false),
@@ -95,23 +101,23 @@ namespace Database.Migrations
                 {
                     table.PrimaryKey("PK_Beers", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Beers_Breweries_BreweryID",
-                        column: x => x.BreweryID,
+                        name: "FK_Beers_Breweries_BreweryID1",
+                        column: x => x.BreweryID1,
                         principalTable: "Breweries",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Beers_Countries_CountryID",
-                        column: x => x.CountryID,
+                        name: "FK_Beers_Countries_CountryID1",
+                        column: x => x.CountryID1,
                         principalTable: "Countries",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Beers_BeerStyles_StyleID",
-                        column: x => x.StyleID,
+                        name: "FK_Beers_BeerStyles_StyleID1",
+                        column: x => x.StyleID1,
                         principalTable: "BeerStyles",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,9 +144,9 @@ namespace Database.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comments_User_UserID",
+                        name: "FK_Comments_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -163,9 +169,9 @@ namespace Database.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DrankLists_User_UserID",
+                        name: "FK_DrankLists_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -196,9 +202,9 @@ namespace Database.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reviews_User_UserID",
+                        name: "FK_Reviews_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -221,27 +227,27 @@ namespace Database.Migrations
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_WishLists_User_UserID",
+                        name: "FK_WishLists_Users_UserID",
                         column: x => x.UserID,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Beers_BreweryID",
+                name: "IX_Beers_BreweryID1",
                 table: "Beers",
-                column: "BreweryID");
+                column: "BreweryID1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Beers_CountryID",
+                name: "IX_Beers_CountryID1",
                 table: "Beers",
-                column: "CountryID");
+                column: "CountryID1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Beers_StyleID",
+                name: "IX_Beers_StyleID1",
                 table: "Beers",
-                column: "StyleID");
+                column: "StyleID1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Breweries_CountryID",
@@ -297,7 +303,7 @@ namespace Database.Migrations
                 name: "Beers");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Breweries");
