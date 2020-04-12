@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(BOContext))]
-    [Migration("20200411040718_Initial")]
+    [Migration("20200412101716_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,80 +23,79 @@ namespace Database.Migrations
 
             modelBuilder.Entity("BeerOverflow.Models.Beer", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<float>("ABV")
                         .HasColumnType("real");
 
-                    b.Property<Guid>("BreweryID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("BreweryID1")
+                    b.Property<int>("BreweryID")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("CountryID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("CountryID1")
+                    b.Property<int>("CountryID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("StyleID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("StyleID1")
+                    b.Property<int>("StyleID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("BreweryID1");
+                    b.HasIndex("BreweryID");
 
-                    b.HasIndex("CountryID1");
+                    b.HasIndex("CountryID");
 
-                    b.HasIndex("StyleID1");
+                    b.HasIndex("StyleID");
 
                     b.ToTable("Beers");
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.BeerStyle", b =>
                 {
-                    b.Property<int?>("ID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CreatedOn")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
@@ -117,7 +116,7 @@ namespace Database.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -125,7 +124,7 @@ namespace Database.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -141,37 +140,46 @@ namespace Database.Migrations
 
             modelBuilder.Entity("BeerOverflow.Models.Comment", b =>
                 {
-                    b.Property<Guid>("ID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("BeerID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("BeerID")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("LikesCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("ReviewID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
 
                     b.HasKey("ID");
 
                     b.HasIndex("BeerID");
+
+                    b.HasIndex("ReviewID");
 
                     b.HasIndex("UserID");
 
@@ -210,14 +218,11 @@ namespace Database.Migrations
 
             modelBuilder.Entity("BeerOverflow.Models.DrankList", b =>
                 {
-                    b.Property<Guid>("BeerID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("BeerID")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
 
                     b.HasKey("BeerID", "UserID");
 
@@ -226,77 +231,129 @@ namespace Database.Migrations
                     b.ToTable("DrankLists");
                 });
 
+            modelBuilder.Entity("BeerOverflow.Models.Flag", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReviewID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserID", "ReviewID");
+
+                    b.HasIndex("ReviewID");
+
+                    b.ToTable("Flag");
+                });
+
+            modelBuilder.Entity("BeerOverflow.Models.Like", b =>
+                {
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CommentID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserID", "CommentID");
+
+                    b.HasIndex("CommentID");
+
+                    b.ToTable("Likes");
+                });
+
             modelBuilder.Entity("BeerOverflow.Models.Review", b =>
                 {
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("BeerID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("BeerID")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DeletedOn")
+                    b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsFlagged")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("LikesCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ModifiedOn")
+                    b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.HasKey("ID", "BeerID", "UserID");
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
 
-                    b.HasIndex("BeerID");
+                    b.HasKey("ID");
 
                     b.HasIndex("UserID");
+
+                    b.HasIndex("BeerID", "UserID")
+                        .IsUnique();
 
                     b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.User", b =>
                 {
-                    b.Property<Guid>("UserID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("ModifiedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserID");
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.WishList", b =>
                 {
-                    b.Property<Guid>("BeerID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("BeerID")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
 
                     b.HasKey("BeerID", "UserID");
 
@@ -309,15 +366,21 @@ namespace Database.Migrations
                 {
                     b.HasOne("BeerOverflow.Models.Brewery", "Brewery")
                         .WithMany("Beers")
-                        .HasForeignKey("BreweryID1");
+                        .HasForeignKey("BreweryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BeerOverflow.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CountryID1");
+                        .HasForeignKey("CountryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BeerOverflow.Models.BeerStyle", "Style")
                         .WithMany()
-                        .HasForeignKey("StyleID1");
+                        .HasForeignKey("StyleID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.Brewery", b =>
@@ -325,22 +388,26 @@ namespace Database.Migrations
                     b.HasOne("BeerOverflow.Models.Country", "Country")
                         .WithMany("Breweries")
                         .HasForeignKey("CountryID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.Comment", b =>
                 {
                     b.HasOne("BeerOverflow.Models.Beer", "Beer")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("BeerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BeerOverflow.Models.Review", "Review")
+                        .WithMany("Comments")
+                        .HasForeignKey("ReviewID");
+
                     b.HasOne("BeerOverflow.Models.User", "User")
-                        .WithMany()
+                        .WithMany("CommentList")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -359,6 +426,36 @@ namespace Database.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BeerOverflow.Models.Flag", b =>
+                {
+                    b.HasOne("BeerOverflow.Models.Review", "Review")
+                        .WithMany()
+                        .HasForeignKey("ReviewID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeerOverflow.Models.User", "User")
+                        .WithMany("FlagList")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BeerOverflow.Models.Like", b =>
+                {
+                    b.HasOne("BeerOverflow.Models.Comment", "Comment")
+                        .WithMany("Likes")
+                        .HasForeignKey("CommentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeerOverflow.Models.User", "User")
+                        .WithMany("LikesList")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BeerOverflow.Models.Review", b =>
                 {
                     b.HasOne("BeerOverflow.Models.Beer", "Beer")
@@ -368,9 +465,9 @@ namespace Database.Migrations
                         .IsRequired();
 
                     b.HasOne("BeerOverflow.Models.User", "User")
-                        .WithMany()
+                        .WithMany("ReviewList")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
