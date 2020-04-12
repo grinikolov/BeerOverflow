@@ -28,7 +28,7 @@ namespace BeerOverflowAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddScoped<IBeerStyleService, BeerStyleService>();
+            services.AddScoped<IBeerStylesService, BeerStylesService>();
 
             services.AddDbContext<BOContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")));
