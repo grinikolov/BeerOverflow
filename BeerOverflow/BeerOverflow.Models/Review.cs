@@ -7,22 +7,19 @@ namespace BeerOverflow.Models
 {
     public class Review
     {
-        public Guid ID { get; set; }
-        public Guid BeerID { get; set; }
+        public int ID { get; set; }
+        public int BeerID { get; set; }
         public Beer Beer { get; set; }
-        public Guid UserID { get; set; }
+        public int UserID { get; set; }
         public User User { get; set; }
+        [Range(0,5)]
         public int Rating { get; set; }
-        public string Comment { get; set; }
+        public string Description { get; set; }
         public int LikesCount { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-        [DataType(DataType.Date)]
-        public DateTime ModifiedOn { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime DeletedOn { get; set; }
-
+        public DateTime CreatedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+        public DateTime? DeletedOn { get; set; }
+        public ICollection<Comment> Comments { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsFlagged { get; set; }
 

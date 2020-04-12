@@ -6,7 +6,6 @@ namespace BeerOverflow.Models
 {
     public class Role //: IdentityRole<Guid>
     {
-       
-
+      
     }
 }

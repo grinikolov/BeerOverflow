@@ -4,12 +4,9 @@ namespace BeerOverflow.Models
 {
     public class WishList
     {
-        public Guid ID { get; set; }
+        public int UserID { get; set; }
         public User User { get; set; }
-        public Guid UserID { get; set; }
+        public int BeerID { get; set; }
         public Beer Beer { get; set; }
-        public Guid BeerID { get; set; }
-
-
     }
 }
