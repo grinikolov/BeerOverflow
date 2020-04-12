@@ -21,17 +21,21 @@ namespace Database
         public DbSet<Review> Reviews { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<WishList> WishLists { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new CountriesSetting());
             builder.ApplyConfiguration(new BreweriesSettings());
-            builder.Entity<Review>()
-                .HasKey(r => new { r.ID, r.BeerID, r.UserID });
-            builder.Entity<DrankList>()
-                   .HasKey(dl => new { dl.BeerID, dl.UserID });
-            builder.Entity<WishList>()
-                    .HasKey(wl => new { wl.BeerID, wl.UserID });
+            builder.ApplyConfiguration(new BeerStyleSettings());
+            builder.ApplyConfiguration(new UserSettings());
+            builder.ApplyConfiguration(new CommentSettings());
+            builder.ApplyConfiguration(new ReviewSettings());
+            builder.ApplyConfiguration(new BeerSettings());
+            builder.ApplyConfiguration(new LikeSettings());
+            builder.ApplyConfiguration(new FlagSettings());
+            builder.ApplyConfiguration(new DrankListSettings());
+            builder.ApplyConfiguration(new WishListSettings());
             base.OnModelCreating(builder);
         }
 
