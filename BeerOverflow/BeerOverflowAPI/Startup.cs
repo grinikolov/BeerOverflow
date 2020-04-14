@@ -29,7 +29,12 @@ namespace BeerOverflowAPI
         {
             services.AddControllersWithViews();
             services.AddScoped<IBeerStylesService, BeerStylesService>();
+<<<<<<< HEAD
             services.AddScoped<IBreweryService, BreweryServices>();
+=======
+            services.AddScoped<ICountriesService, CountriesService>();
+
+>>>>>>> b62eadf70ca0e67de16b4842ab17f09ad90b4f13
 
             services.AddDbContext<BOContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")));

@@ -36,7 +36,7 @@ namespace Services
         }
 
 
-        public BeerStyleDTO GetBeerStyle(int id)
+        public BeerStyleDTO Get(int id)
         {
             var theBeerStyle = _context.BeerStyles
                 .Where(style => style.IsDeleted == false)
@@ -46,7 +46,7 @@ namespace Services
             {
                 throw new ArgumentNullException();
             }
-            //convert to dto
+            //Todo:convert to dto
             var beerStyleDTO = new BeerStyleDTO
             {
                 ID = theBeerStyle.ID,
@@ -61,58 +61,110 @@ namespace Services
         {
             var beerStyle = new BeerStyle
             {
-                ID = beerStyleDTO.ID,
+                //ID = beerStyleDTO.ID, //id to be set by DB itself
+                Name = beerStyleDTO.Name,
+                Description = beerStyleDTO.Description,
+                CreatedOn = DateTime.UtcNow,
+            };
+            //TODO: check if such style already exists, then do not add it
+            this._context.BeerStyles.Add(beerStyle);
+            this._context.SaveChanges();
+
+            return beerStyleDTO;
+        }
+        public async Task<BeerStyleDTO> CreateAsync(BeerStyleDTO beerStyleDTO)
+        {
+            var beerStyle = new BeerStyle
+            {
                 Name = beerStyleDTO.Name,
                 Description = beerStyleDTO.Description,
                 CreatedOn = DateTime.UtcNow,
             };
 
-            _context.BeerStyles.AddAsync(beerStyle);
-            this._context.SaveChangesAsync();
+            await this._context.BeerStyles.AddAsync(beerStyle);
+            await this._context.SaveChangesAsync();
 
             return beerStyleDTO;
         }
 
         public BeerStyleDTO Update(int id, BeerStyleDTO beerStyleDTO)
         {
-            return beerStyleDTO;
-            //if (id != beerStyleDTO.ID)
-            //{
-            //    throw new ArgumentNullException();
-            //}
+            if (id != beerStyleDTO.ID)
+            {
+                throw new ArgumentNullException();
+            }
             //TODO: convert to DTO
-            //var beerStyle;
+            var beerStyle = this._context.BeerStyles.Find(id) ?? throw new ArgumentNullException("The style is not found");
+
+            beerStyle.Description = beerStyleDTO.Description;
+            beerStyle.ModifiedOn = DateTime.UtcNow;
             //_context.Entry(beerStyle).State = EntityState.Modified;
 
-            //try
-            //{
-            //    this._context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!BeerStyleExists(id))
-            //    {
-            //        return false;
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
+            //TODO: call update method, maybe?
+            this._context.Update(beerStyle);
 
-            //return false;
+            try
+            {
+                this._context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BeerStyleExists(id))
+                {
+                    return beerStyleDTO;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return beerStyleDTO;
         }
+        public async Task<BeerStyleDTO> UpdateAsync(int id, BeerStyleDTO beerStyleDTO)
+        {
+            if (id != beerStyleDTO.ID)
+            {
+                throw new ArgumentNullException();
+            }
+            //TODO: convert to DTO
+            var beerStyle = this._context.BeerStyles.Find(id);
+            beerStyle.Description = beerStyleDTO.Description;
+            beerStyle.ModifiedOn = DateTime.UtcNow;
+            //_context.Entry(beerStyle).State = EntityState.Modified;
 
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BeerStyleExists(id))
+                {
+                    return beerStyleDTO;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return beerStyleDTO;
+        }
 
 
         public bool Delete(int id)
         {
+            //TODO: Instead of .Remove() do isDeleted=false, DeletedOn now and do .Update()
             try
             {
-                var beerStyle =  _context.BeerStyles.Find(id);
+                var beerStyle = this._context.BeerStyles.Find(id) ?? throw new ArgumentNullException("Beer Style not found.");
+                beerStyle.IsDeleted = true;
+                beerStyle.DeletedOn = DateTime.UtcNow;
 
-                this._context.BeerStyles.Remove(beerStyle);
-                 _context.SaveChanges();
+                //this._context.BeerStyles.Remove(beerStyle);
+                this._context.Update(beerStyle);
+                this._context.SaveChanges();
 
                 return true;
             }
@@ -123,12 +175,14 @@ namespace Services
         }
         public async Task<bool> DeleteAsync(int id)
         {
+            //TODO: Instead of .Remove() do isDeleted=false, DeletedOn now and do .Update()
+
             try
             {
-                var beerStyle = await _context.BeerStyles.FindAsync(id);
+                var beerStyle = await this._context.BeerStyles.FindAsync(id);
 
                 this._context.BeerStyles.Remove(beerStyle);
-                await _context.SaveChangesAsync();
+                await this._context.SaveChangesAsync();
 
                 return true;
             }
@@ -141,7 +195,7 @@ namespace Services
 
         private bool BeerStyleExists(int id)
         {
-            return _context.BeerStyles.Any(bs => bs.ID == id);
+            return this._context.BeerStyles.Any(bs => bs.ID == id);
         }
     }
 }
