@@ -10,7 +10,7 @@ namespace Services
         bool Delete(int id);
         Task<bool> DeleteAsync(int id);
         IEnumerable<BeerStyleDTO> GetAll();
-        BeerStyleDTO GetBeerStyle(int id);
+        BeerStyleDTO Get(int id);
         BeerStyleDTO Update(int id, BeerStyleDTO beerStyleDTO);
     }
 }

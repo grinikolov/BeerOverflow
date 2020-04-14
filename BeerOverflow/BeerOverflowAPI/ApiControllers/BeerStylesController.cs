@@ -9,6 +9,7 @@ using Services.DTOs;
 
 namespace BeerOverflowAPI.ApiControllers
 {
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
     public class BeerStylesController : ControllerBase
@@ -16,7 +17,7 @@ namespace BeerOverflowAPI.ApiControllers
         private readonly IBeerStylesService _service;
         public BeerStylesController(IBeerStylesService service)
         {
-            this._service = service;
+            this._service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         // GET: api/BeerStyles
@@ -24,12 +25,6 @@ namespace BeerOverflowAPI.ApiControllers
         public IActionResult Get()
         {
             var styles = this._service.GetAll()
-                .Select(bs => new BeerStyleViewModel
-                {
-                    ID = bs.ID,
-                    Name = bs.Name,
-                    Description = bs.Description,
-                })
                 .ToList();
 
             return Ok(styles);
@@ -39,62 +34,56 @@ namespace BeerOverflowAPI.ApiControllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            try
-            {
-                var beerStyleDTO = this._service.GetBeerStyle(id);
-                var style = new BeerStyleViewModel
-                {
-                    ID = beerStyleDTO.ID,
-                    Name = beerStyleDTO.Name,
-                    Description = beerStyleDTO.Description,
-                };
-                return Ok(style);
-            }
-            catch (Exception)
+
+            var beerStyleDTO = this._service.Get(id);
+            if (beerStyleDTO == null)
             {
                 return NotFound();
             }
+            return Ok(beerStyleDTO);
+
         }
 
         // POST: api/BeerStyles
         [HttpPost]
-        public IActionResult Post([FromBody] BeerStyleViewModel style)
+        [ValidateAntiForgeryToken]
+        public IActionResult Post([FromBody] BeerStyleDTO style)
         {
-            if (style == null)
+            if (style.Name == null || style.Description == null)
             {
                 return BadRequest();
             }
-            var beerStyleDTO = new BeerStyleDTO
+            var model = new BeerStyleDTO
             {
-                ID = style.ID,
+                //ID = style.ID,
                 Name = style.Name,
                 Description = style.Description,
             };
 
-            var theNewBeer = this._service.Create(beerStyleDTO);
-            return Created("Post", beerStyleDTO);
+            var theNewBeer = this._service.Create(model);
+            return Created("Post", theNewBeer);
 
         }
 
         // PUT: api/BeerStyles/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] BeerStyleViewModel style)
+        public IActionResult Put(int id, BeerStyleDTO style)
         {
-            if (id == 0 || style == null)
+            if (id <= 0 || style == null)
             {
                 return BadRequest();
             }
 
-            var beerStyleDTO = new BeerStyleDTO
+            var model = new BeerStyleDTO
             {
-                ID = style.ID,
+                //ID = style.ID,
                 Name = style.Name,
                 Description = style.Description,
             };
 
-            var model = this._service.Update(id,beerStyleDTO);
+            var returnModel = this._service.Update(id, model);
 
-            return Ok();
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
