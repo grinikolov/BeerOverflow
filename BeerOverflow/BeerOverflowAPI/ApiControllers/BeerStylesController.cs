@@ -31,7 +31,7 @@ namespace BeerOverflowAPI.ApiControllers
         }
 
         // GET: api/BeerStyles/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
 
