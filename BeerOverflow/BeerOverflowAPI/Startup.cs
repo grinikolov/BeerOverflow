@@ -31,6 +31,7 @@ namespace BeerOverflowAPI
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
             
+            services.AddScoped<IReviewsService, ReviewsService>();
             services.AddScoped<IBeerStylesService, BeerStylesService>();
             services.AddScoped<IBreweryService, BreweryServices>();
             services.AddScoped<ICountriesService, CountriesService>();

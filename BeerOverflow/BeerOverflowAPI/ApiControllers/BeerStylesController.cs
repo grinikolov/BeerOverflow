@@ -40,8 +40,8 @@ namespace BeerOverflowAPI.ApiControllers
             {
                 return NotFound();
             }
-            return Ok(beerStyleDTO);
 
+            return Ok(beerStyleDTO);
         }
 
         // POST: api/BeerStyles
@@ -82,7 +82,7 @@ namespace BeerOverflowAPI.ApiControllers
 
             var returnModel = this._service.Update(id, model);
 
-            return NoContent();
+            return Ok(returnModel);
         }
 
 
@@ -90,9 +90,7 @@ namespace BeerOverflowAPI.ApiControllers
         [HttpDelete("{id}")]
         public async Task<bool> DeleteAsync(int id)
         {
-            bool didDelete = await this._service.DeleteAsync(id);
-
-            return didDelete;
+            return await this._service.DeleteAsync(id);
         }
     }
 }

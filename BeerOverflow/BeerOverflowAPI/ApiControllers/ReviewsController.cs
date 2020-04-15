@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BeerOverflow.Models;
 using Database;
+using Services;
+using Services.DTOs;
 
 namespace BeerOverflowAPI.ApiControllers
 {
@@ -14,97 +16,68 @@ namespace BeerOverflowAPI.ApiControllers
     [ApiController]
     public class ReviewsController : ControllerBase
     {
-        private readonly BOContext _context;
+        private readonly IReviewsService _service;
 
-        public ReviewsController(BOContext context)
+        public ReviewsController(IReviewsService service)
         {
-            _context = context;
+            this._service = service;
         }
 
         // GET: api/Reviews
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Review>>> GetReviews()
         {
-            return await _context.Reviews.ToListAsync();
+            try
+            {
+                var reviews = await this._service.GetAllReviews();
+                return Ok(reviews);
+            }
+            catch (Exception)
+            {
+                return NoContent();
+            }
         }
 
         // GET: api/Reviews/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Review>> GetReview(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
-
+            var review = await this._service.GetReview(id);
             if (review == null)
             {
                 return NotFound();
             }
 
-            return review;
+            return Ok(review);
         }
 
         // PUT: api/Reviews/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutReview(int id, Review review)
+        public async Task<IActionResult> PutReview(int id, ReviewDTO review)
         {
-            if (id != review.ID)
+            if (id <= 0 || review == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(review).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReviewExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var model = await this._service.UpdateReview(id, review);
+            return Ok(model);
         }
 
         // POST: api/Reviews
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Review>> PostReview(Review review)
+        public async Task<ActionResult<ReviewDTO>> PostReview(ReviewDTO review)
         {
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetReview", new { id = review.ID }, review);
+            var theNewReview = await this._service.CreateReview(review);
+            return CreatedAtAction("GetReview", theNewReview);
         }
 
         // DELETE: api/Reviews/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Review>> DeleteReview(int id)
+        public async Task<ActionResult<bool>> DeleteReview(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
-            if (review == null)
-            {
-                return NotFound();
-            }
-
-            _context.Reviews.Remove(review);
-            await _context.SaveChangesAsync();
-
-            return review;
+            return await this._service.DeleteReview(id);
         }
 
-        private bool ReviewExists(int id)
-        {
-            return _context.Reviews.Any(e => e.ID == id);
-        }
     }
 }

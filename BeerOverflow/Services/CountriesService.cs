@@ -12,7 +12,7 @@ using Services.Contracts;
 namespace Services
 {
 
-    public class CountriesService : ICountriesService, ICountriesService1
+    public class CountriesService : ICountriesService
     {
         private readonly BOContext _context;
 
