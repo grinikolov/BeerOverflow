@@ -12,12 +12,15 @@ namespace BeerOverflow.Models
         public Beer Beer { get; set; }
         public int UserID { get; set; }
         public User User { get; set; }
-        [Range(0,5)]
+        [Range(0, 5)]
         public int Rating { get; set; }
         public string Description { get; set; }
         public int LikesCount { get; set; }
+        [DataType(DataType.DateTime)]
         public DateTime CreatedOn { get; set; }
+        [DataType(DataType.DateTime)]
         public DateTime? ModifiedOn { get; set; }
+        [DataType(DataType.DateTime)]
         public DateTime? DeletedOn { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public bool IsDeleted { get; set; }

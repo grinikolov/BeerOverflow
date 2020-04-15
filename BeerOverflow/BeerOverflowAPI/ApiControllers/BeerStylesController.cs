@@ -46,7 +46,6 @@ namespace BeerOverflowAPI.ApiControllers
 
         // POST: api/BeerStyles
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Post([FromBody] BeerStyleDTO style)
         {
             if (style.Name == null || style.Description == null)
@@ -86,13 +85,6 @@ namespace BeerOverflowAPI.ApiControllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public bool Delete(int id)
-        {
-            bool didDelete = this._service.Delete(id);
-
-            return didDelete;
-        }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]

@@ -70,10 +70,7 @@ namespace BeerOverflowAPI.ApiControllers
         }
 
         // POST: api/Countries
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Post(CountryDTO countryDTO)
         {
             if (countryDTO.Name == null )

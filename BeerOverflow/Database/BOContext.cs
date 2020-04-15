@@ -9,15 +9,16 @@ namespace Database
 {
     public class BOContext : DbContext// IdentityDbContext<User, Role, Guid>
     {
+
         public static readonly ILoggerFactory MyLoggerFactory
-    = LoggerFactory.Create(builder =>
-    {
-        builder
-            .AddFilter((category, level) =>
-                category == DbLoggerCategory.Database.Command.Name
-                && level == LogLevel.Information)
-            .AddConsole();
-    });
+= LoggerFactory.Create(builder =>
+{
+    builder
+        .AddFilter((category, level) =>
+            category == DbLoggerCategory.Database.Command.Name
+            && level == LogLevel.Information)
+        .AddConsole();
+});
 
         public BOContext(DbContextOptions<BOContext> options)
             : base(options)
