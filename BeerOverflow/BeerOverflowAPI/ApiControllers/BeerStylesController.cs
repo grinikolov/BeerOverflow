@@ -40,13 +40,12 @@ namespace BeerOverflowAPI.ApiControllers
             {
                 return NotFound();
             }
-            return Ok(beerStyleDTO);
 
+            return Ok(beerStyleDTO);
         }
 
         // POST: api/BeerStyles
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Post([FromBody] BeerStyleDTO style)
         {
             if (style.Name == null || style.Description == null)
@@ -83,24 +82,15 @@ namespace BeerOverflowAPI.ApiControllers
 
             var returnModel = this._service.Update(id, model);
 
-            return NoContent();
+            return Ok(returnModel);
         }
 
-        [HttpDelete("{id}")]
-        public bool Delete(int id)
-        {
-            bool didDelete = this._service.Delete(id);
-
-            return didDelete;
-        }
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public async Task<bool> DeleteAsync(int id)
         {
-            bool didDelete = await this._service.DeleteAsync(id);
-
-            return didDelete;
+            return await this._service.DeleteAsync(id);
         }
     }
 }

@@ -28,6 +28,10 @@ namespace BeerOverflowAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
+            
+            services.AddScoped<IReviewsService, ReviewsService>();
             services.AddScoped<IBeerStylesService, BeerStylesService>();
             services.AddScoped<IBreweryService, BreweryServices>();
             services.AddScoped<ICountriesService, CountriesService>();
@@ -55,6 +59,8 @@ namespace BeerOverflowAPI
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
+                endpoints.MapRazorPages();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

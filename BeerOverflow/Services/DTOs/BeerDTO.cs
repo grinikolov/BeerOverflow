@@ -12,5 +12,6 @@ namespace Services.DTOs
         public CountryDTO Country { get; set; }
         public BreweryDTO Brewery { get; set; }
         public ICollection<ReviewDTO> Reviews { get; set; }
+        public float ABV { get; set; }
     }
 }
