@@ -35,7 +35,7 @@ namespace BeerOverflowAPI.ApiControllers
         }
 
         // GET: api/Countries/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             var model = this._service.Get(id);
@@ -73,10 +73,10 @@ namespace BeerOverflowAPI.ApiControllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Post(CountryDTO countryDTO)
+        //[ValidateAntiForgeryToken]
+        public IActionResult Post([FromBody] CountryDTO countryDTO)
         {
-            if (countryDTO.Name == null )
+            if (countryDTO == null )
             {
                 return BadRequest();
             }
