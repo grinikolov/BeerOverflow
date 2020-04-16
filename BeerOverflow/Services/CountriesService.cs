@@ -39,17 +39,25 @@ namespace Services
         public CountryDTO Get(int id)
         {
             var country = this._context.Countries.Find(id);
-
-            if (country == null)
+            try
             {
-                throw new ArgumentNullException();
+                if (country == null)
+                {
+                    throw new ArgumentNullException();
+                }
             }
+            catch (Exception)
+            {
+
+                return null;
+            }
+
             //TODO: convert Brewery to BreweryDTO
             var model = new CountryDTO
             {
                 ID = country.ID,
                 Name = country.Name,
-                //Breweries = country.Breweries,
+                //Breweries = country.Breweries.Select(b => new List<BreweryDTO>),
             };
 
             return model;

@@ -91,24 +91,13 @@ namespace Services
 
         public BreweryDTO GetBrewery(int id)
         {
-            var breweries = this._context.Breweries.Include(b => b.CountryID)
+            var breweries = this._context.Breweries.Include(b => b.Country)
                 .Where(br => br.IsDeleted == false).FirstOrDefault(br => br.ID == id);
-            //.Select(b => new BreweryDTO
-            //{
-            //    ID = b.ID,
-            //    Name = b.Name,
-            //    Country = b.Country.Name
-            //})
-            //.ToList();
-            //        var theBeerStyle = _context.BeerStyles
-            //.Where(style => style.IsDeleted == false)
-            //.FirstOrDefault(style => style.ID == id);
 
             if (breweries == null)
             {
                 throw new ArgumentNullException();
             }
-            //convert to dto
             var breweriesDTO = new BreweryDTO
             {
                 ID = breweries.ID,
@@ -126,15 +115,6 @@ namespace Services
             brewery.Country = _context.Countries.FirstOrDefault(c => c.Name == breweryDTO.Country);
             brewery.ModifiedOn = DateTime.UtcNow;
             _context.Breweries.Update(brewery);
-            //var brewery = new Brewery
-            //{
-            //    ID = breweryDTO.ID,
-            //    Name = breweryDTO.Name,
-            //    Country = _context.Countries.FirstOrDefault(c => c.Name == breweryDTO.Country),
-            //    CreatedOn = DateTime.UtcNow,
-            //};
-
-            //_context.Breweries.AddAsync(brewery);
             this._context.SaveChangesAsync();
 
             return breweryDTO;
