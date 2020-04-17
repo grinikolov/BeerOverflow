@@ -8,7 +8,7 @@ namespace Services.Contracts
 {
     public interface IBeerService
     {
-        BeerDTO Create(BeerDTO breweryDTO);
+        Task<BeerDTO> CreateAsync(BeerDTO breweryDTO);
         bool Delete(int id);
         Task<bool> DeleteAsync(int id);
         IEnumerable<BeerDTO> GetAll();

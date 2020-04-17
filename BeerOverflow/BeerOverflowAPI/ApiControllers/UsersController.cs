@@ -19,7 +19,7 @@ namespace BeerOverflowAPI.ApiControllers
 
         public UsersController(IUsersService service)
         {
-            this._service = service;
+            this._service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         // GET: api/Users
@@ -71,6 +71,10 @@ namespace BeerOverflowAPI.ApiControllers
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser(UserDTO user)
         {
+            if (user == null)
+            {
+                return BadRequest();
+            }
             var theNewUser = await this._service.CreateUser(user);
 
             return CreatedAtAction("GetUser", theNewUser);

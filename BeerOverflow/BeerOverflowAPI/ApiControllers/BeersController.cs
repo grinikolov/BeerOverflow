@@ -44,7 +44,7 @@ namespace BeerOverflowAPI.ApiControllers
             {
                 return BadRequest();
             }
-            var theNewBeer = this._service.Create(beer);
+            var theNewBeer = this._service.CreateAsync(beer);
             return Created("Post", theNewBeer);
         }
 

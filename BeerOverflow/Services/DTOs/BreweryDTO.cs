@@ -6,9 +6,9 @@ namespace Services.DTOs
 {
     public class BreweryDTO
     {
-        public int ID { get; set; }
+        public int? ID { get; set; }
         public string Name { get; set; }
         public string Country { get; set; }
-        //public ICollection<BeerDTO> Beers { get; set; }
+        public ICollection<BeerDTO> Beers { get; set; }
     }
 }

@@ -44,7 +44,6 @@ namespace Services
 
         public UserDTO UpdateUser(int id, UserDTO model)
         {
-            // // TODO: DO update
             var user = this._context.Users.Find(id);
             user.Name = model.Name;
             user.Password = model.Password;
