@@ -25,7 +25,7 @@ namespace BeerOverflowAPI.ApiControllers
 
         // GET: api/Reviews
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Review>>> GetReviews()
+        public async Task<ActionResult<IEnumerable<ReviewDTO>>> GetReviews()
         {
             try
             {
@@ -42,6 +42,7 @@ namespace BeerOverflowAPI.ApiControllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Review>> GetReview(int id)
         {
+
             var review = await this._service.GetReview(id);
             if (review == null)
             {
