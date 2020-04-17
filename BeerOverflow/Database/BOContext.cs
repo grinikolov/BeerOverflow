@@ -10,15 +10,14 @@ namespace Database
     public class BOContext : DbContext// IdentityDbContext<User, Role, Guid>
     {
 
-        public static readonly ILoggerFactory MyLoggerFactory
-= LoggerFactory.Create(builder =>
-{
-    builder
-        .AddFilter((category, level) =>
-            category == DbLoggerCategory.Database.Command.Name
-            && level == LogLevel.Information)
-        .AddConsole();
-});
+        //public static readonly ILoggerFactory MyLoggerFactory = LoggerFactory.Create(builder =>
+        //        {           
+        //            builder
+        //                .AddFilter((category, level) =>
+        //                    category == DbLoggerCategory.Database.Command.Name
+        //                    && level == LogLevel.Information)
+        //                .AddConsole();
+        //        });
 
         public BOContext(DbContextOptions<BOContext> options)
             : base(options)
@@ -48,14 +47,15 @@ namespace Database
             builder.ApplyConfiguration(new FlagSettings());
             builder.ApplyConfiguration(new DrankListSettings());
             builder.ApplyConfiguration(new WishListSettings());
+            
             base.OnModelCreating(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
+        { 
+            //optionsBuilder
+            //    .UseLoggerFactory(MyLoggerFactory); // Warning: Do not create a new ILoggerFactory instance each time
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder
-                .UseLoggerFactory(MyLoggerFactory); // Warning: Do not create a new ILoggerFactory instance each time
         }
 
     }
