@@ -71,7 +71,8 @@ namespace BeerOverflowAPI.ApiControllers
 
         // POST: api/Countries
         [HttpPost]
-        public IActionResult Post(CountryDTO countryDTO)
+        //[ValidateAntiForgeryToken]
+        public IActionResult Post([FromBody] CountryDTO countryDTO)
         {
             if (countryDTO == null )
             {
