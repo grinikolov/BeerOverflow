@@ -19,43 +19,58 @@ namespace Services
         {
             this._context = context;
         }
-        public BreweryDTO Create(BreweryDTO breweryDTO)
+        public async Task<BreweryDTO> Create(BreweryDTO breweryDTO)
         {
             var brewery = new Brewery
             {
-                ID = breweryDTO.ID,
+                //ID = breweryDTO.ID,
                 Name = breweryDTO.Name,
-                Country = _context.Countries.FirstOrDefault(c => c.Name == breweryDTO.Country),
+                Country = _context.Countries.FirstOrDefault(c =>
+                        c.Name == breweryDTO.Country),
+
                 CreatedOn = DateTime.UtcNow,
             };
 
-            _context.Breweries.AddAsync(brewery);
-            this._context.SaveChangesAsync();
+
+            #region Check if exists
+            var theBrewery = await this._context.Breweries
+                .Where(b => b.IsDeleted == false)
+                .FirstOrDefaultAsync(b => b.Name == breweryDTO.Name);
+
+            if (theBrewery == null)
+            {
+                await _context.Breweries.AddAsync(brewery);
+                await this._context.SaveChangesAsync();
+            }
+            #endregion
+
+            breweryDTO.ID = this._context.Breweries
+                .FirstOrDefault(b => b.Name == breweryDTO.Name).ID;
 
             return breweryDTO;
         }
 
-        public bool Delete(int id)
-        {
-            try
-            {
-                var brewery = _context.Breweries.Find(id);
-                brewery.IsDeleted = true;
-                brewery.DeletedOn = brewery.ModifiedOn = DateTime.UtcNow;
-                _context.Breweries.Update(brewery);
-                //brewery.DeletedOn = DateTime.UtcNow;
-                //this._context.BeerStyles.Remove(beerStyle);
-                _context.SaveChanges();
+        //public bool Delete(int id)
+        //{
+        //    try
+        //    {
+        //        var brewery = _context.Breweries.Find(id);
+        //        brewery.IsDeleted = true;
+        //        brewery.DeletedOn = brewery.ModifiedOn = DateTime.UtcNow;
+        //        _context.Breweries.Update(brewery);
+        //        //brewery.DeletedOn = DateTime.UtcNow;
+        //        //this._context.BeerStyles.Remove(beerStyle);
+        //        _context.SaveChanges();
 
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+        //        return true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> Delete(int id)
         {
             try
             {
@@ -75,49 +90,94 @@ namespace Services
             }
         }
 
-        public IEnumerable<BreweryDTO> GetAll()
+        public async Task<IEnumerable<BreweryDTO>> GetAll()
         {
-            var breweries = this._context.Breweries.Include(b => b.Country)
+            var breweries = await this._context.Breweries
+                .Include(b => b.Country)
                 .Where(br => br.IsDeleted == false)
-                .Select(b => new BreweryDTO
+                .Select(br =>  new BreweryDTO()
+            {
+                ID = br.ID,
+                Name = br.Name,
+                Country = br.Country.Name,
+                Beers = br.Beers.Select(b => new BeerDTO()
                 {
                     ID = b.ID,
                     Name = b.Name,
-                    Country = b.Country.Name
-                })
-                .ToList();
+                    //Country = b.Country.Name
+                    ABV = b.ABV,
+                    Style = new BeerStyleDTO()
+                    {
+                        ID = b.Style.ID,
+                        Name = b.Style.Name,
+                        Description = b.Style.Description
+                    },
+                }).ToList()
+            }).ToListAsync();
+
             return breweries;
         }
 
-        public BreweryDTO GetBrewery(int id)
+        public async Task<BreweryDTO> GetBrewery(int id)
         {
-            var breweries = this._context.Breweries.Include(b => b.Country)
-                .Where(br => br.IsDeleted == false).FirstOrDefault(br => br.ID == id);
+            var brewery = await this._context.Breweries
+                .Include(b => b.Country)
+                .Where(br => br.IsDeleted == false).FirstOrDefaultAsync(br => br.ID == id);
 
-            if (breweries == null)
+            if (brewery == null)
             {
-                throw new ArgumentNullException();
+                return null;
             }
-            var breweriesDTO = new BreweryDTO
+            var breweryDTO = new BreweryDTO()
             {
-                ID = breweries.ID,
-                Name = breweries.Name,
-                Country = breweries.Country.Name,
+                ID = brewery.ID,
+                Name = brewery.Name,
+                Country = brewery.Country.Name,
+                Beers = brewery.Beers.Select(b => new BeerDTO()
+                {
+                    ID = b.ID,
+                    Name = b.Name,
+                    //Country = b.Country.Name
+                    ABV = b.ABV,
+                    Style = new BeerStyleDTO()
+                    {
+                        ID = b.Style.ID,
+                        Name = b.Style.Name,
+                        Description = b.Style.Description
+                    },
+                }).ToList()
             };
-
-            return breweriesDTO;
-        }
-
-        public BreweryDTO Update(int id, BreweryDTO breweryDTO)
-        {
-            var brewery = _context.Breweries.Find(id);
-            brewery.Name = breweryDTO.Name;
-            brewery.Country = _context.Countries.FirstOrDefault(c => c.Name == breweryDTO.Country);
-            brewery.ModifiedOn = DateTime.UtcNow;
-            _context.Breweries.Update(brewery);
-            this._context.SaveChangesAsync();
 
             return breweryDTO;
         }
+
+        public async Task<BreweryDTO> Update(int id, BreweryDTO breweryDTO)
+        {
+            var brewery = await _context.Breweries.FindAsync(id);
+            brewery.Name = breweryDTO.Name;
+            brewery.Country = _context.Countries.FirstOrDefault(c =>
+                    c.Name == breweryDTO.Country);
+            brewery.ModifiedOn = DateTime.UtcNow;
+            _context.Breweries.Update(brewery);
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BreweryExists(id))
+                {
+                    return null;
+                }
+            }
+            return breweryDTO;
+        }
+
+
+        private bool BreweryExists(int id)
+        {
+            return this._context.Breweries.Any(b => b.ID == id);
+        }
+
     }
 }

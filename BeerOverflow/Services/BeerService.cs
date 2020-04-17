@@ -19,19 +19,29 @@ namespace Services
         {
             this._context = context;
         }
-        public BeerDTO Create(BeerDTO beerDTO)
+        public async Task<BeerDTO> CreateAsync(BeerDTO beerDTO)
         {
             var beer = new Beer
             {
-                ID = beerDTO.ID,
+                //ID = beerDTO.ID,
                 Name = beerDTO.Name,
-                Country = new Country() { Name = beerDTO.Country.Name },
+                Country = this._context.Countries.FirstOrDefault(c => c.Name == beerDTO.Country.Name),
+                Style = this._context.BeerStyles.FirstOrDefault(s => s.Name == beerDTO.Style.Name),
+                Brewery = this._context.Breweries.FirstOrDefault(b => b.Name == beerDTO.Brewery.Name),
                 CreatedOn = DateTime.UtcNow,
             };
 
-            _context.Beers.AddAsync(beer);
-            this._context.SaveChangesAsync();
+            await _context.Beers.AddAsync(beer);
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
 
+            }
             return beerDTO;
         }
 
@@ -39,7 +49,7 @@ namespace Services
         {
             try
             {
-                var beer= _context.Beers.Find(id);
+                var beer = _context.Beers.Find(id);
                 beer.IsDeleted = true;
                 beer.DeletedOn = beer.ModifiedOn = DateTime.UtcNow;
                 _context.Beers.Update(beer);
@@ -79,10 +89,10 @@ namespace Services
                 {
                     ID = b.ID,
                     Name = b.Name,
-                    Country = new CountryDTO() { Name = b.Country.Name},
+                    Country = new CountryDTO() { Name = b.Country.Name },
                     Style = new BeerStyleDTO() { Name = b.Style.Name, Description = b.Style.Description },
                     Brewery = new BreweryDTO() { Name = b.Brewery.Name, Country = b.Brewery.Country.Name },
-                    Reviews = b.Reviews.Select(r => new ReviewDTO() {}).ToList()
+                    Reviews = b.Reviews.Select(r => new ReviewDTO() { }).ToList()
                 })
                 .ToList();
             return beers;

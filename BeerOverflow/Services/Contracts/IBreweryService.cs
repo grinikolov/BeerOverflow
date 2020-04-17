@@ -9,12 +9,11 @@ namespace Services.Contracts
 {
     public interface IBreweryService
     {
-        BreweryDTO Create(BreweryDTO breweryDTO);
-        bool Delete(int id);
-        Task<bool> DeleteAsync(int id);
-        IEnumerable<BreweryDTO> GetAll();
-        BreweryDTO GetBrewery(int id);
-        BreweryDTO Update(int id, BreweryDTO breweryDTO);
+        Task<BreweryDTO> Create(BreweryDTO breweryDTO);
+        Task<bool> Delete(int id);
+        Task<IEnumerable<BreweryDTO>> GetAll();
+        Task<BreweryDTO> GetBrewery(int id);
+        Task<BreweryDTO> Update(int id, BreweryDTO breweryDTO);
 
     }
 }

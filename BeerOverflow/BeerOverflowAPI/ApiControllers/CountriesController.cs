@@ -26,19 +26,18 @@ namespace BeerOverflowAPI.ApiControllers
 
         // GET: api/Countries
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> GetAsync()
         {
-            var countries = this._service.GetAll()
-                .ToList();
+            var countries = await this._service.GetAll();
 
             return Ok(countries);
         }
 
         // GET: api/Countries/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
-            var model = this._service.Get(id);
+            var model = await this._service.GetAsync(id);
 
             if (model == null)
             {
@@ -52,47 +51,47 @@ namespace BeerOverflowAPI.ApiControllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public IActionResult Put(int id, CountryDTO countryDTO)
+        public async Task<IActionResult> Put(int id, CountryDTO model)
         {
-            if (id <= 0 || countryDTO == null)
+            if (id <= 0 || model == null)
             {
                 return BadRequest();
             }
 
-            var model = new CountryDTO
+            //var model = new CountryDTO
+            //{
+            //    Name = countryDTO.Name,
+            //};
+
+            var returnModel =await this._service.UpdateAsync(id, model);
+            if (returnModel == null)
             {
-                Name = countryDTO.Name,
-            };
-
-            var returnModel = this._service.Update(id, model);
-
-            return NoContent();
+                return NotFound();
+            }
+            return Ok(returnModel);
         }
 
         // POST: api/Countries
         [HttpPost]
-        public IActionResult Post([FromBody] CountryDTO countryDTO)
+        public async Task<IActionResult> PostAsync([FromBody] CountryDTO model)
         {
-            if (countryDTO == null)
+            if (model == null)
             {
                 return BadRequest();
             }
-            var model = new CountryDTO
+            //var model = new CountryDTO
+            //{
+            //    Name = countryDTO.Name,
+            //};
+            var theNewCountry = await this._service.CreateAsync(model);
+            if (theNewCountry.ID == default)
             {
-                Name = countryDTO.Name,
-            };
-            var theNewCountry = this._service.Create(model);
+                return BadRequest();
+            }
+
             return Created("Post", theNewCountry);
         }
 
-        [HttpDelete("{id}")]
-        public bool Delete(int id)
-        {
-            bool didDelete = this._service.Delete(id);
-
-            return didDelete;
-        }
-        // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public async Task<bool> DeleteAsync(int id)
         {
@@ -100,6 +99,14 @@ namespace BeerOverflowAPI.ApiControllers
 
             return didDelete;
         }
+        //// DELETE: api/ApiWithActions/5
+        //[HttpDelete("{id}")]
+        //public async Task<bool> DeleteAsync(int id)
+        //{
+        //    bool didDelete = await this._service.DeleteAsync(id);
+
+        //    return didDelete;
+        //}
 
 
     }

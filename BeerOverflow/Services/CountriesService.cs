@@ -21,24 +21,40 @@ namespace Services
             this._context = context;
         }
 
-        public IEnumerable<CountryDTO> GetAll()
+        public async Task<IEnumerable<CountryDTO>> GetAll()
         {
-            //TODO: convert Brewery to BreweryDTO
-            var countries = this._context.Countries
-                .Select(c => new CountryDTO
+            var countries = await this._context.Countries.Select(c => 
+            new CountryDTO()
+            {
+                ID = c.ID,
+                Name = c.Name,
+                Breweries = c.Breweries.Select(b => new BreweryDTO()
                 {
-                    ID = c.ID,
-                    Name = c.Name,
-                    //Breweries = c.Breweries,
-                })
-                .ToList();
+                    ID = b.ID,
+                    Name = b.Name,
+                    Country = b.Country.Name,
+                    Beers = b.Beers.Select(b => new BeerDTO()
+                    {
+                        ID = b.ID,
+                        Name = b.Name,
+                        //Country = b.Country.Name
+                        ABV = b.ABV,
+                        Style = new BeerStyleDTO()
+                        {
+                            ID = b.Style.ID,
+                            Name = b.Style.Name,
+                            Description = b.Style.Description
+                        },
+                    }).ToList()
+                }).ToList(),
+            }).ToListAsync();
             return countries;
         }
 
 
-        public CountryDTO Get(int id)
+        public async Task<CountryDTO> GetAsync(int id)
         {
-            var country = this._context.Countries.Find(id);
+            var country = await this._context.Countries.FindAsync(id);
             try
             {
                 if (country == null)
@@ -57,59 +73,77 @@ namespace Services
             {
                 ID = country.ID,
                 Name = country.Name,
-                //Breweries = country.Breweries.Select(b => new List<BreweryDTO>),
+                Breweries = country.Breweries.Select(b => new BreweryDTO()
+                {
+                    ID = b.ID,
+                    Name = b.Name,
+                    Country = b.Country.Name,
+                    Beers = b.Beers.Select(b => new BeerDTO()
+                    {
+                        ID = b.ID,
+                        Name = b.Name,
+                        //Country = b.Country.Name
+                        ABV = b.ABV,
+                        Style = new BeerStyleDTO()
+                        {
+                            ID = b.Style.ID,
+                            Name = b.Style.Name,
+                            Description = b.Style.Description
+                        },
+                    }).ToList()
+                }).ToList(),
             };
 
             return model;
         }
 
-        public CountryDTO Create(CountryDTO model)
-        {
-            var country = new Country
-            {
-                //id to be set by DB itself
-                Name = model.Name,
-                //Breweries = model.Breweries,
-                Breweries = new List<Brewery>(),
-                CreatedOn = DateTime.UtcNow,
-            };
-            //TODO: check if such Country already exists, then do not add it
+        //public CountryDTO Create(CountryDTO model)
+        //{
+        //    var country = new Country
+        //    {
+        //        //id to be set by DB itself
+        //        Name = model.Name,
+        //        //Breweries = model.Breweries,
+        //        Breweries = new List<Brewery>(),
+        //        CreatedOn = DateTime.UtcNow,
+        //    };
+        //    //TODO: check if such Country already exists, then do not add it
 
-            var theCountry = this._context.Countries
-                .Where(c => c.IsDeleted == false)
-                .FirstOrDefault(c => c.Name == model.Name);
+        //    var theCountry = this._context.Countries
+        //        .Where(c => c.IsDeleted == false)
+        //        .FirstOrDefault(c => c.Name == model.Name);
 
-            if (theCountry == null)
-            {
-                this._context.Countries.Add(country);
-                this._context.SaveChanges();
+        //    if (theCountry == null)
+        //    {
+        //        this._context.Countries.Add(country);
+        //        this._context.SaveChanges();
 
-                theCountry = this._context.Countries
-                .Where(c => c.IsDeleted == false)
-                .FirstOrDefault(c => c.Name == model.Name);
-            }
+        //        theCountry = this._context.Countries
+        //        .Where(c => c.IsDeleted == false)
+        //        .FirstOrDefault(c => c.Name == model.Name);
+        //    }
 
-            var countryToReturn = new CountryDTO()
-            {
-                ID = theCountry.ID,
-                Name = theCountry.Name,
-                //Breweries = theCountry.Breweries.Select(b => new BreweryDTO()
-                //{
-                //    ID = b.ID,
-                //    Name = b.Name,
-                //    Country = b.Country.Name,
-                //}).ToList()
-            };
+        //    var countryToReturn = new CountryDTO()
+        //    {
+        //        ID = theCountry.ID,
+        //        Name = theCountry.Name,
+        //        //Breweries = theCountry.Breweries.Select(b => new BreweryDTO()
+        //        //{
+        //        //    ID = b.ID,
+        //        //    Name = b.Name,
+        //        //    Country = b.Country.Name,
+        //        //}).ToList()
+        //    };
 
-            return countryToReturn;
-        }
+        //    return countryToReturn;
+        //}
         public async Task<CountryDTO> CreateAsync(CountryDTO model)
         {
             var country = new Country
             {
                 //ID to be set by DB itself
                 Name = model.Name,
-                Breweries = new List<Brewery>(),
+                // Breweries = new List<Brewery>(),
                 CreatedOn = DateTime.UtcNow,
             };
 
@@ -122,26 +156,23 @@ namespace Services
             {
                 await this._context.Countries.AddAsync(country);
                 await this._context.SaveChangesAsync();
-
-                theCountry = this._context.Countries
-                .Where(c => c.IsDeleted == false)
-                .FirstOrDefault(c => c.Name == model.Name);
             }
             #endregion
+            model.ID = this._context.Countries
+                .FirstOrDefault(c => c.Name == model.Name).ID;
+            //var countryToReturn = new CountryDTO()
+            //{
+            //    ID = theCountry.ID,
+            //    Name = theCountry.Name,
+            //    //Breweries = theCountry.Breweries.Select(b => new BreweryDTO()
+            //    //{
+            //    //    ID = b.ID,
+            //    //    Name = b.Name,
+            //    //    Country = b.Country.Name,
+            //    //}).ToList()
+            //};
 
-            var countryToReturn = new CountryDTO()
-            {
-                ID = theCountry.ID,
-                Name = theCountry.Name,
-                //Breweries = theCountry.Breweries.Select(b => new BreweryDTO()
-                //{
-                //    ID = b.ID,
-                //    Name = b.Name,
-                //    Country = b.Country.Name,
-                //}).ToList()
-            };
-
-            return countryToReturn;
+            return model;
         }
         /// <summary>
         /// Updates the Country's Name
@@ -149,64 +180,72 @@ namespace Services
         /// <param name="id">ID of the Country to be updated.</param>
         /// <param name="model">Provide model's Name=newName.</param>
         /// <returns></returns>
-        public CountryDTO Update(int id, CountryDTO model)
+        public async Task<CountryDTO> UpdateAsync(int id, CountryDTO model)
         {
-            if (id != model.ID)
-            {
-                throw new ArgumentNullException();
-            }
+            //if (id != model.ID)
+            //{
+            //    throw new ArgumentNullException();
+            //}
 
-            var country = this._context.Countries.Find(id) ?? throw new ArgumentNullException("The country is not found");
+            var country = await this._context.Countries.FindAsync(id);
+            if (country == null) return null;
             country.Name = model.Name;
 
             country.ModifiedOn = DateTime.UtcNow;
+            model.ID = country.ID;
 
             this._context.Update(country);
             try
             {
-                this._context.SaveChanges();
+                await this._context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!CountryExists(id))
                 {
-                    return model;
-                }
-                else
-                {
-                    throw;
+                    return null;
                 }
             }
 
             return model;
         }
 
-        public bool Delete(int id)
-        {
-            try
-            {
-                var country = this._context.Countries.Find(id) ?? throw new ArgumentNullException("Country not found.");
-                country.IsDeleted = true;
-                country.DeletedOn = DateTime.UtcNow;
-                //this._context.Countries.Remove(country);
-                this._context.Update(country);
-                this._context.SaveChanges();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+        //public bool Delete(int id)
+        //{
+        //    try
+        //    {
+        //        var country = this._context.Countries.Find(id) ?? throw new ArgumentNullException("Country not found.");
+        //        country.IsDeleted = true;
+        //        country.DeletedOn = DateTime.UtcNow;
+        //        //this._context.Countries.Remove(country);
+        //        this._context.Update(country);
+        //        this._context.SaveChanges();
+        //        return true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false;
+        //    }
+        //}
         public async Task<bool> DeleteAsync(int id)
         {
             try
             {
-                var country = await this._context.Countries.FindAsync(id) ?? throw new ArgumentNullException("Country not found.");
+                var country = await this._context.Countries.FindAsync(id)
+                    ?? throw new ArgumentNullException("Country not found.");
                 country.IsDeleted = true;
-                country.DeletedOn = DateTime.UtcNow;
-                //this._context.Countries.Remove(country);
+                country.ModifiedOn = country.DeletedOn = DateTime.UtcNow;
+
+                // TODO: Delete 
+
+                foreach (var brew in country.Breweries)
+                {
+                    var newBreweryService = new BreweryServices(this._context);
+                    await newBreweryService.Delete(brew.ID);
+                }
+
                 this._context.Update(country);
+
                 await this._context.SaveChangesAsync();
                 return true;
             }

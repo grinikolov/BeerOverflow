@@ -22,9 +22,9 @@ namespace BeerOverflowAPI.ApiControllers
 
         // GET: api/Brewery
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var breweries = this._service.GetAll();
+            var breweries =  await this._service.GetAll();
                 //.Select(br => new BreweryDTO
                 //{
                 //    ID = br.ID,
@@ -60,20 +60,18 @@ namespace BeerOverflowAPI.ApiControllers
 
         // POST: api/Brewery
         [HttpPost]
-        public IActionResult Post([FromBody] BreweryDTO brewery)
+        public async Task<IActionResult> Post([FromBody] BreweryDTO brewery)
         {
             if (brewery == null)
             {
+                return  BadRequest();
+            }
+
+            var theNewBrewery = await this._service.Create(brewery);
+            if (theNewBrewery.ID == default)
+            {
                 return BadRequest();
             }
-            //var beerStyleDTO = new BeerStyleDTO
-            //{
-            //    ID = style.ID,
-            //    Name = style.Name,
-            //    Description = style.Description,
-            //};
-
-            var theNewBrewery = this._service.Create(brewery);
             return Created("Post", theNewBrewery);
 
         }
@@ -101,20 +99,11 @@ namespace BeerOverflowAPI.ApiControllers
         }
 
         [HttpDelete("{id}")]
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            return this._service.Delete(id);
+            return await this._service.Delete(id);
 
-            //return didDelete/*;*/
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public async Task<bool> DeleteAsync(int id)
-        {
-            return await this._service.DeleteAsync(id);
-
-            //return didDelete;
-        }
     }
 }
