@@ -10,7 +10,8 @@ namespace Services
         Task<UserDTO> CreateUser(UserDTO model);
         Task<bool> DeleteUser(int id);
         Task<IEnumerable<UserDTO>> GetAllUsers();
-        Task<User> GetUser(int id);
-        Task<UserDTO> UpdateUser(int id, UserDTO model);
+        Task<UserDTO> GetUser(int id);
+        UserDTO UpdateUser(int id, UserDTO model);
+        Task<UserDTO> UpdateUserAsync(int id, UserDTO model);
     }
 }

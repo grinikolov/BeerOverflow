@@ -46,7 +46,7 @@ namespace Services
             {
                 throw new ArgumentNullException();
             }
-            //Todo:convert to dto
+
             var beerStyleDTO = new BeerStyleDTO
             {
                 ID = theBeerStyle.ID,
@@ -57,34 +57,63 @@ namespace Services
             return beerStyleDTO;
         }
 
-        public BeerStyleDTO Create(BeerStyleDTO beerStyleDTO)
+        public BeerStyleDTO Create(BeerStyleDTO model)
         {
             var beerStyle = new BeerStyle
             {
                 //ID = beerStyleDTO.ID, //id to be set by DB itself
-                Name = beerStyleDTO.Name,
-                Description = beerStyleDTO.Description,
+                Name = model.Name,
+                Description = model.Description,
                 CreatedOn = DateTime.UtcNow,
             };
             //TODO: check if such style already exists, then do not add it
-            this._context.BeerStyles.Add(beerStyle);
-            this._context.SaveChanges();
-
-            return beerStyleDTO;
+            var theStyle = this._context.BeerStyles.
+                Where(bs => bs.IsDeleted == false)
+                .FirstOrDefault(b => b.Name.ToLower() == model.Name.ToLower());
+            if (theStyle == null)
+            {
+                this._context.BeerStyles.Add(beerStyle);
+                this._context.SaveChanges();
+                theStyle = this._context.BeerStyles.
+                Where(bs => bs.IsDeleted == false)
+                .FirstOrDefault(b => b.Name.ToLower() == model.Name.ToLower());
+            }
+            var toReturn = new BeerStyleDTO()
+            {
+                ID = theStyle.ID,
+                Name = theStyle.Name,
+                Description = theStyle.Description
+            };
+            return toReturn;
         }
-        public async Task<BeerStyleDTO> CreateAsync(BeerStyleDTO beerStyleDTO)
+        public async Task<BeerStyleDTO> CreateAsync(BeerStyleDTO model)
         {
             var beerStyle = new BeerStyle
             {
-                Name = beerStyleDTO.Name,
-                Description = beerStyleDTO.Description,
+                Name = model.Name,
+                Description = model.Description,
                 CreatedOn = DateTime.UtcNow,
             };
-
-            await this._context.BeerStyles.AddAsync(beerStyle);
-            await this._context.SaveChangesAsync();
-
-            return beerStyleDTO;
+            //TODO: check if such style already exists, then do not add it
+            var theStyle =  await this._context.BeerStyles.
+                Where(bs => bs.IsDeleted == false)
+                .FirstOrDefaultAsync(b => b.Name.ToLower() == model.Name.ToLower());
+            if (theStyle == null)
+            {
+                await this._context.BeerStyles.AddAsync(beerStyle);
+                await this._context.SaveChangesAsync();
+                theStyle = await this._context.BeerStyles.
+                Where(bs => bs.IsDeleted == false)
+                .FirstOrDefaultAsync(b => b.Name.ToLower() == model.Name.ToLower());
+            }
+            var toReturn = new BeerStyleDTO()
+            {
+                ID = theStyle.ID,
+                Name = theStyle.Name,
+                Description = theStyle.Description
+            };
+            return toReturn;
+            
         }
 
         public BeerStyleDTO Update(int id, BeerStyleDTO beerStyleDTO)
