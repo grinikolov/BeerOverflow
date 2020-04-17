@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class ReviewsService :IReviewsService
+    public class ReviewsService : IReviewsService
     {
         private readonly BOContext _context;
 
@@ -26,24 +26,22 @@ namespace Services
                 .ToListAsync();
 
             return reviews;
-
         }
 
         public async Task<ReviewDTO> GetReview(int id)
         {
             try
             {
-
-                var review = await this._context.Reviews.FindAsync(id) ?? throw new ArgumentNullException(); ;
+                var review = await this._context.Reviews
+                    .Where(r => r.IsDeleted == false)
+                    .FirstOrDefaultAsync(r=> r.ID == id) ?? throw new ArgumentNullException(); ;
 
                 var model = MapToDTO(review);
 
                 return model;
-
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -111,7 +109,6 @@ namespace Services
             return modelToReturn;
         }
 
-        // DELETE: api/Reviews/5
         public async Task<bool> DeleteReview(int id)
         {
             try
@@ -146,13 +143,29 @@ namespace Services
                 Rating = review.Rating,
                 Description = review.Description,
                 LikesCount = review.LikesCount,
-                //<CommentDTO> Comments { get; set; }
-                IsDeleted = review.IsDeleted,
+                Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
                 IsFlagged = review.IsFlagged,
             };
             return model;
 
         }
+
+        private CommentDTO MapCommentToDTO(Comment c)
+        {
+            var comment = new CommentDTO()
+            {
+                ID = c.ID,
+                BeerID = c.BeerID,
+                UserID = c.UserID,
+                Description = c.Description,
+                LikesCount = c.LikesCount,
+            };
+            return comment;
+        }
+
+
+
+
 
     }
 }
