@@ -73,11 +73,35 @@ namespace Services
                 Breweries = new List<Brewery>(),
                 CreatedOn = DateTime.UtcNow,
             };
-            //TODO: check if such style already exists, then do not add it
-            this._context.Countries.Add(country);
-            this._context.SaveChanges();
+            //TODO: check if such Country already exists, then do not add it
 
-            return model;
+            var theCountry = this._context.Countries
+                .Where(c => c.IsDeleted == false)
+                .FirstOrDefault(c => c.Name == model.Name);
+
+            if (theCountry == null)
+            {
+                this._context.Countries.Add(country);
+                this._context.SaveChanges();
+
+                theCountry = this._context.Countries
+                .Where(c => c.IsDeleted == false)
+                .FirstOrDefault(c => c.Name == model.Name);
+            }
+
+            var countryToReturn = new CountryDTO()
+            {
+                ID = theCountry.ID,
+                Name = theCountry.Name,
+                //Breweries = theCountry.Breweries.Select(b => new BreweryDTO()
+                //{
+                //    ID = b.ID,
+                //    Name = b.Name,
+                //    Country = b.Country.Name,
+                //}).ToList()
+            };
+
+            return countryToReturn;
         }
         public async Task<CountryDTO> CreateAsync(CountryDTO model)
         {
@@ -85,15 +109,39 @@ namespace Services
             {
                 //ID to be set by DB itself
                 Name = model.Name,
-                //Breweries = model.Breweries,
                 Breweries = new List<Brewery>(),
                 CreatedOn = DateTime.UtcNow,
             };
-            //TODO: check if such style already exists, then do not add it
-            await this._context.Countries.AddAsync(country);
-            await this._context.SaveChangesAsync();
 
-            return model;
+            #region Check if exists
+            var theCountry = await this._context.Countries
+                .Where(c => c.IsDeleted == false)
+                .FirstOrDefaultAsync(c => c.Name == model.Name);
+
+            if (theCountry == null)
+            {
+                await this._context.Countries.AddAsync(country);
+                await this._context.SaveChangesAsync();
+
+                theCountry = this._context.Countries
+                .Where(c => c.IsDeleted == false)
+                .FirstOrDefault(c => c.Name == model.Name);
+            }
+            #endregion
+
+            var countryToReturn = new CountryDTO()
+            {
+                ID = theCountry.ID,
+                Name = theCountry.Name,
+                //Breweries = theCountry.Breweries.Select(b => new BreweryDTO()
+                //{
+                //    ID = b.ID,
+                //    Name = b.Name,
+                //    Country = b.Country.Name,
+                //}).ToList()
+            };
+
+            return countryToReturn;
         }
         /// <summary>
         /// Updates the Country's Name

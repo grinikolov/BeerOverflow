@@ -143,7 +143,7 @@ namespace Services
                 Rating = review.Rating,
                 Description = review.Description,
                 LikesCount = review.LikesCount,
-                Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
+                //Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
                 IsFlagged = review.IsFlagged,
             };
             return model;

@@ -24,49 +24,49 @@ namespace Services
             var users = await this._context.Users
                 .Where(u => u.IsDeleted == false)
                 .Select(u => MapUserToDTO(u)).ToListAsync();
+
             return users;
         }
 
 
-        public async Task<User> GetUser(int id)
+        public async Task<UserDTO> GetUser(int id)
         {
-            var user = await this._context.Users.FindAsync(id);
+            var theUser = await this._context.Users.FindAsync(id);
 
-            if (user == null)
+            if (theUser == null)
             {
                 return null;
             }
+            var user = MapUserToDTO(theUser);
 
             return user;
         }
 
-        public async Task<UserDTO> UpdateUser(int id, UserDTO model)
+        public UserDTO UpdateUser(int id, UserDTO model)
         {
             // // TODO: DO update
-            //if (id != model.ID)
-            //{
-            //    return BadRequest();
-            //}
+            var user = this._context.Users.Find(id);
+            user.Name = model.Name;
+            user.Password = model.Password;
+            user.ModifiedOn = DateTime.UtcNow;
 
-            //this._context.Entry(model).State = EntityState.Modified;
+            this._context.Users.Update(user);
+            this._context.SaveChanges();
+            var toReturn = MapUserToDTO(this._context.Users.Find(id));
+            return toReturn;
+        }
+        public async Task<UserDTO> UpdateUserAsync(int id, UserDTO model)
+        {
+            // // TODO: DO update
+            var user = await this._context.Users.FindAsync(id);
+            user.Name = model.Name;
+            user.Password = model.Password;
+            user.ModifiedOn = DateTime.UtcNow;
 
-            //try
-            //{
-            //    await this._context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!UserExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
-            return model;
+           this._context.Users.Update(user);
+           await this._context.SaveChangesAsync();
+            var toReturn = MapUserToDTO(await this._context.Users.FindAsync(id));
+            return toReturn;
         }
 
 
@@ -75,10 +75,7 @@ namespace Services
             UserDTO modelToReturn;
             try
             {
-                var theUser = new User
-                {
-                    //user params here
-                };
+                User theUser = MapToUser(model);
                 this._context.Users.Add(theUser);
                 await this._context.SaveChangesAsync();
 
@@ -93,6 +90,22 @@ namespace Services
             return modelToReturn;
         }
 
+        private User MapToUser(UserDTO model)
+        {
+            var theUser = new User()
+            {
+                Name = model.Name,
+                Password = model.Password,
+                CreatedOn = DateTime.UtcNow,
+                DrankLists = new List<DrankList>(),
+                WishLists = new List<WishList>(),
+                ReviewList = new List<Review>(),
+                CommentList = new List<Comment>(),
+                FlagList = new List<Flag>(),
+                LikesList = new List<Like>(),
+            };
+            return theUser;
+        }
 
         public async Task<bool> DeleteUser(int id)
         {
@@ -127,17 +140,17 @@ namespace Services
                 Password = u.Password,
                 //DrankLists = u.DrankLists.Select(dl => new DrankListDTO() { },
                 //WishLists = u.WishLists.Select(wl => new WishListDTO() { }),
-                ReviewsList = u.ReviewList.Select(r => new ReviewDTO()
-                {
-                    ID = r.ID,
-                    Description = r.Description,
-                    Rating = r.Rating,
-                }).ToList(),
-                CommentsList = u.CommentList.Select(c => new CommentDTO()
-                {
-                    ID = c.ID,
-                    LikesCount = c.LikesCount,
-                }).ToList(),
+                //ReviewsList = u.ReviewList.Select(r => new ReviewDTO()
+                //{
+                //    ID = r.ID,
+                //    Description = r.Description,
+                //    Rating = r.Rating,
+                //}).ToList(),
+                //CommentsList = u.CommentList.Select(c => new CommentDTO()
+                //{
+                //    ID = c.ID,
+                //    LikesCount = c.LikesCount,
+                //}).ToList(),
                 //FlagList
                 //LikesList
             };

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BeerOverflow.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ namespace BeerOverflowAPI.ApiControllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             try
             {
@@ -60,7 +61,7 @@ namespace BeerOverflowAPI.ApiControllers
                 return BadRequest();
             }
 
-            var model = await this._service.UpdateUser(id, user);
+            var model = await this._service.UpdateUserAsync(id, user);
             return Ok(model);
 
             //else: return NoContent();
