@@ -12,11 +12,20 @@ using Microsoft.Extensions.Hosting;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Services;
 using Services.Contracts;
+using Microsoft.Extensions.Logging;
 
 namespace BeerOverflowAPI
 {
     public class Startup
     {
+        public static readonly ILoggerFactory MyLoggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder
+                .AddFilter((category, level) =>
+                    category == DbLoggerCategory.Database.Command.Name
+                    && level == LogLevel.Information)
+                .AddConsole();
+        });
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -37,7 +46,7 @@ namespace BeerOverflowAPI
             services.AddScoped<ICountriesService, CountriesService>();
             services.AddScoped<IBeerService, BeerService>();
             services.AddDbContext<BOContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")));
+            options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")).UseLoggerFactory(MyLoggerFactory));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
