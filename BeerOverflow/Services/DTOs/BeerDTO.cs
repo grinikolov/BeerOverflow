@@ -8,6 +8,9 @@ namespace Services.DTOs
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        public float ABV { get; set; }
+        public BeerStyleDTO Style { get; set; }
+        public CountryDTO Country { get; set; }
+        public BreweryDTO Brewery { get; set; }
+        public ICollection<ReviewDTO> Reviews { get; set; }
     }
 }
