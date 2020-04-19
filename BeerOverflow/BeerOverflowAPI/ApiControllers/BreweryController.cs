@@ -25,31 +25,16 @@ namespace BeerOverflowAPI.ApiControllers
         public async Task<IActionResult> Get()
         {
             var breweries =  await this._service.GetAll();
-                //.Select(br => new BreweryDTO
-                //{
-                //    ID = br.ID,
-                //    Name = br.Name,
-                //    Country = br.Country,
-                //    //Beers = br.Beers.Select(b => new BeerDTO { }).ToList(),
-                //})
-                //.ToList();
             return Ok(breweries);
         }
 
         // GET: api/Brewery/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var brewery = this._service.GetBrewery(id);
-                //var result = new BreweryDTO
-                //{
-                //    ID = brewery.ID,
-                //    Name = brewery.Name,
-                //    Country = brewery.Country,
-                //    Beers = brewery.Beers,
-                //};
+                var brewery = await this._service.GetBrewery(id);
                 return Ok(brewery);
             }
             catch (Exception)
@@ -79,21 +64,14 @@ namespace BeerOverflowAPI.ApiControllers
 
         // PUT: api/Brewery/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] BreweryDTO brewery)
+        public async Task<IActionResult> Put(int id, [FromBody] BreweryDTO brewery)
         {
             if (id == 0 || brewery == null)
             {
                 return BadRequest();
             }
 
-            //var beerStyleDTO = new BeerStyleDTO
-            //{
-            //    ID = style.ID,
-            //    Name = style.Name,
-            //    Description = style.Description,
-            //};
-
-            var model = this._service.Update(id, brewery);
+            var model = await this._service.Update(id, brewery);
 
             return Ok(model);
         }
@@ -102,8 +80,6 @@ namespace BeerOverflowAPI.ApiControllers
         public async Task<bool> Delete(int id)
         {
             return await this._service.Delete(id);
-
         }
-
     }
 }
