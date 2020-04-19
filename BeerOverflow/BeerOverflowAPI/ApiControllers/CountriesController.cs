@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using BeerOverflow.Models;
-using Database;
-using Services;
 using Services.Contracts;
 using Services.DTOs;
 
@@ -58,11 +51,6 @@ namespace BeerOverflowAPI.ApiControllers
                 return BadRequest();
             }
 
-            //var model = new CountryDTO
-            //{
-            //    Name = countryDTO.Name,
-            //};
-
             var returnModel =await this._service.UpdateAsync(id, model);
             if (returnModel == null)
             {
@@ -79,10 +67,7 @@ namespace BeerOverflowAPI.ApiControllers
             {
                 return BadRequest();
             }
-            //var model = new CountryDTO
-            //{
-            //    Name = countryDTO.Name,
-            //};
+
             var theNewCountry = await this._service.CreateAsync(model);
             if (theNewCountry.ID == default)
             {
@@ -95,19 +80,7 @@ namespace BeerOverflowAPI.ApiControllers
         [HttpDelete("{id}")]
         public async Task<bool> DeleteAsync(int id)
         {
-            bool didDelete = await this._service.DeleteAsync(id);
-
-            return didDelete;
+            return await this._service.DeleteAsync(id);
         }
-        //// DELETE: api/ApiWithActions/5
-        //[HttpDelete("{id}")]
-        //public async Task<bool> DeleteAsync(int id)
-        //{
-        //    bool didDelete = await this._service.DeleteAsync(id);
-
-        //    return didDelete;
-        //}
-
-
     }
 }

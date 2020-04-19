@@ -23,7 +23,6 @@ namespace Services
         {
             var brewery = new Brewery
             {
-                //ID = breweryDTO.ID,
                 Name = breweryDTO.Name,
                 Country = _context.Countries.FirstOrDefault(c =>
                         c.Name == breweryDTO.Country),
@@ -50,26 +49,6 @@ namespace Services
             return breweryDTO;
         }
 
-        //public bool Delete(int id)
-        //{
-        //    try
-        //    {
-        //        var brewery = _context.Breweries.Find(id);
-        //        brewery.IsDeleted = true;
-        //        brewery.DeletedOn = brewery.ModifiedOn = DateTime.UtcNow;
-        //        _context.Breweries.Update(brewery);
-        //        //brewery.DeletedOn = DateTime.UtcNow;
-        //        //this._context.BeerStyles.Remove(beerStyle);
-        //        _context.SaveChanges();
-
-        //        return true;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-        //}
-
         public async Task<bool> Delete(int id)
         {
             try
@@ -78,8 +57,6 @@ namespace Services
                 brewery.IsDeleted = true;
                 brewery.DeletedOn = brewery.ModifiedOn = DateTime.UtcNow;
                 _context.Breweries.Update(brewery);
-                //brewery.DeletedOn = DateTime.UtcNow;
-                //this._context.BeerStyles.Remove(beerStyle);
                 _context.SaveChanges();
 
                 return true;
@@ -104,7 +81,6 @@ namespace Services
                 {
                     ID = b.ID,
                     Name = b.Name,
-                    //Country = b.Country.Name
                     ABV = b.ABV,
                     Style = new BeerStyleDTO()
                     {
@@ -121,7 +97,7 @@ namespace Services
         public async Task<BreweryDTO> GetBrewery(int id)
         {
             var brewery = await this._context.Breweries
-                .Include(b => b.Country)
+                .Include(b => b.Country).Include(b => b.Beers)
                 .Where(br => br.IsDeleted == false).FirstOrDefaultAsync(br => br.ID == id);
 
             if (brewery == null)
@@ -137,7 +113,6 @@ namespace Services
                 {
                     ID = b.ID,
                     Name = b.Name,
-                    //Country = b.Country.Name
                     ABV = b.ABV,
                     Style = new BeerStyleDTO()
                     {
@@ -153,12 +128,25 @@ namespace Services
 
         public async Task<BreweryDTO> Update(int id, BreweryDTO breweryDTO)
         {
-            var brewery = await _context.Breweries.FindAsync(id);
+            var brewery = await _context.Breweries.Include(b => b.Beers).FirstOrDefaultAsync(b => b.ID == id);
             brewery.Name = breweryDTO.Name;
             brewery.Country = _context.Countries.FirstOrDefault(c =>
                     c.Name == breweryDTO.Country);
             brewery.ModifiedOn = DateTime.UtcNow;
             _context.Breweries.Update(brewery);
+            breweryDTO.ID = brewery.ID;
+            breweryDTO.Beers = brewery.Beers.Select(b => new BeerDTO()
+            {
+                ID = b.ID,
+                Name = b.Name,
+                ABV = b.ABV,
+                Style = new BeerStyleDTO()
+                {
+                    ID = b.Style.ID,
+                    Name = b.Style.Name,
+                    Description = b.Style.Description
+                }
+            }).ToList();         
             try
             {
                 await this._context.SaveChangesAsync();
