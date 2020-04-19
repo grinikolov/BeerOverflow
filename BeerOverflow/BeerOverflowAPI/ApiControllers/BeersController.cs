@@ -22,41 +22,41 @@ namespace BeerOverflowAPI.ApiControllers
         }
         // GET: api/Beers
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var beers = _service.GetAll();
+            var beers = await _service.GetAllAsync();
             return Ok(beers);
         }
 
         // GET: api/Beers/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var beers = _service.GetBeer(id);
+            var beers = await _service.GetBeerAsync(id);
             return Ok(beers);
         }
 
         // POST: api/Beers
         [HttpPost]
-        public IActionResult Post([FromBody] BeerDTO beer)
+        public async Task<IActionResult> Post([FromBody] BeerDTO beer)
         {
             if (beer == null)
             {
                 return BadRequest();
             }
-            var theNewBeer = this._service.CreateAsync(beer);
+            var theNewBeer =await this._service.CreateAsync(beer);
             return Created("Post", theNewBeer);
         }
 
         // PUT: api/Beers/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] BeerDTO beer)
+        public async Task<IActionResult> Put(int id, [FromBody] BeerDTO beer)
         {
             if (beer == null)
             {
                 return BadRequest();
             }
-            var theNewBeer = this._service.Update(id,beer);
+            var theNewBeer = await this._service.UpdateAsync(id,beer);
             return Ok(theNewBeer);
         }
 

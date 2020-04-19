@@ -9,10 +9,9 @@ namespace Services.Contracts
     public interface IBeerService
     {
         Task<BeerDTO> CreateAsync(BeerDTO breweryDTO);
-        bool Delete(int id);
         Task<bool> DeleteAsync(int id);
-        IEnumerable<BeerDTO> GetAll();
-        BeerDTO GetBeer(int id);
-        BeerDTO Update(int id, BeerDTO breweryDTO);
+        Task<IEnumerable<BeerDTO>> GetAllAsync();
+        Task<BeerDTO> GetBeerAsync(int id);
+        Task<BeerDTO> UpdateAsync(int id, BeerDTO breweryDTO);
     }
 }
