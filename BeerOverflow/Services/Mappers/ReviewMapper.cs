@@ -1,0 +1,48 @@
+﻿using BeerOverflow.Models;
+using Services.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Services.Mappers
+{
+    public static class ReviewMapper
+    {
+        public static ReviewDTO MapReviewToDTO(this Review review)
+        {
+            var model = new ReviewDTO
+            {
+                ID = review.ID,
+                BeerID = review.BeerID,
+                Beer = new BeerDTO { ID = review.Beer.ID },
+                UserID = review.UserID,
+                User = new UserDTO { ID = review.User.ID },
+                Rating = review.Rating,
+                Description = review.Description,
+                LikesCount = review.LikesCount,
+                //Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
+                IsFlagged = review.IsFlagged,
+            };
+            return model;
+        }
+
+        //public static Review MapToReview(ReviewDTO model)
+        //{
+        //    var review = new Review
+        //    {
+        //        //ID = model.ID,
+        //        BeerID = theBeer.ID,
+        //        Beer = theBeer,
+        //        UserID = model.UserID,
+        //        User = theUser,
+        //        Rating = model.Rating,
+        //        Description = model.Description,
+        //        LikesCount = model.LikesCount,
+        //        Comments = new List<Comment>(),
+        //        IsDeleted = model.IsDeleted,
+        //        IsFlagged = model.IsFlagged,
+        //    };
+        //    return review;
+        //}
+    }
+}
