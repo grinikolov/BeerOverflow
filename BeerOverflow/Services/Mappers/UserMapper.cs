@@ -16,7 +16,14 @@ namespace Services.Mappers
                 ID = u.ID,
                 Name = u.Name,
                 Password = u.Password,
-                //DrankLists = u.DrankLists.Select(dl => new DrankListDTO() { },
+                DranksList = u.DranksList.Select(b => b.MapBeerToDTO()).ToList(),
+                DrankLists = u.DrankLists.Select(dl => new DrankListDTO() 
+                { 
+                    BeerID = dl.BeerID,
+                    Beer = dl.Beer.MapBeerToDTO(),
+                    UserID = dl.UserID,
+                    User = dl.User.MapUserToDTO(),
+                }).ToList(),
                 //WishLists = u.WishLists.Select(wl => new WishListDTO() { }),
                 ReviewsList = u.ReviewList.Select(r => new ReviewDTO()
                 {
