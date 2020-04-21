@@ -19,9 +19,7 @@ namespace Services.Mappers
                 Country = new CountryDTO() { Name = beer.Country.Name },
                 Style = new BeerStyleDTO() { Name = beer.Style.Name, Description = beer.Style.Description },
                 Brewery = new BreweryDTO() { Name = beer.Brewery.Name, Country = beer.Brewery.Country.Name },
-                Reviews = beer.Reviews.Select(r => new ReviewDTO() 
-                    { 
-                    })
+                Reviews = beer.Reviews.Select(r => r.MapReviewToDTO())
                 .ToList()
             };
 

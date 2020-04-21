@@ -136,37 +136,40 @@ namespace Services
                 .Where(b => b.IsDeleted == false)
                 .FirstOrDefaultAsync(b => b.ID == beerID);
 
-
-
             //TODO: add beer to user's list then return 
-            if (theUser.DrankLists == null)
-            {
-                theUser.DrankLists = new List<DrankList>();
-            }
-            // TODO: Check if already
-            // // if (theUser.DrankLists.Contains(this particular beer)
-            //if (theUser.DrankLists.Contains(theBeer))
-            //{
-            //    return null;
-            //}
-            theUser.DrankLists.Add(new DrankList()
-            {
-                UserID = userID,
-                User = theUser,
-                BeerID = beerID,
-                Beer = theBeer,
-            });
 
-            var toReturn = theUser.MapUserToDTO();
-            return toReturn;
+            // TODO: Check if already
+            if (theUser.DrankList.Contains(theBeer))
+            {
+                return null;
+            }
+            theUser.DrankList.Add(theBeer);
+            UserDTO modelToReturn;
+            try
+            {
+                await this._context.SaveChangesAsync();
+
+                modelToReturn = theUser.MapUserToDTO();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            return modelToReturn;
         }
 
         public async Task<IEnumerable<BeerDTO>> GetDrankBeers(int userID)
         {
-            var theBeers = await this._context.DrankLists
-                .Where(dl => dl.UserID == userID)
-                .Select(dl => dl.Beer).ToListAsync();
-            var toReturn = theBeers.Select(b => b.MapBeerToDTO()).ToList();
+            //var theBeers = await this._context.DrankLists
+            //    .Where(dl => dl.UserID == userID)
+            //    .Select(dl => dl.Beer).ToListAsync();
+            var theBeers =  this._context.Users
+               .FirstOrDefault(u => u.ID == userID)
+               .DrankList;
+               
+
+            var toReturn = theBeers.Select(b => b.MapBeerToDTO()).ToHashSet();
             return toReturn;
         }
         public async Task<ReviewDTO> ReviewABeer(ReviewDTO model)

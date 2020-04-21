@@ -68,7 +68,7 @@ namespace BeerOverflowAPI.ApiControllers
                 return BadRequest();
             }
 
-            var returnModel = this._service.UpdateAsync(id, model);
+            var returnModel =await this._service.UpdateAsync(id, model);
             if (returnModel == null)
             {
                 return NotFound();

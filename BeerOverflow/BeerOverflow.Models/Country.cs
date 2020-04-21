@@ -8,6 +8,7 @@ namespace BeerOverflow.Models
     {
         public Country()
         {
+            this.Breweries = new HashSet<Brewery>();
         }
         public int ID { get; set; }
         public string Name { get; set; }

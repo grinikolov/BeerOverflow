@@ -9,9 +9,8 @@ namespace Services.DTOs
 
         public string Password { get; set; }
 
-        public ICollection<BeerDTO> DranksList { get; set; }
-        public ICollection<DrankListDTO> DrankLists { get; set; }
-        public ICollection<WishListDTO> WishLists { get; set; }
+        public ICollection<BeerDTO> DrankList { get; set; }
+        public ICollection<BeerDTO> WishList { get; set; }
         public ICollection<ReviewDTO> ReviewsList { get; set; }
         public ICollection<CommentDTO> CommentsList { get; set; }
         public ICollection<FlagDTO> FlagList { get; set; }

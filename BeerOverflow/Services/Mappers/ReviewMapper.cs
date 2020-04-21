@@ -2,6 +2,7 @@
 using Services.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Services.Mappers
@@ -20,7 +21,9 @@ namespace Services.Mappers
                 Rating = review.Rating,
                 Description = review.Description,
                 LikesCount = review.LikesCount,
-                //Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
+                Comments = review.Comments.Count>0 ?
+                    review.Comments.Select(c => c.MapCommentToDTO())
+                    .ToList() : null,
                 IsFlagged = review.IsFlagged,
             };
             return model;
