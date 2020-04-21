@@ -1,4 +1,5 @@
-﻿using Services.DTOs;
+﻿using BeerOverflow.Models;
+using Services.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

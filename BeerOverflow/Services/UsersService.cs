@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Services;
 
 namespace Services
 {
@@ -125,10 +126,12 @@ namespace Services
                 return false;
             }
         }
+        #region Drink
 
         public async Task<UserDTO> Drink(int userID, int beerID)
         {
             var theUser = await this._context.Users
+                .Include(u => u.DrankList)
                 .Where(u => u.IsDeleted == false)
                 .FirstOrDefaultAsync(u => u.ID == userID);
 
@@ -164,15 +167,36 @@ namespace Services
             //var theBeers = await this._context.DrankLists
             //    .Where(dl => dl.UserID == userID)
             //    .Select(dl => dl.Beer).ToListAsync();
-            var theBeers =  this._context.Users
-               .FirstOrDefault(u => u.ID == userID)
+            var theUser = await this._context.Users
+                .Where(u => u.IsDeleted == false)
+                .Include(u => u.DrankList)
+                .FirstOrDefaultAsync(u => u.ID == userID);
+
+            var theBeers = theUser
                .DrankList;
-               
+
 
             var toReturn = theBeers.Select(b => b.MapBeerToDTO()).ToHashSet();
             return toReturn;
         }
-        public async Task<ReviewDTO> ReviewABeer(ReviewDTO model)
+        #endregion
+
+        #region Wish
+
+        public async Task<bool> Wish(int userID, int beerID)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<IEnumerable<BeerDTO>> GetWishBeers(int userID)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+
+
+        #region Reviews
+        public async Task<ReviewDTO> WriteReview(ReviewDTO model)
         {
             var theUser = await this._context.Users
                 .Where(u => u.IsDeleted == false)
@@ -183,22 +207,35 @@ namespace Services
                 .FirstOrDefaultAsync(b => b.ID == model.BeerID);
 
             //TODO: actually create review and add it in beer/user/database
+            var review = new Review
+            {
+                //ID = model.ID,
+                BeerID = theBeer.ID,
+                Beer = theBeer,
+                UserID = model.UserID,
+                User = theUser,
+                Rating = model.Rating,
+                Description = model.Description,
+                LikesCount = model.LikesCount,
+                Comments = new List<Comment>(),
+                IsDeleted = model.IsDeleted,
+                IsFlagged = model.IsFlagged,
+            };
 
-            var toReturn = new ReviewDTO();
+            this._context.Reviews.Add(review);
+            await this._context.SaveChangesAsync();
+
+            var toReturn = review.MapReviewToDTO();
             return toReturn;
         }
 
-
+        #endregion
 
         private bool UserExists(int id)
         {
             return this._context.Users.Any(e => e.ID == id);
         }
 
-        public Task<bool> Wish(int userID, int beerID)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
 

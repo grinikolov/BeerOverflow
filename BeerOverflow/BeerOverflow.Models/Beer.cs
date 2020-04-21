@@ -16,12 +16,13 @@ namespace BeerOverflow.Models
         public float ABV { get; set; }
         public BeerStyle Style { get; set; }
         public int StyleID { get; set; }
+        //TODO: Does the Beer need prop Country, as it is in its Brewery?
         public int CountryID { get; set; }
         public Country Country { get; set; }
         public int BreweryID { get; set; }
         public Brewery Brewery { get; set; }
-        public ICollection<DrankList> DrankLists { get; set; }
-        public ICollection<WishList> WishLists { get; set; }
+        //public ICollection<DrankList> DrankLists { get; set; }
+        //public ICollection<WishList> WishLists { get; set; }
         public ICollection<Review> Reviews { get; set; }
         //public ICollection<Comment> Comments { get; set; }
         public DateTime CreatedOn { get; set; }
