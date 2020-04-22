@@ -68,27 +68,6 @@ namespace BeerOverflowAPI.ApiControllers
         }
 
 
-        //TODO: enpoints routing
-        [HttpPut("user/{id}/Drink")]
-        public async Task<IActionResult> Drink(int id, [FromBody] int beerID)
-        {
-            if (id <= 0 || beerID == default)
-            {
-                return BadRequest();
-            }
-
-            var model = await this._service.Drink(id, beerID);
-            return Ok(model);
-
-            //else: return NoContent();
-        }
-        [HttpGet("user/{id}/Drank")]
-        public async Task<ActionResult<IEnumerable<BeerDTO>>> GetDrankBeers(int id)
-        {
-            var theBeers = await this._service.GetDrankBeers(id);
-            return Ok(theBeers);
-        }
-
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser(UserDTO user)
         {

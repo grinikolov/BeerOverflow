@@ -26,5 +26,9 @@ namespace BeerOverflow.Models
         public bool IsDeleted { get; set; }
         public bool IsFlagged { get; set; }
 
+
+
+
+
     }
 }
