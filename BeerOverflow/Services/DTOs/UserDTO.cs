@@ -8,8 +8,7 @@ namespace Services.DTOs
         public string Name { get; set; }
 
         public string Password { get; set; }
-
-        public ICollection<BeerDTO> DranksList { get; set; }
+        
         public ICollection<DrankListDTO> DrankLists { get; set; }
         public ICollection<WishListDTO> WishLists { get; set; }
         public ICollection<ReviewDTO> ReviewsList { get; set; }

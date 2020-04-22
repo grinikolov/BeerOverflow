@@ -126,7 +126,7 @@ namespace Services
             }
         }
 
-        public async Task<UserDTO> Drink(int userID, int beerID)
+        public async Task<bool> Drink(int userID, int beerID)
         {
             var theUser = await this._context.Users
                 .Where(u => u.IsDeleted == false)
@@ -136,19 +136,7 @@ namespace Services
                 .Where(b => b.IsDeleted == false)
                 .FirstOrDefaultAsync(b => b.ID == beerID);
 
-
-
-            //TODO: add beer to user's list then return 
-            if (theUser.DrankLists == null)
-            {
-                theUser.DrankLists = new List<DrankList>();
-            }
-            // TODO: Check if already
-            // // if (theUser.DrankLists.Contains(this particular beer)
-            //if (theUser.DrankLists.Contains(theBeer))
-            //{
-            //    return null;
-            //}
+            //TODO: add beer to user's list then return True
             theUser.DrankLists.Add(new DrankList()
             {
                 UserID = userID,
@@ -157,8 +145,7 @@ namespace Services
                 Beer = theBeer,
             });
 
-            var toReturn = theUser.MapUserToDTO();
-            return toReturn;
+            return true;
         }
 
         public async Task<IEnumerable<BeerDTO>> GetDrankBeers(int userID)
@@ -178,8 +165,6 @@ namespace Services
             var theBeer = await this._context.Beers
                 .Where(b => b.IsDeleted == false)
                 .FirstOrDefaultAsync(b => b.ID == model.BeerID);
-
-            //TODO: actually create review and add it in beer/user/database
 
             var toReturn = new ReviewDTO();
             return toReturn;

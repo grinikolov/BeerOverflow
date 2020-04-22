@@ -15,7 +15,6 @@ namespace Services.Mappers
             {
                 ID = beer.ID,
                 Name = beer.Name,
-                //TODO: The beer's Country should not be null:
                 Country = new CountryDTO() { Name = beer.Country.Name },
                 Style = new BeerStyleDTO() { Name = beer.Style.Name, Description = beer.Style.Description },
                 Brewery = new BreweryDTO() { Name = beer.Brewery.Name, Country = beer.Brewery.Country.Name },

@@ -11,8 +11,6 @@ namespace BeerOverflow.Models
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public DateTime? DeletedOn { get; set; }
-        // TODO: Why not DrankList to be List<Beer> ? e.g.:
-        public ICollection<Beer> DranksList { get; set; }
         public ICollection<DrankList> DrankLists { get; set; }
         public ICollection<WishList> WishLists { get; set; }
         public ICollection<Review> ReviewList { get; set; }
