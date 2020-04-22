@@ -6,10 +6,6 @@ namespace BeerOverflow.Models
 {
     public class Brewery
     {
-        public Brewery()
-        {
-            this.Beers = new HashSet<Beer>();
-        }
         public int ID { get; set; }
         public string Name { get; set; }
         public int CountryID { get; set; }
