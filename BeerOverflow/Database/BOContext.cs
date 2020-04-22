@@ -28,10 +28,10 @@ namespace Database
         public DbSet<Brewery> Breweries { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Country> Countries { get; set; }
-        //public DbSet<DrankList> DrankLists { get; set; }
+        public DbSet<DrankList> DrankLists { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<User> Users { get; set; }
-        //public DbSet<WishList> WishLists { get; set; }
+        public DbSet<WishList> WishLists { get; set; }
         public DbSet<Like> Likes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

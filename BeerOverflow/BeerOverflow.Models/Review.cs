@@ -7,10 +7,6 @@ namespace BeerOverflow.Models
 {
     public class Review
     {
-        public Review()
-        {
-            this.Comments = new List<Comment>();
-        }
         public int ID { get; set; }
         public int BeerID { get; set; }
         public Beer Beer { get; set; }

@@ -56,12 +56,6 @@ namespace Database.Migrations
                     b.Property<int>("StyleID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserID1")
-                        .HasColumnType("int");
-
                     b.HasKey("ID");
 
                     b.HasIndex("BreweryID");
@@ -69,10 +63,6 @@ namespace Database.Migrations
                     b.HasIndex("CountryID");
 
                     b.HasIndex("StyleID");
-
-                    b.HasIndex("UserID");
-
-                    b.HasIndex("UserID1");
 
                     b.ToTable("Beers");
                 });
@@ -236,7 +226,7 @@ namespace Database.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("DrankList");
+                    b.ToTable("DrankLists");
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.Flag", b =>
@@ -367,7 +357,7 @@ namespace Database.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("WishList");
+                    b.ToTable("WishLists");
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.Beer", b =>
@@ -389,14 +379,6 @@ namespace Database.Migrations
                         .HasForeignKey("StyleID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BeerOverflow.Models.User", null)
-                        .WithMany("DrankList")
-                        .HasForeignKey("UserID");
-
-                    b.HasOne("BeerOverflow.Models.User", null)
-                        .WithMany("WishList")
-                        .HasForeignKey("UserID1");
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.Brewery", b =>
@@ -436,7 +418,7 @@ namespace Database.Migrations
                         .IsRequired();
 
                     b.HasOne("BeerOverflow.Models.User", "User")
-                        .WithMany()
+                        .WithMany("DrankLists")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -496,7 +478,7 @@ namespace Database.Migrations
                         .IsRequired();
 
                     b.HasOne("BeerOverflow.Models.User", "User")
-                        .WithMany()
+                        .WithMany("WishLists")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
