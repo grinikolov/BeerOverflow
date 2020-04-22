@@ -35,7 +35,7 @@ namespace Services
             {
                 var review = await this._context.Reviews
                     .Where(r => r.IsDeleted == false)
-                    .FirstOrDefaultAsync(r => r.ID == id) ?? throw new ArgumentNullException(); ;
+                    .FirstOrDefaultAsync(r=> r.ID == id) ?? throw new ArgumentNullException(); ;
 
                 var model = review.MapReviewToDTO();
 

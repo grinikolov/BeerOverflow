@@ -14,9 +14,7 @@ namespace Services
         //UserDTO UpdateUser(int id, UserDTO model);
         Task<UserDTO> UpdateUserAsync(int id, UserDTO model);
         Task<UserDTO> Drink(int userID, int beerID);
-        Task<IEnumerable<BeerDTO>> GetDrankBeers(int userID);
         Task<bool> Wish(int userID, int beerID);
-        Task<IEnumerable<BeerDTO>> GetWishBeers(int userID);
-        Task<ReviewDTO> WriteReview(ReviewDTO model);
+        Task<IEnumerable<BeerDTO>> GetDrankBeers(int userID);
     }
 }

@@ -72,8 +72,7 @@ namespace BeerOverflowAPI.ApiControllers
         [HttpPut("user/{id}/Drink")]
         public async Task<IActionResult> Drink(int id)//, [FromBody] int beerID)
         {
-            //TODO:This var is for test only.
-            var beerID = 2;
+            var beerID = 3;
             if (id <= 0 || beerID == default)
             {
                 return BadRequest();
@@ -87,18 +86,6 @@ namespace BeerOverflowAPI.ApiControllers
         public async Task<ActionResult<IEnumerable<BeerDTO>>> GetDrankBeers(int id)
         {
             var theBeers = await this._service.GetDrankBeers(id);
-            return Ok(theBeers);
-        }
-        //TODO: enpoints routing
-        public async Task<IActionResult> Wish()
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpGet("user/{id}/Wish")]
-        public async Task<ActionResult<IEnumerable<BeerDTO>>> GetWishBeers(int id)
-        {
-            var theBeers = await this._service.GetWishBeers(id);
             return Ok(theBeers);
         }
 
