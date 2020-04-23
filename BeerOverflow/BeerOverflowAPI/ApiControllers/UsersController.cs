@@ -69,8 +69,9 @@ namespace BeerOverflowAPI.ApiControllers
 
         //TODO: enpoints routing
         [HttpPut("user/{id}/Drink")]
-        public async Task<IActionResult> Drink(int id, [FromBody] int beerID)
+        public async Task<IActionResult> Drink(int id, [FromBody] BeerDTO beerDTO)
         {
+            var beerID = beerDTO.ID;
             if (id <= 0 || beerID == default)
             {
                 return BadRequest();
@@ -105,10 +106,9 @@ namespace BeerOverflowAPI.ApiControllers
 
         //TODO: enpoints routing
         [HttpPut("user/{id}/Wish")]
-        public async Task<IActionResult> Wish(int id, [FromBody] int beerID)
+        public async Task<IActionResult> Wish(int id, [FromBody] BeerDTO beerDTO)
         {
-            ////TODO: for testing only
-            //var beerID = 1;
+            var beerID = beerDTO.ID;
             if (id <= 0 || beerID == default)
             {
                 return BadRequest();
