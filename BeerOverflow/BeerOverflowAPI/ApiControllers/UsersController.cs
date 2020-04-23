@@ -67,6 +67,79 @@ namespace BeerOverflowAPI.ApiControllers
             //else: return NoContent();
         }
 
+        //TODO: enpoints routing
+        [HttpPut("user/{id}/Drink")]
+        public async Task<IActionResult> Drink(int id, [FromBody] BeerDTO beerDTO)
+        {
+            var beerID = beerDTO.ID;
+            if (id <= 0 || beerID == default)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var model = await this._service.Drink(id, beerID);
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpGet("user/{id}/Drank")]
+        public async Task<ActionResult<IEnumerable<BeerDTO>>> GetDrankBeers(int id)
+        {
+            try
+            {
+                var theBeers = await this._service.GetDrankBeers(id);
+                return Ok(theBeers);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+
+
+        //TODO: enpoints routing
+        [HttpPut("user/{id}/Wish")]
+        public async Task<IActionResult> Wish(int id, [FromBody] BeerDTO beerDTO)
+        {
+            var beerID = beerDTO.ID;
+            if (id <= 0 || beerID == default)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var model = await this._service.Wish(id, beerID);
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpGet("user/{id}/Wish")]
+        public async Task<ActionResult<IEnumerable<BeerDTO>>> GetWishBeers(int id)
+        {
+            try
+            {
+                var theBeers = await this._service.GetWishBeers(id);
+                return Ok(theBeers);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+
 
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser(UserDTO user)
