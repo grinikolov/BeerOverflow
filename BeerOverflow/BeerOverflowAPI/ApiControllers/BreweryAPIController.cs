@@ -11,11 +11,11 @@ namespace BeerOverflowAPI.ApiControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BreweryController : ControllerBase
+    public class BreweryAPIController : ControllerBase
     {
         private readonly IBreweryService _service;
 
-        public BreweryController(IBreweryService service)
+        public BreweryAPIController(IBreweryService service)
         {
             this._service = service;
         }

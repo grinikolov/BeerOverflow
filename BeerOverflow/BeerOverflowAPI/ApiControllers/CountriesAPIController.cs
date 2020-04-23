@@ -8,11 +8,11 @@ namespace BeerOverflowAPI.ApiControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CountriesController : ControllerBase
+    public class CountriesAPIController : ControllerBase
     {
         private readonly ICountriesService _service;
 
-        public CountriesController(ICountriesService service)
+        public CountriesAPIController(ICountriesService service)
         {
             this._service = service ?? throw new ArgumentNullException(nameof(service));
         }
@@ -77,7 +77,7 @@ namespace BeerOverflowAPI.ApiControllers
             return Created("Post", theNewCountry);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}",Name = "APIDelete")]
         public async Task<bool> DeleteAsync(int id)
         {
             return await this._service.DeleteAsync(id);
