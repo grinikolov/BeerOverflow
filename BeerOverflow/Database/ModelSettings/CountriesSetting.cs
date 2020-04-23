@@ -12,6 +12,7 @@ namespace Database.ModelSettings
         public void Configure(EntityTypeBuilder<Country> builder)
         {
             builder.HasKey(c => c.ID);
+            builder.HasIndex(c => c.Name).IsUnique();
             builder.HasMany(b => b.Breweries).WithOne(c => c.Country).OnDelete(DeleteBehavior.Restrict);
             builder.Property(p => p.Name).IsRequired();
             builder.Property(p => p.CreatedOn).HasColumnType("datetime2").IsRequired();

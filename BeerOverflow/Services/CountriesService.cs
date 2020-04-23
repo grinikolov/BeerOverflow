@@ -97,12 +97,19 @@ namespace Services
 
             #region Check if exists
             var theCountry = await this._context.Countries
-                .Where(c => c.IsDeleted == false)
                 .FirstOrDefaultAsync(c => c.Name == model.Name);
 
             if (theCountry == null)
             {
                 await this._context.Countries.AddAsync(country);
+                await this._context.SaveChangesAsync();
+            }
+            else
+            {
+                theCountry.IsDeleted = false;
+                theCountry.DeletedOn = null;
+                theCountry.ModifiedOn = DateTime.UtcNow;
+                _context.Countries.Update(theCountry);
                 await this._context.SaveChangesAsync();
             }
             #endregion

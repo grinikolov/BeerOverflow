@@ -4,14 +4,16 @@ using Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Database.Migrations
 {
     [DbContext(typeof(BOContext))]
-    partial class BOContextModelSnapshot : ModelSnapshot
+    [Migration("20200423111153_Country_UniqueName")]
+    partial class Country_UniqueName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,9 +54,6 @@ namespace Database.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
 
                     b.Property<int>("StyleID")
                         .HasColumnType("int");
@@ -102,24 +101,6 @@ namespace Database.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("BeerStyles");
-                });
-
-            modelBuilder.Entity("BeerOverflow.Models.BeerUserRating", b =>
-                {
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BeerID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserID", "BeerID");
-
-                    b.HasIndex("BeerID");
-
-                    b.ToTable("BeerUserRatings");
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.Brewery", b =>
@@ -401,21 +382,6 @@ namespace Database.Migrations
                     b.HasOne("BeerOverflow.Models.BeerStyle", "Style")
                         .WithMany()
                         .HasForeignKey("StyleID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BeerOverflow.Models.BeerUserRating", b =>
-                {
-                    b.HasOne("BeerOverflow.Models.Beer", "Beer")
-                        .WithMany()
-                        .HasForeignKey("BeerID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BeerOverflow.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

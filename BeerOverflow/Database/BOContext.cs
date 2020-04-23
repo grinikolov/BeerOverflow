@@ -33,6 +33,7 @@ namespace Database
         public DbSet<User> Users { get; set; }
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<BeerUserRating> BeerUserRatings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -47,6 +48,7 @@ namespace Database
             builder.ApplyConfiguration(new FlagSettings());
             builder.ApplyConfiguration(new DrankListSettings());
             builder.ApplyConfiguration(new WishListSettings());
+            builder.ApplyConfiguration(new BeerUserRatingSettings());
             
             base.OnModelCreating(builder);
         }

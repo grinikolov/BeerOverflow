@@ -72,6 +72,7 @@ namespace Services
                 {
                     ID = b.ID,
                     Name = b.Name,
+                    Rating = b.Rating,
                     Country = new CountryDTO() { Name = b.Country.Name },
                     Style = new BeerStyleDTO() { Name = b.Style.Name, Description = b.Style.Description },
                     Brewery = new BreweryDTO() { Name = b.Brewery.Name, Country = b.Brewery.Country.Name },
@@ -94,6 +95,7 @@ namespace Services
             {
                 ID = beer.ID,
                 Name = beer.Name,
+                Rating = beer.Rating,
                 Country = new CountryDTO() { Name = beer.Country.Name },
                 Style = new BeerStyleDTO() { Name = beer.Style.Name, Description = beer.Style.Description },
                 Brewery = new BreweryDTO() { Name = beer.Brewery.Name, Country = beer.Brewery.Country.Name },

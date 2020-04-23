@@ -20,6 +20,7 @@ namespace BeerOverflow.Models
         public Country Country { get; set; }
         public int BreweryID { get; set; }
         public Brewery Brewery { get; set; }
+        public int Rating { get; set; }
         public ICollection<DrankList> DrankLists { get; set; }
         public ICollection<WishList> WishLists { get; set; }
         public ICollection<Review> Reviews { get; set; }
