@@ -247,29 +247,56 @@ namespace Services
         }
         #endregion
 
-        //// TODO: Beer has no Rating
-        //public async Task<UserDTO> Rate(int userID, int beerID, int theRating)
-        //{
-        //    int theRating; 
-        //    var theUser = await this._context.Users
-        //        .Where(u => u.IsDeleted == false)
-        //        .FirstOrDefaultAsync(u => u.ID == userID);
+        // TODO: Beer has no Rating
+        public async Task<UserDTO> Rate(int userID, int beerID, int theRating)
+        {
+            var theUser = await this._context.Users
+                .Where(u => u.IsDeleted == false)
+                .FirstOrDefaultAsync(u => u.ID == userID);
 
-        //    var theBeer = await this._context.Beers
-        //        .Where(b => b.IsDeleted == false)
-        //        .FirstOrDefaultAsync(b => b.ID == beerID);
-            
-        //    create new user-beer-Rating. and add it to Ratings table Add(theNew Rating);
-        //   Recalculate beer's rating
-        //    theBeer.Rating = recaluclated one
-        //      saveChangesAsync()
-        //    return ;
-        //}
-            private bool UserExists(int id)
+            var theBeer = await this._context.Beers
+                .Where(b => b.IsDeleted == false)
+                .FirstOrDefaultAsync(b => b.ID == beerID);
+
+            var theNewRating = new BeerUserRating()
             {
-                return this._context.Users.Any(e => e.ID == id);
-            }
+                BeerID = theBeer.ID,
+                Beer = theBeer,
+                UserID = theUser.ID,
+                User = theUser,
+                Rating = theRating,
+            };
 
+            await this._context.BeerUserRatings.AddAsync(theNewRating);
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+            //Recalculate beer's rating
+            var recalculatedRating = await this._context.BeerUserRatings
+                .Where(r => r.BeerID == beerID)
+                .Select(r => r.Rating).AverageAsync();
+
+            theBeer.Rating =  recalculatedRating;
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            return theUser.MapUserToDTO();
         }
+        private bool UserExists(int id)
+        {
+            return this._context.Users.Any(e => e.ID == id);
+        }
+
     }
+}
 

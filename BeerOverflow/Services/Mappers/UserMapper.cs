@@ -22,8 +22,8 @@ namespace Services.Mappers
                     BeerID = dl.BeerID,
                     Beer = dl.Beer.MapBeerToDTO(),
                     UserID = dl.UserID,
-                    User = dl.User.MapUserToDTO(),
-                }).ToList() : null,
+                    User = dl.User.MapUserToDTO(),  //TODO: user name only, not object User
+                    }).ToList() : null,
 
                 WishLists = u.WishLists.Count > 0 ?
                     u.WishLists.Select(x => new WishListDTO()

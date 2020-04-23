@@ -24,11 +24,13 @@ namespace BeerOverflowAPI.ApiControllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        //TODO: return UserViewModel-s
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
             try
             {
                 var users = await this._service.GetAllUsers();
+                //TODO map to UserViewModel-s here, not in Service
                 return Ok(users);
             }
             catch (Exception)
@@ -68,10 +70,9 @@ namespace BeerOverflowAPI.ApiControllers
         }
 
         //TODO: enpoints routing
-        [HttpPut("user/{id}/Drink")]
-        public async Task<IActionResult> Drink(int id, [FromBody] BeerDTO beerDTO)
+        [HttpPut("user/{id}/Drinkbeer/{beerID}")]
+        public async Task<IActionResult> Drink(int id, int beerID) // was [FromBody] BeerDTO beerDTO)
         {
-            var beerID = beerDTO.ID;
             if (id <= 0 || beerID == default)
             {
                 return BadRequest();
@@ -88,7 +89,7 @@ namespace BeerOverflowAPI.ApiControllers
             }
         }
 
-        [HttpGet("user/{id}/Drank")]
+        [HttpGet("user/{id}/DrankList")]
         public async Task<ActionResult<IEnumerable<BeerDTO>>> GetDrankBeers(int id)
         {
             try
@@ -105,10 +106,10 @@ namespace BeerOverflowAPI.ApiControllers
 
 
         //TODO: enpoints routing
-        [HttpPut("user/{id}/Wish")]
-        public async Task<IActionResult> Wish(int id, [FromBody] BeerDTO beerDTO)
+        [HttpPut("user/{id}/Wish/{beerID}")]
+        public async Task<IActionResult> Wish(int id, int beerID) // was [FromBody] BeerDTO beerDTO)
         {
-            var beerID = beerDTO.ID;
+            //var beerID = beerDTO.ID;
             if (id <= 0 || beerID == default)
             {
                 return BadRequest();
@@ -125,7 +126,7 @@ namespace BeerOverflowAPI.ApiControllers
             }
         }
 
-        [HttpGet("user/{id}/Wish")]
+        [HttpGet("user/{id}/WishList")]
         public async Task<ActionResult<IEnumerable<BeerDTO>>> GetWishBeers(int id)
         {
             try
@@ -140,6 +141,26 @@ namespace BeerOverflowAPI.ApiControllers
         }
 
 
+        //TODO: enpoints routing
+        [HttpPut("user/{id}/Rate")]
+        public async Task<IActionResult> Rate(int id, [FromBody] BeerDTO beerDTO)
+        {
+            var beerID = beerDTO.ID;
+            if (id <= 0 || beerID == default)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var model = await this._service.Rate(id, beerDTO.ID, (int)beerDTO.Rating);
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
 
         [HttpPost]
         public async Task<ActionResult<UserDTO>> PostUser(UserDTO user)

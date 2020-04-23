@@ -28,6 +28,7 @@ namespace Services
                 Style = this._context.BeerStyles.FirstOrDefault(s => s.Name == model.Style.Name),
                 Brewery = this._context.Breweries.FirstOrDefault(b => b.Name == model.Brewery.Name),
                 CreatedOn = DateTime.UtcNow,
+                Rating = default,
             };
             #region Check if exists
             var theBeer = await this._context.Beers
