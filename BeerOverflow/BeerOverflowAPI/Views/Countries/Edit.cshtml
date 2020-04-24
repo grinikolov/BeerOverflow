@@ -1,4 +1,4 @@
-﻿@model BeerOverflow.Models.Country
+﻿@model BeerOverflowAPI.Models.CountryViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -13,10 +13,11 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
-            <input type="hidden" asp-for="CreatedOn" />
-            <input type="hidden" asp-for="ModifiedOn" />
-            <input type="hidden" asp-for="DeletedOn" />
-            <input type="hidden" asp-for="IsDeleted" />
+            <input type="hidden" asp-for="Breweries" />
+            @*<input type="hidden" asp-for="CreatedOn" />
+        <input type="hidden" asp-for="ModifiedOn" />
+        <input type="hidden" asp-for="DeletedOn" />
+        <input type="hidden" asp-for="IsDeleted" />*@
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
