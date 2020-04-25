@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BeerOverflow.Models.Country>
+﻿@model IEnumerable<BeerOverflowAPI.Models.CountryViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -51,14 +51,7 @@
         <td>
             <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
             <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-            @if (!item.IsDeleted)
-            {
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            }
-            else
-            {
-                <a asp-action="Recover" asp-route-id="@item.ID">Recover</a>
-            }
+            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
         </td>
         </tr>
 }

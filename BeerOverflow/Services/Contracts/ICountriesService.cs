@@ -12,8 +12,8 @@ namespace Services.Contracts
         Task<CountryDTO> CreateAsync(CountryDTO model);
         //bool Delete(int id);
         Task<bool> DeleteAsync(int id);
-        Task<CountryDTO> GetAsync(int id);
+        Task<CountryDTO> GetAsync(int? id);
         Task<IEnumerable<CountryDTO>> GetAll();
-        Task<CountryDTO> UpdateAsync(int id, CountryDTO model);
+        Task<CountryDTO> UpdateAsync(int? id, CountryDTO model);
     }
 }

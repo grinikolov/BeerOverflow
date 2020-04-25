@@ -7,6 +7,7 @@ using BeerOverflow.Models;
 using Database;
 using Services.DTOs;
 using Services.Contracts;
+using Services.Mappers;
 
 namespace Services
 {
@@ -22,78 +23,65 @@ namespace Services
 
         public async Task<IEnumerable<CountryDTO>> GetAll()
         {
-            var countries = await this._context.Countries.Select(c => 
-            new CountryDTO()
-            {
-                ID = c.ID,
-                Name = c.Name,
-                Breweries = c.Breweries.Select(b => new BreweryDTO()
-                {
-                    ID = b.ID,
-                    Name = b.Name,
-                    Country = b.Country.Name,
-                    Beers = b.Beers.Select(b => new BeerDTO()
-                    {
-                        ID = b.ID,
-                        Name = b.Name,
-                        ABV = b.ABV,
-                        Style = new BeerStyleDTO()
-                        {
-                            ID = b.Style.ID,
-                            Name = b.Style.Name,
-                            Description = b.Style.Description
-                        },
-                    }).ToList()
-                }).ToList(),
-            }).ToListAsync();
-            return countries;
+            var countries = await this._context.Countries.Include(c => c.Breweries).ToListAsync();
+            var countriesDTO = countries.Select(c => c.MapCountryToDTO());
+            //var countriesDTO = await this._context.Countries.Select(c => 
+            //new CountryDTO()
+            //{
+            //    ID = c.ID,
+            //    Name = c.Name,
+            //    Breweries = c.Breweries.Select(b => new BreweryDTO()
+            //    {
+            //        ID = b.ID,
+            //        Name = b.Name,
+            //        Country = b.Country.Name,
+            //        Beers = b.Beers.Select(b => new BeerDTO()
+            //        {
+            //            ID = b.ID,
+            //            Name = b.Name,
+            //            ABV = b.ABV,
+            //            Style = new BeerStyleDTO()
+            //            {
+            //                ID = b.Style.ID,
+            //                Name = b.Style.Name,
+            //                Description = b.Style.Description
+            //            },
+            //        }).ToList()
+            //    }).ToList(),
+            //}).ToListAsync();
+            return countriesDTO;
         }
 
 
-        public async Task<CountryDTO> GetAsync(int id)
+        public async Task<CountryDTO> GetAsync(int? id)
         {
-            var country = await this._context.Countries.FindAsync(id);
+            var country = await this._context.Countries.Include(c => c.Breweries).FirstOrDefaultAsync(c => c.ID == id);
 
             if (country == null)
             {
                 return null;
             }
-
+            var model = country.MapCountryToDTO();
             //TODO: convert Brewery to BreweryDTO
-            var model = new CountryDTO
-            {
-                ID = country.ID,
-                Name = country.Name,
-                Breweries = country.Breweries.Select(b => new BreweryDTO()
-                {
-                    ID = b.ID,
-                    Name = b.Name,
-                    Country = b.Country.Name,
-                    Beers = b.Beers.Select(b => new BeerDTO()
-                    {
-                        ID = b.ID,
-                        Name = b.Name,
-                        ABV = b.ABV,
-                        Style = new BeerStyleDTO()
-                        {
-                            ID = b.Style.ID,
-                            Name = b.Style.Name,
-                            Description = b.Style.Description
-                        },
-                    }).ToList()
-                }).ToList(),
-            };
+            //var model = new CountryDTO
+            //{
+            //    ID = country.ID,
+            //    Name = country.Name,
+            //    Breweries = country.Breweries.Select(b => b.MapBreweryToDTO()).ToList()
+            //};
 
             return model;
         }
 
         public async Task<CountryDTO> CreateAsync(CountryDTO model)
         {
-            var country = new Country
-            {
-                Name = model.Name,
-                CreatedOn = DateTime.UtcNow,
-            };
+            var country = model.MapDTOToCountry();
+            country.CreatedOn = DateTime.UtcNow;
+            //var country = new Country
+            //{
+            //    Name = model.Name,
+            //    CreatedOn = DateTime.UtcNow,
+            //};
 
             #region Check if exists
             var theCountry = await this._context.Countries
@@ -123,7 +111,7 @@ namespace Services
         /// <param name="id">ID of the Country to be updated.</param>
         /// <param name="model">Provide model's Name=newName.</param>
         /// <returns></returns>
-        public async Task<CountryDTO> UpdateAsync(int id, CountryDTO model)
+        public async Task<CountryDTO> UpdateAsync(int? id, CountryDTO model)
         {
 
             var country = await this._context.Countries.FindAsync(id);
@@ -177,8 +165,36 @@ namespace Services
             }
         }
 
+        public async Task<bool> RecoverAsync(int id)
+        {
+            try
+            {
+                var country = await this._context.Countries.Include(b => b.Breweries).FirstAsync(c => c.ID == id)
+                    ?? throw new ArgumentNullException("Country not found.");
+                country.IsDeleted = false;
+                country.ModifiedOn = DateTime.UtcNow;
+                country.DeletedOn = null;
+                // TODO: Delete 
 
-        private bool CountryExists(int id)
+                foreach (var brew in country.Breweries)
+                {
+                    var newBreweryService = new BreweryServices(this._context);
+                    await newBreweryService.Delete(brew.ID);
+                }
+
+                this._context.Update(country);
+
+                await this._context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
+        private bool CountryExists(int? id)
         {
             return this._context.Countries.Any(c => c.ID == id);
         }
