@@ -69,7 +69,10 @@ namespace Services
             //    Name = country.Name,
             //    Breweries = country.Breweries.Select(b => b.MapBreweryToDTO()).ToList()
             //};
+            if (model.Name == null)
+            {
 
+            }
             return model;
         }
 

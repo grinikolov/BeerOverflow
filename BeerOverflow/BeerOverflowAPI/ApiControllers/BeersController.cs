@@ -66,5 +66,13 @@ namespace BeerOverflowAPI.ApiControllers
         {
             return await _service.DeleteAsync(id);
         }
+
+        // GET: api/Beers/search?
+        [HttpGet("search/{name}")]
+        public async Task<IActionResult>Search(string name)
+        {
+            var beers = await _service.Search(name);
+            return Ok(beers);
+        }
     }
 }

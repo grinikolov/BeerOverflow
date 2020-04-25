@@ -3,6 +3,7 @@ using Database;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.DTOs;
+using Services.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +52,7 @@ namespace Services
             try
             {
                 var beer = await _context.Beers.FindAsync(id)
-                    ?? throw  new ArgumentNullException();
+                    ?? throw new ArgumentNullException();
                 beer.IsDeleted = true;
                 beer.DeletedOn = beer.ModifiedOn = DateTime.UtcNow;
                 _context.Beers.Update(beer);
@@ -65,6 +66,47 @@ namespace Services
             }
         }
 
+        //TODO: Not finished in the API controller
+        public async Task<IEnumerable<BeerDTO>> Filter(string filterName, string filterStyle, string filterCountry)
+        {
+            var beersQuery = this._context.Beers.Include(c => c.Country).Include(b => b.Reviews)
+                .Where(br => br.IsDeleted == false).AsQueryable();
+
+            if (filterName != null)
+            {
+                beersQuery = beersQuery.Where(b => b.Name.Contains(filterName));
+            }
+            if (filterCountry != null)
+            {
+                beersQuery = beersQuery.Where(b => b.Country.Name.Contains(filterCountry));
+            }
+            if (filterStyle != null)
+            {
+                beersQuery = beersQuery.Where(b => b.Style.Name.Contains(filterStyle));
+            }
+            var beersToReturn = await beersQuery.Select(b => new BeerDTO
+            {
+                ID = b.ID,
+                Name = b.Name,
+                Rating = b.Rating,
+                Country = new CountryDTO() { Name = b.Country.Name },
+                Style = new BeerStyleDTO() { Name = b.Style.Name, Description = b.Style.Description },
+                Brewery = new BreweryDTO() { Name = b.Brewery.Name, Country = b.Brewery.Country.Name },
+                Reviews = b.Reviews.Select(r => new ReviewDTO() { }).ToList()
+            }).ToListAsync();
+
+            return beersToReturn;
+        }
+        public async Task<IEnumerable<BeerDTO>> Search(string beerName) //, string country)
+        {
+            var beers = await this._context.Beers
+                .Where(b => b.Name.ToLower().Contains(beerName.ToLower())
+               //|| b.Country.Name.Contains(country))
+                ).ToListAsync();
+
+            var beersToReturn =  beers.Select(b => b.MapBeerToDTO()).ToList();
+            return beersToReturn;
+        }
         public async Task<IEnumerable<BeerDTO>> GetAllAsync()
         {
             var beers = await this._context.Beers.Include(c => c.Country).Include(b => b.Reviews)
@@ -108,7 +150,7 @@ namespace Services
 
         public async Task<BeerDTO> UpdateAsync(int id, BeerDTO beerDTO)
         {
-            var beer =await _context.Beers.Include(b => b.Brewery).FirstOrDefaultAsync(b => b.ID == id);
+            var beer = await _context.Beers.Include(b => b.Brewery).FirstOrDefaultAsync(b => b.ID == id);
             beer.Name = beerDTO.Name;
             beer.Country = _context.Countries.FirstOrDefault(c => c.Name == beerDTO.Country.Name);
             beer.Style = _context.BeerStyles.Find(beerDTO.Style.ID);
