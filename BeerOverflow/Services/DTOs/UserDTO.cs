@@ -6,9 +6,8 @@ namespace Services.DTOs
     {
         public int? ID { get; set; }
         public string Name { get; set; }
-
+        // TODO: Should not be exposed in Views
         public string Password { get; set; }
-        
         public ICollection<DrankListDTO> DrankLists { get; set; }
         public ICollection<WishListDTO> WishLists { get; set; }
         public ICollection<ReviewDTO> ReviewsList { get; set; }
