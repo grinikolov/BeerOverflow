@@ -20,18 +20,18 @@ namespace Services.Mappers
                     u.DrankLists.Select(dl => new DrankListDTO()
                     { 
                     BeerID = dl.BeerID,
-                    Beer = dl.Beer.MapBeerToDTO(),
+                    BeerName = dl.Beer.Name,
                     UserID = dl.UserID,
-                    User = dl.User.MapUserToDTO(),  //TODO: user name only, not object User
+                    UserName = dl.User.Name  //TODO: user name only, not object User
                     }).ToList() : null,
 
                 WishLists = u.WishLists.Count > 0 ?
                     u.WishLists.Select(x => new WishListDTO()
                     {
                         BeerID = x.BeerID,
-                        Beer = x.Beer.MapBeerToDTO(),
+                        BeerName = x.Beer.Name,
                         UserID = x.UserID,
-                        User = x.User.MapUserToDTO(),
+                        UserName = x.User.Name,
                     }).ToList() : null,
                 ReviewsList = u.ReviewList.Count > 0 ?
                     u.ReviewList.Select(r => r.MapReviewToDTO()

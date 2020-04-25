@@ -68,10 +68,10 @@ namespace BeerOverflowAPI.ApiControllers
         }
 
         // GET: api/Beers/search?
-        [HttpGet("search/{name}")]
-        public async Task<IActionResult>Search(string name)
+        [HttpGet("search/{name}")] //TODO: This routing is not valid!.
+        public async Task<IActionResult>Search(string name, string brewery, string country)
         {
-            var beers = await _service.Search(name);
+            var beers = await _service.Search(name,brewery, country);
             return Ok(beers);
         }
     }

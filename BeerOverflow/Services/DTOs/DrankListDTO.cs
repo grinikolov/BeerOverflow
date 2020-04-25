@@ -3,8 +3,8 @@
     public class DrankListDTO
     {
         public int UserID { get; set; }
-        public UserDTO User { get; set; }
+        public string UserName { get; set; }
         public int BeerID { get; set; }
-        public BeerDTO Beer { get; set; }
+        public string BeerName { get; set; }
     }
 }
