@@ -21,34 +21,14 @@ namespace Services
             this._context = context;
         }
 
+        /// <summary>
+        /// Get all countries on record
+        /// </summary>
+        /// <returns>Returns a modified list of countries on reord</returns>
         public async Task<IEnumerable<CountryDTO>> GetAll()
         {
             var countries = await this._context.Countries.Include(c => c.Breweries).ToListAsync();
             var countriesDTO = countries.Select(c => c.MapCountryToDTO());
-            //var countriesDTO = await this._context.Countries.Select(c => 
-            //new CountryDTO()
-            //{
-            //    ID = c.ID,
-            //    Name = c.Name,
-            //    Breweries = c.Breweries.Select(b => new BreweryDTO()
-            //    {
-            //        ID = b.ID,
-            //        Name = b.Name,
-            //        Country = b.Country.Name,
-            //        Beers = b.Beers.Select(b => new BeerDTO()
-            //        {
-            //            ID = b.ID,
-            //            Name = b.Name,
-            //            ABV = b.ABV,
-            //            Style = new BeerStyleDTO()
-            //            {
-            //                ID = b.Style.ID,
-            //                Name = b.Style.Name,
-            //                Description = b.Style.Description
-            //            },
-            //        }).ToList()
-            //    }).ToList(),
-            //}).ToListAsync();
             return countriesDTO;
         }
 

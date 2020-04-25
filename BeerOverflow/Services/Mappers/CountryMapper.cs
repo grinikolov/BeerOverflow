@@ -11,13 +11,22 @@ namespace Services.Mappers
     {
         public static CountryDTO MapCountryToDTO(this Country country)
         {
-            var countryDTO = new CountryDTO()
+            try
             {
-                ID = country.ID,
-                Name = country.Name,
-                Breweries = country.Breweries.Select(n => n.MapBreweryToDTO()).ToList()
-            };
-            return countryDTO;
+                var countryDTO = new CountryDTO()
+                {
+                    ID = country.ID,
+                    Name = country.Name,
+                    //TODO: Test with actual list of brewery
+                    Breweries = country.Breweries.Select(n => n.MapBreweryToDTO()).ToList()
+                };
+                return countryDTO;
+            }
+            catch (Exception)
+            {
+
+                return new CountryDTO();
+            }
         }
 
         public static Country MapDTOToCountry(this CountryDTO dto)
