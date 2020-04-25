@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeerOverflow.Models;
 using Database;
+using Services;
+using BeerOverflowAPI.ViewMappers;
+using BeerOverflowAPI.Models;
 
 namespace BeerOverflowAPI.Controllers
 {
@@ -22,8 +25,10 @@ namespace BeerOverflowAPI.Controllers
         // GET: Breweries
         public async Task<IActionResult> Index()
         {
-            var bOContext = _context.Breweries.Include(b => b.Country);
-            return View(await bOContext.ToListAsync());
+            var index = await new BreweryServices(this._context).GetAll();
+            //var bOContext = _context.Breweries.Include(b => b.Country);
+            //return View(await bOContext.ToListAsync());
+            return View(index.Select(b => b.MapBreweryDTOToView()));
         }
 
         // GET: Breweries/Details/5
@@ -33,16 +38,16 @@ namespace BeerOverflowAPI.Controllers
             {
                 return NotFound();
             }
-
-            var brewery = await _context.Breweries
-                .Include(b => b.Country)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var brewery = await new BreweryServices(this._context).GetBrewery(id);
+            //var brewery = await _context.Breweries
+            //    .Include(b => b.Country)
+            //    .FirstOrDefaultAsync(m => m.ID == id);
             if (brewery == null)
             {
                 return NotFound();
             }
 
-            return View(brewery);
+            return View(brewery.MapBreweryDTOToView());
         }
 
         // GET: Breweries/Create
@@ -57,15 +62,17 @@ namespace BeerOverflowAPI.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,CountryID,CreatedOn,ModifiedOn,DeletedOn,IsDeleted")] Brewery brewery)
+        public async Task<IActionResult> Create([Bind("ID,Name,CountryID"/*,CreatedOn,ModifiedOn,DeletedOn,IsDeleted"*/)] BreweryViewModel brewery)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(brewery);
-                await _context.SaveChangesAsync();
+                var newBrewery = await new BreweryServices(this._context).Create(brewery.MapBreweryViewToDTO());
+                //_context.Add(brewery);
+                //await _context.SaveChangesAsync();
+                brewery = newBrewery.MapBreweryDTOToView();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", brewery.CountryID);
+            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", brewery.Name);
             return View(brewery);
         }
 
@@ -152,7 +159,7 @@ namespace BeerOverflowAPI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BreweryExists(int id)
+        private bool BreweryExists(int? id)
         {
             return _context.Breweries.Any(e => e.ID == id);
         }

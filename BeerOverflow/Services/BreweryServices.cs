@@ -49,7 +49,7 @@ namespace Services
             return breweryDTO;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int? id)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace Services
             return breweries;
         }
 
-        public async Task<BreweryDTO> GetBrewery(int id)
+        public async Task<BreweryDTO> GetBrewery(int? id)
         {
             var brewery = await this._context.Breweries
                 .Include(b => b.Country).Include(b => b.Beers)

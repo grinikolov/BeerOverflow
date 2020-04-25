@@ -272,7 +272,7 @@ namespace Services
             {
                 await this._context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
