@@ -10,11 +10,9 @@ using Database;
 using Services;
 using Services.Mappers;
 using BeerOverflowAPI.Models;
-//using BeerOverflowAPI.ViewMappers;
 
 namespace BeerOverflowAPI.Controllers
 {
-    //[Route("Country")]
     public class CountriesController : Controller
     {
         private readonly BOContext _context;
@@ -27,7 +25,7 @@ namespace BeerOverflowAPI.Controllers
         // GET: Countries
         public async Task<IActionResult> Index()
         {
-            var index = await new CountriesService(this._context).GetAll();
+            var index = await new CountriesService(this._context).GetAllAsync();
             return View(index.Select(c => c.MapCountryDTOToView()));
         }
 
