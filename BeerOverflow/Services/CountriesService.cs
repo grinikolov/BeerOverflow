@@ -28,7 +28,7 @@ namespace Services
         public async Task<IEnumerable<CountryDTO>> GetAllAsync()
         {
             var countries = await this._context.Countries.Include(c => c.Breweries).ToListAsync();
-            var countriesDTO = countries.Select(c => c.MapCountryToDTO());
+            var countriesDTO = countries.Select(c => c.MapCountryToDTO()).ToList();
             if (countriesDTO.Any(c => c.Name == null))
             {
                 return null;
@@ -87,7 +87,7 @@ namespace Services
                 var breweriesOfCountry = await _context.Breweries.Where(b => b.CountryID == theCountry.ID).ToListAsync();
                 foreach (var item in breweriesOfCountry)
                 {
-                    await new BreweryServices(_context).Create(item.MapBreweryToDTO());
+                    await new BreweryServices(_context).CreateAsync(item.MapBreweryToDTO());
                 }
                 await this._context.SaveChangesAsync();
             }
@@ -101,7 +101,7 @@ namespace Services
         /// Updates the Country's Name
         /// </summary>
         /// <param name="id">ID of the Country to be updated.</param>
-        /// <param name="model">Provide model's Name=newName.</param>
+        /// <param name="model">Input object with update information.</param>
         /// <returns>Returns the reevaluated input object</returns>
         public async Task<CountryDTO> UpdateAsync(int? id, CountryDTO model)
         {
@@ -126,6 +126,7 @@ namespace Services
             }
             return model;
         }
+
         /// <summary>
         /// Deletes specified record of country
         /// </summary>
@@ -143,7 +144,7 @@ namespace Services
                 foreach (var brew in country.Breweries)
                 {
                     var newBreweryService = new BreweryServices(this._context);
-                    await newBreweryService.Delete(brew.ID);
+                    await newBreweryService.DeleteAsync(brew.ID);
                 }
 
                 this._context.Update(country);
@@ -171,7 +172,7 @@ namespace Services
                 foreach (var brew in country.Breweries)
                 {
                     var newBreweryService = new BreweryServices(this._context);
-                    await newBreweryService.Delete(brew.ID);
+                    await newBreweryService.DeleteAsync(brew.ID);
                 }
 
                 this._context.Update(country);
