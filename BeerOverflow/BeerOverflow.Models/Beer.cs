@@ -24,7 +24,6 @@ namespace BeerOverflow.Models
         public ICollection<DrankList> DrankLists { get; set; }
         public ICollection<WishList> WishLists { get; set; }
         public ICollection<Review> Reviews { get; set; }
-        //public ICollection<Comment> Comments { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ModifiedOn { get; set; }
         public DateTime? DeletedOn { get; set; }
