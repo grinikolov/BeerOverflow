@@ -14,6 +14,7 @@ namespace Services.Contracts
         Task<BeerDTO> GetBeerAsync(int id);
         Task<BeerDTO> UpdateAsync(int id, BeerDTO breweryDTO);
         Task<IEnumerable<BeerDTO>> Filter(string filteringName, string filteringStyle, string filteringCountry);
-        Task<IEnumerable<BeerDTO>> Search(string name, string breweryName, string countryName);
+        Task<IEnumerable<BeerDTO>> Search(string searchString);
+        Task<BeerDTO> GetRandom();
     }
 }
