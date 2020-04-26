@@ -33,12 +33,19 @@ namespace Services
 
             #region Check if exists
             var theBrewery = await this._context.Breweries
-                .Where(b => b.IsDeleted == false)
                 .FirstOrDefaultAsync(b => b.Name == breweryDTO.Name);
 
             if (theBrewery == null)
             {
                 await _context.Breweries.AddAsync(brewery);
+                await this._context.SaveChangesAsync();
+            }
+            else
+            {
+                theBrewery.IsDeleted = false;
+                theBrewery.DeletedOn = null;
+                theBrewery.ModifiedOn = DateTime.UtcNow;
+                _context.Breweries.Update(theBrewery);
                 await this._context.SaveChangesAsync();
             }
             #endregion
