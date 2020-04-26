@@ -66,5 +66,20 @@ namespace BeerOverflowAPI.ApiControllers
         {
             return await _service.DeleteAsync(id);
         }
+
+        // GET: api/Beers/search?
+        [HttpGet("search/{searchString}")]  //TODO: Routing: to search [FromQuery] 
+        public async Task<IActionResult>Search(string searchString) //name, string brewery, string country)
+        {
+            var beers = await _service.Search(searchString);
+            return Ok(beers);
+        }
+        // GET: api/Beers/RandomBeer
+        [HttpGet("RandomBeer")]
+        public async Task<IActionResult> GetRandom()
+        {
+            var beers = await _service.GetRandom();
+            return Ok(beers);
+        }
     }
 }
