@@ -13,13 +13,20 @@ namespace Services.Mappers
         {
             try
             {
+                //TODO: Test with actual list of brewery
                 var countryDTO = new CountryDTO()
                 {
                     ID = country.ID,
                     Name = country.Name,
-                    //TODO: Test with actual list of brewery
-                    Breweries = country.Breweries.Select(n => n.MapBreweryToDTO()).ToList()
                 };
+                if (country.Breweries != null)
+                {
+                    countryDTO.Breweries = country.Breweries.Select(n => n.MapBreweryToDTO()).ToList();
+                }
+                else
+                {
+                    countryDTO.Breweries = null;
+                }
                 return countryDTO;
             }
             catch (Exception)
@@ -31,13 +38,30 @@ namespace Services.Mappers
 
         public static Country MapDTOToCountry(this CountryDTO dto)
         {
-            var country = new Country()
+            try
             {
-                ID = dto.ID,
-                Name = dto.Name,
-                Breweries = dto.Breweries.Select(n => n.MapDTOToBrewery()).ToList()
-            };
-            return country;
+                var country = new Country()
+                {
+                    ID = dto.ID,
+                    Name = dto.Name,
+                    
+                };
+                if (dto.Breweries != null)
+                {
+                    country.Breweries = dto.Breweries.Select(n => n.MapDTOToBrewery()).ToList();
+                }
+                else
+                {
+                    country.Breweries = null;
+                }
+                return country;
+            }
+            catch (Exception)
+            {
+
+                return new Country();
+            }
+
         }
     }
 }
