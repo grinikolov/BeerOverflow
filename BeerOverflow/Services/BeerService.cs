@@ -3,6 +3,7 @@ using Database;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.DTOs;
+using Services.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,23 +22,45 @@ namespace Services
         }
         public async Task<BeerDTO> CreateAsync(BeerDTO model)
         {
-            var beer = new Beer
+            var beer = model.MapDTOToBeer();
+            if (beer.Name == null)
             {
-                Name = model.Name,
-                Country = this._context.Countries.FirstOrDefault(c => c.Name == model.Country.Name),
-                Style = this._context.BeerStyles.FirstOrDefault(s => s.Name == model.Style.Name),
-                Brewery = this._context.Breweries.FirstOrDefault(b => b.Name == model.Brewery.Name),
-                CreatedOn = DateTime.UtcNow,
-                Rating = default,
-            };
+                return null;
+            }
+            //var beer = new Beer
+            //{
+            //    Name = model.Name,
+            //    Country = this._context.Countries.FirstOrDefault(c => c.Name == model.Country.Name),
+            //    Style = this._context.BeerStyles.FirstOrDefault(s => s.Name == model.Style.Name),
+            //    Brewery = this._context.Breweries.FirstOrDefault(b => b.Name == model.Brewery.Name),
+            //    CreatedOn = DateTime.UtcNow,
+            //    Rating = default,
+            //};
             #region Check if exists
             var theBeer = await this._context.Beers
-                .Where(c => c.IsDeleted == false)
                 .FirstOrDefaultAsync(c => c.Name == model.Name);
 
             if (theBeer == null)
             {
+                theBeer.CreatedOn = DateTime.UtcNow;
                 await this._context.Beers.AddAsync(beer);
+                await this._context.SaveChangesAsync();
+            }
+            else
+            {
+                theBeer.IsDeleted = false;
+                theBeer.DeletedOn = null;
+                theBeer.ModifiedOn = DateTime.UtcNow;
+                _context.Beers.Update(theBeer);
+                var reviewsOfBrewery = await _context.Reviews
+                    .Include(r => r.Beer)
+                    .Include(r => r.User)
+                    .Include(r =>r.Comments)
+                    .Where(r => r.BeerID == theBeer.ID).ToListAsync();
+                foreach (var item in reviewsOfBrewery)
+                {
+                    await new ReviewsService(_context).CreateReview(item.MapReviewToDTO());
+                }
                 await this._context.SaveChangesAsync();
             }
             #endregion

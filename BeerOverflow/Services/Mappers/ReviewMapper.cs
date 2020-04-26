@@ -29,23 +29,23 @@ namespace Services.Mappers
             return model;
         }
 
-        //public static Review MapToReview(ReviewDTO model)
-        //{
-        //    var review = new Review
-        //    {
-        //        //ID = model.ID,
-        //        BeerID = theBeer.ID,
-        //        Beer = theBeer,
-        //        UserID = model.UserID,
-        //        User = theUser,
-        //        Rating = model.Rating,
-        //        Description = model.Description,
-        //        LikesCount = model.LikesCount,
-        //        Comments = new List<Comment>(),
-        //        IsDeleted = model.IsDeleted,
-        //        IsFlagged = model.IsFlagged,
-        //    };
-        //    return review;
-        //}
+        public static Review MapDTOToReview(this ReviewDTO model)
+        {
+            var review = new Review()
+            {
+                ////ID = model.ID,
+                //BeerID = model.ID,
+                //Beer = model.Beer,
+                //UserID = model.UserID,
+                //User = model.User,
+                //Rating = model.Rating,
+                //Description = model.Description,
+                //LikesCount = model.LikesCount,
+                //Comments = new List<Comment>(),
+                //IsDeleted = model.IsDeleted,
+                //IsFlagged = model.IsFlagged,
+            };
+            return review;
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace Services.Mappers
                 }
                 else
                 {
-                    breweryDTO.Beers = new List<BeerDTO>();
+                    breweryDTO.Beers = null;
                 }
                 return breweryDTO;
             }
@@ -39,14 +39,30 @@ namespace Services.Mappers
 
         public static Brewery MapDTOToBrewery(this BreweryDTO dto)
         {
-            var brewery = new Brewery()
+            try
             {
-                ID = dto.ID,
-                Name = dto.Name,
-                //Country = 
-                Beers = dto.Beers.Select(b => b.MapDTOToBeer()).ToList()
-            };
-            return brewery;
+                var brewery = new Brewery()
+                {
+                    ID = dto.ID,
+                    Name = dto.Name,
+                    Country = new Country() { Name = dto.Country},
+                };
+                if (dto.Beers != null)
+                {
+                    brewery.Beers = dto.Beers.Select(b => b.MapDTOToBeer()).ToList();
+                }
+                else
+                {
+                    brewery.Beers = null;
+                }
+                return brewery;
+            }
+            catch (Exception)
+            {
+
+                return new Brewery();
+            }
+
         }
     }
 }
