@@ -11,25 +11,30 @@ namespace Services.Mappers
     {
         public static BreweryDTO MapBreweryToDTO(this Brewery brewery)
         {
-            var breweryDTO = new BreweryDTO()
+            try
             {
-                ID = brewery.ID,
-                Name = brewery.Name,
-                Country = brewery.Country.Name,
-                Beers = brewery.Beers.Select(b => b.MapBeerToDTO()).ToList()// new BeerDTO()
-                //{
-                //    ID = b.ID,
-                //    Name = b.Name,
-                //    ABV = b.ABV,
-                //    Style = new BeerStyleDTO()
-                //    {
-                //        ID = b.Style.ID,
-                //        Name = b.Style.Name,
-                //        Description = b.Style.Description
-                //    },
-                //}).ToList()
-            };
-            return breweryDTO;
+                var breweryDTO = new BreweryDTO()
+                {
+                    ID = brewery.ID,
+                    Name = brewery.Name,
+                    Country = brewery.Country.Name,
+                };
+                if (brewery.Beers != null)
+                {
+                    breweryDTO.Beers = brewery.Beers.Select(b => b.MapBeerToDTO()).ToList();
+                }
+                else
+                {
+                    breweryDTO.Beers = new List<BeerDTO>();
+                }
+                return breweryDTO;
+            }
+            catch (Exception)
+            {
+
+                return new BreweryDTO();
+            }
+            
         }
 
         public static Brewery MapDTOToBrewery(this BreweryDTO dto)

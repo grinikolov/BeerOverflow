@@ -8,12 +8,10 @@ namespace Services.Contracts
 {
     public interface ICountriesService
     {
-        //CountryDTO Create(CountryDTO model);
         Task<CountryDTO> CreateAsync(CountryDTO model);
-        //bool Delete(int id);
         Task<bool> DeleteAsync(int id);
         Task<CountryDTO> GetAsync(int? id);
-        Task<IEnumerable<CountryDTO>> GetAll();
+        Task<IEnumerable<CountryDTO>> GetAllAsync();
         Task<CountryDTO> UpdateAsync(int? id, CountryDTO model);
     }
 }

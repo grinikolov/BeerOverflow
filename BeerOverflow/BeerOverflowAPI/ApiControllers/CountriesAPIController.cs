@@ -21,7 +21,7 @@ namespace BeerOverflowAPI.ApiControllers
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
-            var countries = await this._service.GetAll();
+            var countries = await this._service.GetAllAsync();
 
             return Ok(countries);
         }
