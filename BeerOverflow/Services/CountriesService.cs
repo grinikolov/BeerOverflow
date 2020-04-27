@@ -92,8 +92,9 @@ namespace Services
                 await this._context.SaveChangesAsync();
             }
             #endregion
-            model.ID = this._context.Countries
-                .FirstOrDefault(c => c.Name == model.Name).ID;
+            var returnModel = await this._context.Countries
+                .FirstOrDefaultAsync(c => c.Name == model.Name);
+            model.ID = returnModel.ID;
             return model;
         }
 

@@ -90,7 +90,9 @@ namespace Services
                     .Include(b => b.Brewery)
                     .Include(b => b.Style)
                     .Include(b => b.Reviews)
-                    .Where(b => b.BreweryID == theBrewery.ID).ToListAsync();
+                    .Where(b => b.BreweryID == theBrewery.ID)
+                    .Where(b => b.Style.IsDeleted == false)
+                    .ToListAsync();
                 foreach (var item in beersOfBrewery)
                 {
                     await new BeerService(_context).CreateAsync(item.MapBeerToDTO());
@@ -98,8 +100,9 @@ namespace Services
                 await this._context.SaveChangesAsync();
             }
             #endregion
-            model.ID = this._context.Breweries
-                .FirstOrDefault(b => b.Name == model.Name).ID;
+            var returnModel = await this._context.Breweries
+                .FirstOrDefaultAsync(b => b.Name == model.Name);
+            model.ID = returnModel.ID;
             return model;
         }
 
