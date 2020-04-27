@@ -44,7 +44,7 @@ namespace BeerOverflowAPI.ApiControllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, CountryDTO model)
+        public async Task<IActionResult> PutAsync(int id, CountryDTO model)
         {
             if (id <= 0 || model == null)
             {
