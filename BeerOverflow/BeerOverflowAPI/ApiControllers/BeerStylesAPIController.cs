@@ -10,17 +10,17 @@ namespace BeerOverflowAPI.ApiControllers
     //[Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
-    public class BeerStylesController : ControllerBase
+    public class BeerStylesAPIController : ControllerBase
     {
         private readonly IBeerStylesService _service;
-        public BeerStylesController(IBeerStylesService service)
+        public BeerStylesAPIController(IBeerStylesService service)
         {
             this._service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         // GET: api/BeerStyles
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAsync()
         {
             var styles = await this._service.GetAllAsync();
 
@@ -29,7 +29,7 @@ namespace BeerOverflowAPI.ApiControllers
 
         // GET: api/BeerStyles/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetAsync(int id)
         {
             var model = await this._service.GetAsync(id);
 
@@ -41,9 +41,26 @@ namespace BeerOverflowAPI.ApiControllers
             return Ok(model);
         }
 
+        // PUT: api/BeerStyles/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAsync(int id, BeerStyleDTO model)
+        {
+            if (id <= 0 || model == null)
+            {
+                return BadRequest();
+            }
+
+            var returnModel = await this._service.UpdateAsync(id, model);
+            if (returnModel == null)
+            {
+                return NotFound();
+            }
+            return Ok(returnModel);
+        }
+
         // POST: api/BeerStyles
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] BeerStyleDTO model)
+        public async Task<IActionResult> PostAsync([FromBody] BeerStyleDTO model)
         {
             if (model == null)
             {
@@ -57,23 +74,6 @@ namespace BeerOverflowAPI.ApiControllers
             }
             return Created("Post", theNewStyle);
 
-        }
-
-        // PUT: api/BeerStyles/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, BeerStyleDTO model)
-        {
-            if (id <= 0 || model == null)
-            {
-                return BadRequest();
-            }
-
-            var returnModel = await this._service.UpdateAsync(id, model);
-            if (returnModel == null)
-            {
-                return NotFound();
-            }
-            return Ok(returnModel);
         }
 
 

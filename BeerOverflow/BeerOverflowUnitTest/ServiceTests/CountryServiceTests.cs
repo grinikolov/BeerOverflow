@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BeerOverflowUnitTest
+namespace BeerOverflowUnitTest.ServiceTests
 {
     [TestClass]
     public class CountryServiceTests
@@ -60,10 +60,10 @@ namespace BeerOverflowUnitTest
         }
 
         [TestMethod]
-        public async Task GetAllAsync_ShouldReturnNullIfModelConversionFailsAsync()
+        public async Task GetAllAsync_ShouldReturnNullIfModelHasNoNameFailsAsync()
         {
             //Arrange
-            var options = InMemory.GetOptions("GetAllAsync_ShouldReturnNullIfModelConversionFailsAsync");
+            var options = InMemory.GetOptions("GetAllAsync_ShouldReturnNullIfModelHasNoNameFailsAsync");
             using (var context = new BOContext(options))
             {
                 var country = new Country();
@@ -360,6 +360,25 @@ namespace BeerOverflowUnitTest
                 //Act
                 var sut = new CountriesService(context);
                 var result = await sut.UpdateAsync(null, countryDTO);
+                //Assert
+                Assert.AreEqual(result, null);
+            }
+        }
+
+        [TestMethod]
+        public async Task UpdateAsync_ShouldReturnNullIfDTONullAsync()
+        {
+            //Arrange
+            var options = InMemory.GetOptions("UpdateAsync_ShouldReturnNullIfDTONullAsync");
+            using (var context = new BOContext(options))
+            {
+            }
+
+            using (var context = new BOContext(options))
+            {
+                //Act
+                var sut = new CountriesService(context);
+                var result = await sut.UpdateAsync(1, null);
                 //Assert
                 Assert.AreEqual(result, null);
             }

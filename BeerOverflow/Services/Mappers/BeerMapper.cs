@@ -11,36 +11,64 @@ namespace Services.Mappers
     {
         public static BeerDTO MapBeerToDTO(this Beer beer)
         {
-            var beerDTO = new BeerDTO
+            try
             {
-                ID = beer.ID,
-                Name = beer.Name,
-                //TODO: The beer's Country should not be null: .Include it
-                Country = new CountryDTO() { Name = beer.Country.Name },
-                Style = new BeerStyleDTO() { Name = beer.Style.Name, Description = beer.Style.Description },
-                Brewery = new BreweryDTO() { Name = beer.Brewery.Name, Country = beer.Brewery.Country.Name },
-                Reviews = beer.Reviews.Select(r => r.MapReviewToDTO())
-                .ToList()
-            };
-
+                var beerDTO = new BeerDTO
+                {
+                    ID = beer.ID,
+                    Name = beer.Name,
+                    Rating = beer.Rating,
+                    ABV = beer.ABV,
+                    Country = new CountryDTO() { Name = beer.Country.Name },
+                    Style = new BeerStyleDTO() { Name = beer.Style.Name, Description = beer.Style.Description },
+                    Brewery = new BreweryDTO() { Name = beer.Brewery.Name, Country = beer.Brewery.Country.Name },  
+                };
+                if (beer.Reviews != null)
+                {
+                    beerDTO.Reviews = beer.Reviews.Select(r => r.MapReviewToDTO()).ToList();
+                }
+                else
+                {
+                    beerDTO.Reviews = null;
+                }
                 return beerDTO;
+            }
+            catch (Exception)
+            {
+                return new BeerDTO();
+            }
+
         }
 
         public static Beer MapDTOToBeer(this BeerDTO dto)
         {
-            var beer = new Beer
+            try
             {
-                ID = dto.ID,
-                Name = dto.Name,
-                //TODO: The beer's Country should not be null: .Include it
-                //Country = new CountryDTO() { Name = beer.Country.Name },
-                //Style = new BeerStyleDTO() { Name = beer.Style.Name, Description = beer.Style.Description },
-                //Brewery = new BreweryDTO() { Name = beer.Brewery.Name, Country = beer.Brewery.Country.Name },
-                //Reviews = beer.Reviews.Select(r => r.MapReviewToDTO())
-                //.ToList()
-            };
-
-            return beer;
+                var beer = new Beer()
+                {
+                    ID = dto.ID,
+                    Name = dto.Name,
+                    Rating = dto.Rating,
+                    ABV = dto.ABV,
+                    Country = new Country() { Name = dto.Country.Name },
+                    Style = new BeerStyle() { Name = dto.Style.Name, Description = dto.Style.Description },
+                    Brewery = new Brewery() { Name = dto.Brewery.Name, Country = new Country() { Name = dto.Brewery.Country } },
+                    Reviews = dto.Reviews.Select(r => r.MapDTOToReview()).ToList()
+                };
+                if (dto.Reviews != null)
+                {
+                    beer.Reviews = dto.Reviews.Select(r => r.MapDTOToReview()).ToList();
+                }
+                else
+                {
+                    beer.Reviews = null;
+                }
+                return beer;
+            }
+            catch (Exception)
+            {
+                return new Beer();
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ namespace BeerOverflowAPI.Controllers
         // GET: Breweries
         public async Task<IActionResult> Index()
         {
-            var index = await new BreweryServices(this._context).GetAll();
+            var index = await new BreweryServices(this._context).GetAllAsync();
             //var bOContext = _context.Breweries.Include(b => b.Country);
             //return View(await bOContext.ToListAsync());
             return View(index.Select(b => b.MapBreweryDTOToView()));
@@ -38,7 +38,7 @@ namespace BeerOverflowAPI.Controllers
             {
                 return NotFound();
             }
-            var brewery = await new BreweryServices(this._context).GetBrewery(id);
+            var brewery = await new BreweryServices(this._context).GetAsync(id);
             //var brewery = await _context.Breweries
             //    .Include(b => b.Country)
             //    .FirstOrDefaultAsync(m => m.ID == id);
@@ -66,7 +66,7 @@ namespace BeerOverflowAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newBrewery = await new BreweryServices(this._context).Create(brewery.MapBreweryViewToDTO());
+                var newBrewery = await new BreweryServices(this._context).CreateAsync(brewery.MapBreweryViewToDTO());
                 //_context.Add(brewery);
                 //await _context.SaveChangesAsync();
                 brewery = newBrewery.MapBreweryDTOToView();

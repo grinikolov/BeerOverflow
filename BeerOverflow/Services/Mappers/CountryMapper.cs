@@ -13,7 +13,6 @@ namespace Services.Mappers
         {
             try
             {
-                //TODO: Test with actual list of brewery
                 var countryDTO = new CountryDTO()
                 {
                     ID = country.ID,

@@ -17,14 +17,14 @@ namespace BeerOverflowAPI.ApiControllers
 
         public BreweryAPIController(IBreweryService service)
         {
-            this._service = service;
+            this._service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         // GET: api/Brewery
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var breweries =  await this._service.GetAll();
+            var breweries =  await this._service.GetAllAsync();
             return Ok(breweries);
         }
 
@@ -32,54 +32,57 @@ namespace BeerOverflowAPI.ApiControllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var brewery = await this._service.GetBrewery(id);
-                return Ok(brewery);
-            }
-            catch (Exception)
+            var model = await this._service.GetAsync(id);
+
+            if (model == null)
             {
                 return NotFound();
             }
-        }
-
-        // POST: api/Brewery
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] BreweryDTO brewery)
-        {
-            if (brewery == null)
-            {
-                return  BadRequest();
-            }
-
-            var theNewBrewery = await this._service.Create(brewery);
-            if (theNewBrewery.ID == default)
-            {
-                return BadRequest();
-            }
-            return Created("Post", theNewBrewery);
-
-        }
-
-
-        // PUT: api/Brewery/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] BreweryDTO brewery)
-        {
-            if (id == 0 || brewery == null)
-            {
-                return BadRequest();
-            }
-
-            var model = await this._service.Update(id, brewery);
 
             return Ok(model);
         }
 
+        // PUT: api/Brewery/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] BreweryDTO model)
+        {
+            if (id <= 0 || model == null)
+            {
+                return BadRequest();
+            }
+
+            var returnModel = await this._service.UpdateAsync(id, model);
+            if (returnModel == null)
+            {
+                return NotFound();
+            }
+            return Ok(returnModel);
+        }
+
+        // POST: api/Brewery
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] BreweryDTO model)
+        {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            var theNewBrewery = await this._service.CreateAsync(model);
+            if (theNewBrewery.ID == default)
+            {
+                return BadRequest();
+            }
+
+            return Created("Post", theNewBrewery);
+
+        }
         [HttpDelete("{id}")]
         public async Task<bool> Delete(int id)
         {
-            return await this._service.Delete(id);
+            return await this._service.DeleteAsync(id);
         }
+
+
     }
 }
