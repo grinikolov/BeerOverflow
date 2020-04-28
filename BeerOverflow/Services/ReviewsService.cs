@@ -2,6 +2,7 @@
 using Database;
 using Microsoft.EntityFrameworkCore;
 using Services.DTOs;
+using Services.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Services
         public async Task<IEnumerable<ReviewDTO>> GetAllReviews()
         {
             var reviews = await this._context.Reviews
-                .Select(r => MapToDTO(r))
+                .Select(r => r.MapReviewToDTO())
                 .ToListAsync();
 
             return reviews;
@@ -34,15 +35,15 @@ namespace Services
             {
                 var review = await this._context.Reviews
                     .Where(r => r.IsDeleted == false)
-                    .FirstOrDefaultAsync(r=> r.ID == id) ?? throw new ArgumentNullException(); ;
+                    .FirstOrDefaultAsync(r => r.ID == id) ?? throw new ArgumentNullException(); ;
 
-                var model = MapToDTO(review);
+                var model = review.MapReviewToDTO();
 
                 return model;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                return null;
             }
         }
 
@@ -100,7 +101,7 @@ namespace Services
                 this._context.Reviews.Add(review);
                 await this._context.SaveChangesAsync();
 
-                modelToReturn = MapToDTO(review);
+                modelToReturn = review.MapReviewToDTO();
             }
             catch (Exception)
             {
@@ -131,41 +132,39 @@ namespace Services
         {
             return this._context.Reviews.Any(e => e.ID == id);
         }
-        private ReviewDTO MapToDTO(Review review)
-        {
-            var model = new ReviewDTO
-            {
-                ID = review.ID,
-                BeerID = review.BeerID,
-                Beer = new BeerDTO { ID = review.Beer.ID },
-                UserID = review.UserID,
-                User = new UserDTO { ID = review.User.ID },
-                Rating = review.Rating,
-                Description = review.Description,
-                LikesCount = review.LikesCount,
-                //Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
-                IsFlagged = review.IsFlagged,
-            };
-            return model;
 
-        }
-
-        private CommentDTO MapCommentToDTO(Comment c)
-        {
-            var comment = new CommentDTO()
-            {
-                ID = c.ID,
-                BeerID = c.BeerID,
-                UserID = c.UserID,
-                Description = c.Description,
-                LikesCount = c.LikesCount,
-            };
-            return comment;
-        }
+        //private ReviewDTO MapToDTO(Review review)
+        //{
+        //    var model = new ReviewDTO
+        //    {
+        //        ID = review.ID,
+        //        BeerID = review.BeerID,
+        //        Beer = new BeerDTO { ID = review.Beer.ID },
+        //        UserID = review.UserID,
+        //        User = new UserDTO { ID = review.User.ID },
+        //        Rating = review.Rating,
+        //        Description = review.Description,
+        //        LikesCount = review.LikesCount,
+        //        //Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
+        //        IsFlagged = review.IsFlagged,
+        //    };
+        //    return model;
 
 
-
+        //private CommentDTO MapCommentToDTO(Comment c)
+        //{
+        //    var comment = new CommentDTO()
+        //    {
+        //        ID = c.ID,
+        //        BeerID = c.BeerID,
+        //        UserID = c.UserID,
+        //        Description = c.Description,
+        //        LikesCount = c.LikesCount,
+        //    };
+        //    return comment;
+        //}
 
 
     }
 }
+
