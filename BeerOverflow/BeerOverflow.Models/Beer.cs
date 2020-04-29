@@ -11,7 +11,7 @@ namespace BeerOverflow.Models
             
         }
 
-        public int ID { get; set; }
+        public int? ID { get; set; }
         public string Name { get; set; }
         public float ABV { get; set; }
         public BeerStyle Style { get; set; }

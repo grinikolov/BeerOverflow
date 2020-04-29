@@ -32,7 +32,7 @@ namespace BeerOverflowAPI.ApiControllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var beers = await _service.GetBeerAsync(id);
+            var beers = await _service.GetAsync(id);
             return Ok(beers);
         }
 
