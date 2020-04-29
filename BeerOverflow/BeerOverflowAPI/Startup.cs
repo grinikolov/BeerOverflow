@@ -13,6 +13,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Services;
 using Services.Contracts;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace BeerOverflowAPI
 {
@@ -48,6 +49,12 @@ namespace BeerOverflowAPI
             services.AddScoped<IBeerService, BeerService>();
             services.AddDbContext<BOContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")).UseLoggerFactory(MyLoggerFactory));
+
+
+            services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,7 +71,8 @@ namespace BeerOverflowAPI
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
