@@ -248,7 +248,7 @@ namespace Services
         #endregion
 
         // TODO: Beer has no Rating
-        public async Task<UserDTO> Rate(int userID, int beerID, int theRating)
+        public async Task<UserDTO> Rate(int userID, int? beerID, int theRating)
         {
             var theUser = await this._context.Users
                 .Where(u => u.IsDeleted == false)

@@ -139,7 +139,7 @@ namespace Services
         /// </summary>
         /// <param name="id">Id of record</param>
         /// <returns>Bool</returns>
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int? id)
         {
             try
             {

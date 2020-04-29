@@ -8,7 +8,7 @@ namespace Services.DTOs
     {
 
         public int ID { get; set; }
-        public int BeerID { get; set; }
+        public int? BeerID { get; set; }
         public BeerDTO Beer { get; set; }
         public int UserID { get; set; }
         public UserDTO User { get; set; }
