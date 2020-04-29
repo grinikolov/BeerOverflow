@@ -20,6 +20,63 @@ namespace Services
         {
             this._context = context;
         }
+
+        /// <summary>
+        /// Get all beers on record
+        /// </summary>
+        /// <returns>Returns a modified list of beers on record</returns>
+        public async Task<IEnumerable<BeerDTO>> GetAllAsync()
+        {
+            var beers = await this._context.Beers
+                .Include(b => b.Country)
+                .Include(b => b.Reviews)
+                    .ThenInclude(r => r.User)
+                .Include(b => b.Style)
+                .Include(b => b.Brewery)
+                    .ThenInclude(brew => brew.Country)
+                .ToListAsync();
+            var beersDTO = beers.Select(b => b.MapBeerToDTO()).ToList();
+            if (beersDTO.Any(c => c.Name == null))
+            {
+                return null;
+            }
+            return beersDTO;
+        }
+
+        /// <summary>
+        /// Gets a beer by ID
+        /// </summary>
+        /// <param name="id">Id of beer</param>
+        /// <returns>Returns a modified specific beer on record</returns>
+        public async Task<BeerDTO> GetAsync(int? id)
+        {
+            var beer = await this._context.Beers
+                .Include(b => b.Country)
+                .Include(b => b.Reviews)
+                    .ThenInclude(r => r.User)
+                .Include(b => b.Style)
+                .Include(b => b.Brewery)
+                    .ThenInclude(brew => brew.Country)
+                .FirstOrDefaultAsync(br => br.ID == id);
+
+            if (beer == null)
+            {
+                return null;
+            }
+
+            var model = beer.MapBeerToDTO();
+            if (model.Name == null)
+            {
+                return null;
+            }
+            return model;
+        }
+
+        /// <summary>
+        /// Creates a beer and writes it to the database.
+        /// </summary>
+        /// <param name="model">Input BeerDTO object</param>
+        /// <returns>Returns the reevaluated input object</returns>
         public async Task<BeerDTO> CreateAsync(BeerDTO model)
         {
             var beer = model.MapDTOToBeer();
@@ -27,18 +84,9 @@ namespace Services
             {
                 return null;
             }
-            //var beer = new Beer
-            //{
-            //    Name = model.Name,
-            //    Country = this._context.Countries.FirstOrDefault(c => c.Name == model.Country.Name),
-            //    Style = this._context.BeerStyles.FirstOrDefault(s => s.Name == model.Style.Name),
-            //    Brewery = this._context.Breweries.FirstOrDefault(b => b.Name == model.Brewery.Name),
-            //    CreatedOn = DateTime.UtcNow,
-            //    Rating = default,
-            //};
             #region Check if exists
             var theBeer = await this._context.Beers
-                .FirstOrDefaultAsync(c => c.Name == model.Name);
+                .FirstOrDefaultAsync(b => b.Name == model.Name);
 
             if (theBeer == null)
             {
@@ -52,31 +100,105 @@ namespace Services
                 theBeer.DeletedOn = null;
                 theBeer.ModifiedOn = DateTime.UtcNow;
                 _context.Beers.Update(theBeer);
-                var reviewsOfBrewery = await _context.Reviews
+                var reviewsOfBeer = await _context.Reviews
                     .Include(r => r.Beer)
                     .Include(r => r.User)
                     .Include(r =>r.Comments)
                     .Where(r => r.BeerID == theBeer.ID).ToListAsync();
-                foreach (var item in reviewsOfBrewery)
+                foreach (var item in reviewsOfBeer)
                 {
                     await new ReviewsService(_context).CreateReview(item.MapReviewToDTO());
+                }
+                var wishListOfBeer = await _context.WishLists
+                                                .Where(w => w.BeerID == theBeer.ID)
+                                                .ToListAsync();
+                foreach (var item in wishListOfBeer)
+                {
+                    _context.WishLists.Remove(item);
+                }
+                var drinkListOfBeer = await _context.DrankLists
+                                                .Where(d => d.BeerID == theBeer.ID)
+                                                .ToListAsync();
+                foreach (var item in drinkListOfBeer)
+                {
+                    _context.DrankLists.Remove(item);
                 }
                 await this._context.SaveChangesAsync();
             }
             #endregion
-            model.ID = this._context.Beers
-                .FirstOrDefault(c => c.Name == model.Name).ID;
+            var returnModel = await this._context.Beers
+                .FirstOrDefaultAsync(c => c.Name == model.Name);
+            model.ID = returnModel.ID;
+            return model;
+        }
+        /// <summary>
+        /// Updates the Beer's Name, Style, Brewery and Country
+        /// </summary>
+        /// <param name="id">ID of the Beer to be updated.</param>
+        /// <param name="model">Input object with update information.</param>
+        /// <returns>Returns the reevaluated input object</returns>
+        public async Task<BeerDTO> UpdateAsync(int? id, BeerDTO model)
+        {
+            var beer = await this._context.Beers
+               .Include(b => b.Country)
+               .Include(b => b.Style)
+               .Include(b => b.Brewery)
+               .FirstOrDefaultAsync(br => br.ID == id);
+            beer.Name = model.Name;
+            beer.Country = _context.Countries.FirstOrDefault(c => c.Name == model.Country.Name);
+            beer.Style = _context.BeerStyles.Find(model.Style.ID);
+            beer.Brewery = _context.Breweries.Find(model.Brewery.ID);
+            beer.ModifiedOn = DateTime.UtcNow;
+            model.ID = beer.ID;
+            _context.Beers.Update(beer);
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BeerExists(id))
+                {
+                    return null;
+                }
+            }
             return model;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        /// <summary>
+        /// Deletes specified record of beer
+        /// </summary>
+        /// <param name="id">Id of record</param>
+        /// <returns>Bool</returns>
+        public async Task<bool> DeleteAsync(int? id)
         {
             try
             {
-                var beer = await _context.Beers.FindAsync(id)
+                var beer = await this._context.Beers
+                .Include(b => b.Country)
+                .Include(b => b.Reviews)
+                    .ThenInclude(r => r.User)
+                .Include(b => b.Style)
+                .Include(b => b.Brewery)
+                    .ThenInclude(brew => brew.Country)
+                .Include(b => b.DrankLists)
+                .Include(b => b.WishLists)
+                .FirstOrDefaultAsync(b => b.ID == id)
                     ?? throw new ArgumentNullException();
                 beer.IsDeleted = true;
                 beer.DeletedOn = beer.ModifiedOn = DateTime.UtcNow;
+                foreach (var item in beer.Reviews)
+                {
+                    await new ReviewsService(_context).DeleteReview(item.ID);
+                }
+                foreach (var item in beer.WishLists)
+                {
+                    _context.WishLists.Remove(item);
+                }
+                foreach (var item in beer.DrankLists)
+                {
+                    _context.DrankLists.Remove(item);
+                }
                 _context.Beers.Update(beer);
                 _context.SaveChanges();
 
@@ -88,6 +210,13 @@ namespace Services
             }
         }
 
+
+        private bool BeerExists(int? id)
+        {
+            return this._context.Beers.Any(c => c.ID == id);
+        }
+
+        //TODO: Not tested
         //TODO: Not finished in the API controller
         public async Task<IEnumerable<BeerDTO>> Filter(string filterName, string filterStyle, string filterCountry)
         {
@@ -129,74 +258,8 @@ namespace Services
             var beersToReturn = beers.Select(b => b.MapBeerToDTO()).ToList();
             return beersToReturn;
         }
-        public async Task<IEnumerable<BeerDTO>> GetAllAsync()
-        {
-            var beers = await this._context.Beers
-                .Include(c => c.Country)
-                .Include(b => b.Reviews)
-                .Include(b => b.Style)
-                .Include(b => b.Brewery)
-                    .ThenInclude(brew => brew.Country)
-                .Where(br => br.IsDeleted == false)
-                .Select(b=> b.MapBeerToDTO())
-                //.Select(b => new BeerDTO
-                //{
-                //    ID = b.ID,
-                //    Name = b.Name,
-                //    Rating = b.Rating,
-                //    Country = new CountryDTO() { Name = b.Country.Name },
-                //    Style = new BeerStyleDTO() { Name = b.Style.Name, Description = b.Style.Description },
-                //    Brewery = new BreweryDTO() { Name = b.Brewery.Name, Country = b.Brewery.Country.Name },
-                //    Reviews = b.Reviews.Select(r => new ReviewDTO() { }).ToList()
-                //})
-                .ToListAsync();
-            return beers;
-        }
 
-        public async Task<BeerDTO> GetBeerAsync(int id)
-        {
-            var beer = await this._context.Beers
-                .Include(b => b.Country)
-                .Include(b => b.Reviews)
-                .Include(b => b.Style)
-                .Include(b => b.Brewery)
-                    .ThenInclude(brew => brew.Country)
-                .Where(br => br.IsDeleted == false).FirstOrDefaultAsync(br => br.ID == id);
 
-            if (beer == null)
-            {
-                return null;
-            }
-
-            var beerDTO = beer.MapBeerToDTO();
-            //var beerDTO = new BeerDTO
-            //{
-            //    ID = beer.ID,
-            //    Name = beer.Name,
-            //    Rating = beer.Rating,
-            //    Country = new CountryDTO() { Name = beer.Country.Name },
-            //    Style = new BeerStyleDTO() { Name = beer.Style.Name, Description = beer.Style.Description },
-            //    Brewery = new BreweryDTO() { Name = beer.Brewery.Name, Country = beer.Brewery.Country.Name },
-            //    Reviews = beer.Reviews.Select(r => new ReviewDTO() { }).ToList()
-            //};
-
-            return beerDTO;
-        }
-
-        public async Task<BeerDTO> UpdateAsync(int id, BeerDTO beerDTO)
-        {
-            var beer = await _context.Beers.Include(b => b.Brewery).FirstOrDefaultAsync(b => b.ID == id);
-            beer.Name = beerDTO.Name;
-            beer.Country = _context.Countries.FirstOrDefault(c => c.Name == beerDTO.Country.Name);
-            beer.Style = _context.BeerStyles.Find(beerDTO.Style.ID);
-            beer.Brewery = _context.Breweries.Find(beerDTO.Brewery.ID);
-            beer.ModifiedOn = DateTime.UtcNow;
-            beerDTO.ID = beer.ID;
-            _context.Beers.Update(beer);
-            await this._context.SaveChangesAsync();
-
-            return beerDTO;
-        }
         public async Task<BeerDTO> GetRandom()
         {
             int count = await this._context.Beers.CountAsync();
@@ -218,5 +281,6 @@ namespace Services
 
             return beerDTO;
         }
+
     }
 }

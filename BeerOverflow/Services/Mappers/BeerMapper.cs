@@ -19,9 +19,9 @@ namespace Services.Mappers
                     Name = beer.Name,
                     Rating = beer.Rating,
                     ABV = beer.ABV,
-                    Country = new CountryDTO() { Name = beer.Country.Name },
-                    Style = new BeerStyleDTO() { Name = beer.Style.Name, Description = beer.Style.Description },
-                    Brewery = new BreweryDTO() { Name = beer.Brewery.Name, Country = beer.Brewery.Country.Name },  
+                    Country = beer.Country.MapCountryToDTO(),
+                    Style = beer.Style.MapStyleToDTO(),
+                    Brewery = beer.Brewery.MapBreweryToDTO(),  
                 };
                 if (beer.Reviews != null)
                 {
@@ -50,10 +50,9 @@ namespace Services.Mappers
                     Name = dto.Name,
                     Rating = dto.Rating,
                     ABV = dto.ABV,
-                    Country = new Country() { Name = dto.Country.Name },
-                    Style = new BeerStyle() { Name = dto.Style.Name, Description = dto.Style.Description },
-                    Brewery = new Brewery() { Name = dto.Brewery.Name, Country = new Country() { Name = dto.Brewery.Country } },
-                    Reviews = dto.Reviews.Select(r => r.MapDTOToReview()).ToList()
+                    Country = dto.Country.MapDTOToCountry(),
+                    Style = dto.Style.MapDTOToStyle(),
+                    Brewery = dto.Brewery.MapDTOToBrewery()
                 };
                 if (dto.Reviews != null)
                 {
