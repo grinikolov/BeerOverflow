@@ -52,9 +52,9 @@ namespace BeerOverflowAPI
             services.AddDbContext<BOContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")).UseLoggerFactory(MyLoggerFactory));
 
-            services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<BOContext>()
-                .AddDefaultTokenProviders();
+            //services.AddIdentity<User, Role>()
+            //    .AddEntityFrameworkStores<BOContext>()
+            //    .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {

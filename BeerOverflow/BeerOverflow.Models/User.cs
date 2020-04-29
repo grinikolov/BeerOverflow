@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace BeerOverflow.Models
 {
-    public class User
+    public class User :IdentityUser<int>
     {
         public int ID { get; set; }
         public string Name { get; set; }
