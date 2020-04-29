@@ -11,22 +11,29 @@ namespace Services.Mappers
     {
         public static ReviewDTO MapReviewToDTO(this Review review)
         {
-            var model = new ReviewDTO
+            try
             {
-                ID = review.ID,
-                BeerID = review.BeerID,
-                Beer = new BeerDTO { ID = review.Beer.ID },
-                UserID = review.UserID,
-                User = new UserDTO { ID = review.User.ID },
-                Rating = review.Rating,
-                Description = review.Description,
-                LikesCount = review.LikesCount,
-                Comments = review.Comments.Count>0 ?
-                    review.Comments.Select(c => c.MapCommentToDTO())
-                    .ToList() : null,
-                IsFlagged = review.IsFlagged,
-            };
-            return model;
+                var model = new ReviewDTO
+                {
+                    ID = review.ID,
+                    BeerID = review.BeerID,
+                    Beer = new BeerDTO { ID = review.Beer.ID },
+                    UserID = review.UserID,
+                    User = new UserDTO { ID = review.User.ID },
+                    Rating = review.Rating,
+                    Description = review.Description,
+                    LikesCount = review.LikesCount,
+                    Comments = review.Comments.Count > 0 ?
+                       review.Comments.Select(c => c.MapCommentToDTO())
+                       .ToList() : null,
+                    IsFlagged = review.IsFlagged,
+                };
+                return model;
+            }
+            catch (Exception)
+            {
+                return new ReviewDTO();
+            }
         }
 
         public static Review MapDTOToReview(this ReviewDTO model)

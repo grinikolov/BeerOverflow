@@ -23,7 +23,7 @@ namespace Services
         public async Task<IEnumerable<ReviewDTO>> GetAllReviews()
         {
             var reviews = await this._context.Reviews
-                .Select(r => MapToDTO(r))
+                .Select(r => r.MapReviewToDTO())
                 .ToListAsync();
 
             return reviews;
@@ -35,15 +35,15 @@ namespace Services
             {
                 var review = await this._context.Reviews
                     .Where(r => r.IsDeleted == false)
-                    .FirstOrDefaultAsync(r=> r.ID == id) ?? throw new ArgumentNullException(); ;
+                    .FirstOrDefaultAsync(r => r.ID == id) ?? throw new ArgumentNullException(); ;
 
-                var model = MapToDTO(review);
+                var model = review.MapReviewToDTO();
 
                 return model;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                return null;
             }
         }
 
@@ -89,9 +89,28 @@ namespace Services
                 .FirstOrDefaultAsync(r => r.BeerID == model.BeerID || r.UserID == model.UserID);
             if (theReview == null)
             {
-                review.CreatedOn = DateTime.UtcNow;
-                 await _context.Reviews.AddAsync(review);
-                 await _context.SaveChangesAsync();
+                var theBeer = this._context.Beers.FirstOrDefault(b => b.Name == model.Beer.Name);
+                var theUser = this._context.Users.FirstOrDefault(u => u.Name == model.User.Name);
+
+                var review = new Review
+                {
+                    //ID = model.ID,
+                    BeerID = theBeer.ID,
+                    Beer = theBeer,
+                    UserID = model.UserID,
+                    User = theUser,
+                    Rating = model.Rating,
+                    Description = model.Description,
+                    LikesCount = model.LikesCount,
+                    Comments = new List<Comment>(),
+                    IsDeleted = model.IsDeleted,
+                    IsFlagged = model.IsFlagged,
+                };
+
+                this._context.Reviews.Add(review);
+                await this._context.SaveChangesAsync();
+
+                modelToReturn = review.MapReviewToDTO();
             }
             else if (theReview.User.IsDeleted == false && theReview.Beer.IsDeleted == false)
             {
@@ -168,41 +187,39 @@ namespace Services
         {
             return this._context.Reviews.Any(e => e.ID == id);
         }
-        private ReviewDTO MapToDTO(Review review)
-        {
-            var model = new ReviewDTO
-            {
-                ID = review.ID,
-                BeerID = review.BeerID,
-                Beer = new BeerDTO { ID = review.Beer.ID },
-                UserID = review.UserID,
-                User = new UserDTO { ID = review.User.ID },
-                Rating = review.Rating,
-                Description = review.Description,
-                LikesCount = review.LikesCount,
-                //Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
-                IsFlagged = review.IsFlagged,
-            };
-            return model;
 
-        }
-
-        private CommentDTO MapCommentToDTO(Comment c)
-        {
-            var comment = new CommentDTO()
-            {
-                ID = c.ID,
-                BeerID = c.BeerID,
-                UserID = c.UserID,
-                Description = c.Description,
-                LikesCount = c.LikesCount,
-            };
-            return comment;
-        }
+        //private ReviewDTO MapToDTO(Review review)
+        //{
+        //    var model = new ReviewDTO
+        //    {
+        //        ID = review.ID,
+        //        BeerID = review.BeerID,
+        //        Beer = new BeerDTO { ID = review.Beer.ID },
+        //        UserID = review.UserID,
+        //        User = new UserDTO { ID = review.User.ID },
+        //        Rating = review.Rating,
+        //        Description = review.Description,
+        //        LikesCount = review.LikesCount,
+        //        //Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
+        //        IsFlagged = review.IsFlagged,
+        //    };
+        //    return model;
 
 
-
+        //private CommentDTO MapCommentToDTO(Comment c)
+        //{
+        //    var comment = new CommentDTO()
+        //    {
+        //        ID = c.ID,
+        //        BeerID = c.BeerID,
+        //        UserID = c.UserID,
+        //        Description = c.Description,
+        //        LikesCount = c.LikesCount,
+        //    };
+        //    return comment;
+        //}
 
 
     }
 }
+
