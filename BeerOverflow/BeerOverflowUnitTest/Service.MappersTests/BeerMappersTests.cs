@@ -32,10 +32,10 @@ namespace BeerOverflowUnitTest.Service.MappersTests
                 Rating = 2,
                 Name = "Carlsberg",
                 Country = new Country() { Name = "Bulgaria" },
-                Brewery = new Brewery() { Name = "Brewery", Country = new Country() { Name = "Germany"} },
-                Style = new BeerStyle() { Name = "Ale"}
-                
-                
+                Brewery = new Brewery() { Name = "Brewery", Country = new Country() { Name = "Germany" } },
+                Style = new BeerStyle() { Name = "Ale" }
+
+
             };
             //Act
             var sut = cut.MapBeerToDTO();
@@ -98,7 +98,7 @@ namespace BeerOverflowUnitTest.Service.MappersTests
                 Rating = 2,
                 Name = "Carlsberg",
                 Country = new CountryDTO() { Name = "Bulgaria" },
-                Brewery = new BreweryDTO() { Name = "Brewery", Country = "Germany"  },
+                Brewery = new BreweryDTO() { Name = "Brewery", Country = "Germany" },
                 Style = new BeerStyleDTO() { Name = "Ale" }
 
 

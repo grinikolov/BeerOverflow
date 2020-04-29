@@ -2,6 +2,7 @@
 using Database;
 using Microsoft.EntityFrameworkCore;
 using Services.DTOs;
+using Services.Mappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,37 +77,72 @@ namespace Services
 
         public async Task<ReviewDTO> CreateReview(ReviewDTO model)
         {
-            ReviewDTO modelToReturn;
-            try
+            var review = model.MapDTOToReview();
+            //if (review.Name == null)
+            //{
+            //    return null;
+            //}
+            #region Check if exists
+            var theReview = await _context.Reviews
+                .Include(r => r.Beer)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(r => r.BeerID == model.BeerID || r.UserID == model.UserID);
+            if (theReview == null)
             {
-                var theBeer = this._context.Beers.FirstOrDefault(b => b.Name == model.Beer.Name);
-                var theUser = this._context.Users.FirstOrDefault(u => u.Name == model.User.Name);
-
-                var review = new Review
+                review.CreatedOn = DateTime.UtcNow;
+                 await _context.Reviews.AddAsync(review);
+                 await _context.SaveChangesAsync();
+            }
+            else if (theReview.User.IsDeleted == false && theReview.Beer.IsDeleted == false)
+            {
+                theReview.IsDeleted = false;
+                theReview.DeletedOn = null;
+                theReview.ModifiedOn = DateTime.UtcNow;
+                _context.Reviews.Update(theReview);
+                var commentsOfReview = await _context.Comments
+                                                .Include(c => c.User)
+                                                .Include(c => c.Review)
+                                                .ToListAsync();
+                //TODO needed service
+                foreach (var item in commentsOfReview)
                 {
-                    //ID = model.ID,
-                    BeerID = theBeer.ID,
-                    Beer = theBeer,
-                    UserID = model.UserID,
-                    User = theUser,
-                    Rating = model.Rating,
-                    Description = model.Description,
-                    LikesCount = model.LikesCount,
-                    Comments = new List<Comment>(),
-                    IsDeleted = model.IsDeleted,
-                    IsFlagged = model.IsFlagged,
-                };
-
-                this._context.Reviews.Add(review);
-                await this._context.SaveChangesAsync();
-
-                modelToReturn = MapToDTO(review);
+             
+                }
             }
-            catch (Exception)
-            {
-                throw new Exception("Could not create Review in Service.");
-            }
-            return modelToReturn;
+            #endregion
+            var returnModel = await this._context.Reviews
+                .FirstOrDefaultAsync(r => r.BeerID == model.BeerID && r.UserID == model.UserID);
+            model.ID = returnModel.ID;
+            //try
+            //{
+            //    var theBeer = this._context.Beers.FirstOrDefault(b => b.Name == model.Beer.Name);
+            //    var theUser = this._context.Users.FirstOrDefault(u => u.Name == model.User.Name);
+
+            //    var review = new Review
+            //    {
+            //        //ID = model.ID,
+            //        BeerID = theBeer.ID,
+            //        Beer = theBeer,
+            //        UserID = model.UserID,
+            //        User = theUser,
+            //        Rating = model.Rating,
+            //        Description = model.Description,
+            //        LikesCount = model.LikesCount,
+            //        Comments = new List<Comment>(),
+            //        IsDeleted = model.IsDeleted,
+            //        IsFlagged = model.IsFlagged,
+            //    };
+
+            //    this._context.Reviews.Add(review);
+            //    await this._context.SaveChangesAsync();
+
+            //    modelToReturn = MapToDTO(review);
+            //}
+            //catch (Exception)
+            //{
+            //    throw new Exception("Could not create Review in Service.");
+            //}
+            return model;
         }
 
         public async Task<bool> DeleteReview(int id)
@@ -115,8 +151,9 @@ namespace Services
             {
                 var review = await this._context.Reviews.FindAsync(id) ?? throw new ArgumentNullException();
                 review.IsDeleted = true;
-                review.DeletedOn = DateTime.UtcNow;
+                review.DeletedOn = review.ModifiedOn = DateTime.UtcNow;
                 this._context.Update(review);
+                //TODO Delete comments
                 //this._context.Reviews.Remove(review);
                 await this._context.SaveChangesAsync();
                 return true;

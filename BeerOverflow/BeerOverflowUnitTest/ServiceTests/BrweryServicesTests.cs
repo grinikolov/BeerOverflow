@@ -140,14 +140,9 @@ namespace BeerOverflowUnitTest.ServiceTests
             var options = InMemory.GetOptions("GetAsync_ShouldReturnNullIfBreweryModelConversionFailsAsync");
             using (var context = new BOContext(options))
             {
-                var country = new Country()
-                {
-                    Name = "Bulgaria",
-                    Breweries = new List<Brewery>()
-                    {
-                        new Brewery()
-                    }
-                };
+                var brewery = new Brewery();
+                context.Breweries.Add(brewery);
+                await context.SaveChangesAsync();
             }
 
             using (var context = new BOContext(options))

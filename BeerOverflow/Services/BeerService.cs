@@ -90,7 +90,7 @@ namespace Services
 
             if (theBeer == null)
             {
-                theBeer.CreatedOn = DateTime.UtcNow;
+                beer.CreatedOn = DateTime.UtcNow;
                 await this._context.Beers.AddAsync(beer);
                 await this._context.SaveChangesAsync();
             }
@@ -144,10 +144,12 @@ namespace Services
                .Include(b => b.Style)
                .Include(b => b.Brewery)
                .FirstOrDefaultAsync(br => br.ID == id);
+            if (beer == null) return null;
+            beer.ABV = model.ABV;
             beer.Name = model.Name;
             beer.Country = _context.Countries.FirstOrDefault(c => c.Name == model.Country.Name);
-            beer.Style = _context.BeerStyles.Find(model.Style.ID);
-            beer.Brewery = _context.Breweries.Find(model.Brewery.ID);
+            beer.Style = _context.BeerStyles.FirstOrDefault(s => s.Name == model.Style.Name);
+            beer.Brewery = _context.Breweries.FirstOrDefault(b => b.Name == model.Brewery.Name);
             beer.ModifiedOn = DateTime.UtcNow;
             model.ID = beer.ID;
             _context.Beers.Update(beer);
