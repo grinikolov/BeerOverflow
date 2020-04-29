@@ -77,7 +77,7 @@ namespace Services
 
         public async Task<ReviewDTO> CreateReview(ReviewDTO model)
         {
-            var review = model.MapDTOToReview();
+           // var review = model.MapDTOToReview();
             //if (review.Name == null)
             //{
             //    return null;
@@ -110,7 +110,7 @@ namespace Services
                 this._context.Reviews.Add(review);
                 await this._context.SaveChangesAsync();
 
-                modelToReturn = review.MapReviewToDTO();
+                //modelToReturn = review.MapReviewToDTO();
             }
             else if (theReview.User.IsDeleted == false && theReview.Beer.IsDeleted == false)
             {

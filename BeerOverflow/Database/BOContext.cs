@@ -34,6 +34,7 @@ namespace Database
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<BeerUserRating> BeerUserRatings { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

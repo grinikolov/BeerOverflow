@@ -14,6 +14,8 @@ using Services;
 using Services.Contracts;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using BeerOverflow.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BeerOverflowAPI
 {
@@ -50,9 +52,27 @@ namespace BeerOverflowAPI
             services.AddDbContext<BOContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")).UseLoggerFactory(MyLoggerFactory));
 
+            services.AddIdentity<User, Role>()
+                .AddEntityFrameworkStores<BOContext>()
+                .AddDefaultTokenProviders();
 
-            services
-                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+            });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie();
 
         }
