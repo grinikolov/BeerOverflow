@@ -41,7 +41,7 @@ namespace Services
 
                 return model;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -92,25 +92,25 @@ namespace Services
                 var theBeer = this._context.Beers.FirstOrDefault(b => b.Name == model.Beer.Name);
                 var theUser = this._context.Users.FirstOrDefault(u => u.Name == model.User.Name);
 
-                var review = new Review
-                {
-                    //ID = model.ID,
-                    BeerID = theBeer.ID,
-                    Beer = theBeer,
-                    UserID = model.UserID,
-                    User = theUser,
-                    Rating = model.Rating,
-                    Description = model.Description,
-                    LikesCount = model.LikesCount,
-                    Comments = new List<Comment>(),
-                    IsDeleted = model.IsDeleted,
-                    IsFlagged = model.IsFlagged,
-                };
+                //var review = new Review
+                //{
+                //    //ID = model.ID,
+                //    BeerID = theBeer.ID,
+                //    Beer = theBeer,
+                //    UserID = model.UserID,
+                //    User = theUser,
+                //    Rating = model.Rating,
+                //    Description = model.Description,
+                //    LikesCount = model.LikesCount,
+                //    Comments = new List<Comment>(),
+                //    IsDeleted = model.IsDeleted,
+                //    IsFlagged = model.IsFlagged,
+                //};
 
                 this._context.Reviews.Add(review);
                 await this._context.SaveChangesAsync();
 
-                modelToReturn = review.MapReviewToDTO();
+                //var modelToReturn = review.MapReviewToDTO();
             }
             else if (theReview.User.IsDeleted == false && theReview.Beer.IsDeleted == false)
             {
