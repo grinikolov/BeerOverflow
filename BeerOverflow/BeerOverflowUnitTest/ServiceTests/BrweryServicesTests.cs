@@ -134,21 +134,26 @@ namespace BeerOverflowUnitTest.ServiceTests
         }
 
         [TestMethod]
-        public async Task GetAsync_ShouldReturnNullIfModelConversionFailsAsync()
+        public async Task GetAsync_ShouldReturnNullIfBreweryModelConversionFailsAsync()
         {
             //Arrange
-            var options = InMemory.GetOptions("GetAsync_ShouldReturnNullIfModelConversionFailsAsync");
+            var options = InMemory.GetOptions("GetAsync_ShouldReturnNullIfBreweryModelConversionFailsAsync");
             using (var context = new BOContext(options))
             {
-                var country = new Country();
-                context.Countries.Add(country);
-                await context.SaveChangesAsync();
+                var country = new Country()
+                {
+                    Name = "Bulgaria",
+                    Breweries = new List<Brewery>()
+                    {
+                        new Brewery()
+                    }
+                };
             }
 
             using (var context = new BOContext(options))
             {
                 //Act
-                var sut = new CountriesService(context);
+                var sut = new BreweryServices(context);
                 var result = await sut.GetAsync(1);
                 //Assert
                 Assert.AreEqual(result, null);
