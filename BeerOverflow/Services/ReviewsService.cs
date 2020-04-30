@@ -20,97 +20,74 @@ namespace Services
             this._context = context;
         }
 
-        public async Task<IEnumerable<ReviewDTO>> GetAllReviews()
+
+        /// <summary>
+        /// Get all reviews on record
+        /// </summary>
+        /// <returns>Returns a modified list of reviews on record</returns>
+        public async Task<IEnumerable<ReviewDTO>> GetAllAsync()
         {
             var reviews = await this._context.Reviews
-                .Select(r => r.MapReviewToDTO())
+                .Include(r => r.Beer)
+                .Include(r => r.User)
                 .ToListAsync();
-
-            return reviews;
-        }
-
-        public async Task<ReviewDTO> GetReview(int id)
-        {
-            try
-            {
-                var review = await this._context.Reviews
-                    .Where(r => r.IsDeleted == false)
-                    .FirstOrDefaultAsync(r => r.ID == id) ?? throw new ArgumentNullException(); ;
-
-                var model = review.MapReviewToDTO();
-
-                return model;
-            }
-            catch (Exception)
+            var reviewsDto = reviews.Select(r => r.MapReviewToDTO()).ToList();
+            if (reviewsDto.Any(c => c.Beer == null || c.User == null))
             {
                 return null;
             }
+            return reviewsDto;
         }
-
-        public async Task<ReviewDTO> UpdateReview(int id, ReviewDTO model)
+        /// <summary>
+        /// Gets a review by ID
+        /// </summary>
+        /// <param name="id">Id of review</param>
+        /// <returns>Returns a modified specific review on record</returns>
+        public async Task<ReviewDTO> GetAsync(int? id)
         {
-            if (id != model.ID)
-            {
-                throw new ArgumentException();
-            }
+            var review = await this._context.Reviews
+                    .Include(r => r.Beer)
+                    .Include(r => r.User)
+                    .FirstOrDefaultAsync(r => r.ID == id);
 
-            this._context.Entry(model).State = EntityState.Modified;
-
-            try
+            if (review == null)
             {
-                await this._context.SaveChangesAsync();
+                return null;
             }
-            catch (DbUpdateConcurrencyException)
+            var model = review.MapReviewToDTO();
+            if (model.BeerID == null || model.UserID == null)
             {
-                if (!ReviewExists(id))
-                {
-                    throw new ArgumentNullException("Review does not exist.");
-                }
-                else
-                {
-                    throw;
-                }
+                return null;
             }
-
             return model;
         }
 
-        public async Task<ReviewDTO> CreateReview(ReviewDTO model)
+        /// <summary>
+        /// Creates a review and writes it to the database.
+        /// </summary>
+        /// <param name="model">Input ReviewDTO object</param>
+        /// <returns>Returns the reevaluated input object</returns>
+        public async Task<ReviewDTO> CreateAsync(ReviewDTO model)
         {
             var review = model.MapDTOToReview();
-            //if (review.Name == null)
-            //{
-            //    return null;
-            //}
+            if (review.Beer == null || review.User == null)
+            {
+                return null;
+            }
             #region Check if exists
             var theReview = await _context.Reviews
                 .Include(r => r.Beer)
                 .Include(r => r.User)
-                .FirstOrDefaultAsync(r => r.BeerID == model.BeerID || r.UserID == model.UserID);
+                .FirstOrDefaultAsync(r => r.Beer.Name == model.Beer.Name || r.User.Name == model.User.Name);
             if (theReview == null)
             {
-                var theBeer = this._context.Beers.FirstOrDefault(b => b.Name == model.Beer.Name);
-                var theUser = this._context.Users.FirstOrDefault(u => u.Name == model.User.Name);
-
-                //var review = new Review
-                //{
-                //    //ID = model.ID,
-                //    BeerID = theBeer.ID,
-                //    Beer = theBeer,
-                //    UserID = model.UserID,
-                //    User = theUser,
-                //    Rating = model.Rating,
-                //    Description = model.Description,
-                //    LikesCount = model.LikesCount,
-                //    Comments = new List<Comment>(),
-                //    IsDeleted = model.IsDeleted,
-                //    IsFlagged = model.IsFlagged,
-                //};
-
+                var theBeer = await this._context.Beers.FirstOrDefaultAsync(b => b.Name == model.Beer.Name);
+                var theUser = await this._context.Users.FirstOrDefaultAsync(u => u.Name == model.User.Name);
+                review.Beer = theBeer;
+                review.User = theUser;
+                review.CreatedOn = DateTime.UtcNow;
                 this._context.Reviews.Add(review);
                 await this._context.SaveChangesAsync();
-
-                //var modelToReturn = review.MapReviewToDTO();
             }
             else if (theReview.User.IsDeleted == false && theReview.Beer.IsDeleted == false)
             {
@@ -122,58 +99,70 @@ namespace Services
                                                 .Include(c => c.User)
                                                 .Include(c => c.Review)
                                                 .ToListAsync();
-                //TODO needed service
                 foreach (var item in commentsOfReview)
                 {
-
+                    await new CommentService(_context).CreateAsync(item.MapCommentToDTO());
                 }
+                await this._context.SaveChangesAsync();
             }
             #endregion
+            var beer = await _context.Beers.FirstOrDefaultAsync(b => b.Name == model.Beer.Name);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == model.User.Name);
             var returnModel = await this._context.Reviews
-                .FirstOrDefaultAsync(r => r.BeerID == model.BeerID && r.UserID == model.UserID);
+                .FirstOrDefaultAsync(r => r.BeerID == beer.ID && r.UserID == user.ID);
             model.ID = returnModel.ID;
-            //try
-            //{
-            //    var theBeer = this._context.Beers.FirstOrDefault(b => b.Name == model.Beer.Name);
-            //    var theUser = this._context.Users.FirstOrDefault(u => u.Name == model.User.Name);
-
-            //    var review = new Review
-            //    {
-            //        //ID = model.ID,
-            //        BeerID = theBeer.ID,
-            //        Beer = theBeer,
-            //        UserID = model.UserID,
-            //        User = theUser,
-            //        Rating = model.Rating,
-            //        Description = model.Description,
-            //        LikesCount = model.LikesCount,
-            //        Comments = new List<Comment>(),
-            //        IsDeleted = model.IsDeleted,
-            //        IsFlagged = model.IsFlagged,
-            //    };
-
-            //    this._context.Reviews.Add(review);
-            //    await this._context.SaveChangesAsync();
-
-            //    modelToReturn = MapToDTO(review);
-            //}
-            //catch (Exception)
-            //{
-            //    throw new Exception("Could not create Review in Service.");
-            //}
             return model;
         }
 
-        public async Task<bool> DeleteReview(int id)
+        /// <summary>
+        /// Updates the Review
+        /// </summary>
+        /// <param name="id">ID of the Review to be updated.</param>
+        /// <param name="model">Input object with update information.</param>
+        /// <returns>Returns the reevaluated input object</returns>
+        public async Task<ReviewDTO> UpdateAsync(int? id, ReviewDTO model)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+            if (review == null) return null;
+            review.Description = model.Description;
+            review.ModifiedOn = DateTime.UtcNow;
+            this._context.Update(review);
+
+            try
+            {
+                await this._context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ReviewExists(id))
+                {
+                    return null;
+                }
+            }
+            return model;
+        }
+
+        /// <summary>
+        /// Deletes specified record of review
+        /// </summary>
+        /// <param name="id">Id of record</param>
+        /// <returns>Bool</returns>
+        public async Task<bool> DeleteAsync(int? id)
         {
             try
             {
-                var review = await this._context.Reviews.FindAsync(id) ?? throw new ArgumentNullException();
+                var review = await this._context.Reviews
+                    .Include(r => r.User)
+                    .Include(r => r.Beer)
+                    .Include(r => r.Comments)
+                    .FirstOrDefaultAsync(r => r.ID == id) ?? throw new ArgumentNullException();
                 review.IsDeleted = true;
                 review.DeletedOn = review.ModifiedOn = DateTime.UtcNow;
                 this._context.Update(review);
-                //TODO Delete comments
-                //this._context.Reviews.Remove(review);
+                foreach (var item in review.Comments)
+                {
+                    await new CommentService(_context).DeleteAsync(item.ID);
+                }
                 await this._context.SaveChangesAsync();
                 return true;
             }
@@ -183,42 +172,10 @@ namespace Services
             }
         }
 
-        private bool ReviewExists(int id)
+        private bool ReviewExists(int? id)
         {
             return this._context.Reviews.Any(e => e.ID == id);
         }
-
-        //private ReviewDTO MapToDTO(Review review)
-        //{
-        //    var model = new ReviewDTO
-        //    {
-        //        ID = review.ID,
-        //        BeerID = review.BeerID,
-        //        Beer = new BeerDTO { ID = review.Beer.ID },
-        //        UserID = review.UserID,
-        //        User = new UserDTO { ID = review.User.ID },
-        //        Rating = review.Rating,
-        //        Description = review.Description,
-        //        LikesCount = review.LikesCount,
-        //        //Comments = review.Comments.Select(c => MapCommentToDTO(c)).ToList(),
-        //        IsFlagged = review.IsFlagged,
-        //    };
-        //    return model;
-
-
-        //private CommentDTO MapCommentToDTO(Comment c)
-        //{
-        //    var comment = new CommentDTO()
-        //    {
-        //        ID = c.ID,
-        //        BeerID = c.BeerID,
-        //        UserID = c.UserID,
-        //        Description = c.Description,
-        //        LikesCount = c.LikesCount,
-        //    };
-        //    return comment;
-        //}
-
 
     }
 }

@@ -7,11 +7,12 @@ namespace BeerOverflow.Models
 {
     public class Comment
     {
-        public int ID { get; set; }
+        public int? ID { get; set; }
         public int BeerID { get; set; }
         public Beer Beer { get; set; }
         public int UserID { get; set; }
         public User User { get; set; }
+        public int ReviewID { get; set; }
         public Review Review { get; set; }
         public string Description { get; set; }
         public int LikesCount { get; set; }

@@ -763,10 +763,10 @@ namespace BeerOverflowUnitTest.ServiceTests
         }
 
         [TestMethod]
-        public async Task DeleteAsync_ShouldDeleteRecordReviewIfExist()
+        public async Task DeleteAsync_ShouldDeleteRecordBeerReviewIfExist()
         {
             //Arrange
-            var options = InMemory.GetOptions("DeleteAsync_ShouldDeleteRecordReviewIfExist");
+            var options = InMemory.GetOptions("DeleteAsync_ShouldDeleteRecordBeerReviewIfExist");
             using (var context = new BOContext(options))
             {
                 var country = new Country()

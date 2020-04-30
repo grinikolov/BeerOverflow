@@ -17,17 +17,22 @@ namespace Services.Mappers
                 {
                     ID = review.ID,
                     BeerID = review.BeerID,
-                    Beer = new BeerDTO { ID = review.Beer.ID },
+                    Beer = new BeerDTO { ID = review.Beer.ID , Name = review.Beer.Name},
                     UserID = review.UserID,
                     User = new UserDTO { ID = review.User.IDOld },
                     Rating = review.Rating,
                     Description = review.Description,
                     LikesCount = review.LikesCount,
-                    Comments = review.Comments.Count > 0 ?
-                       review.Comments.Select(c => c.MapCommentToDTO())
-                       .ToList() : null,
                     IsFlagged = review.IsFlagged,
                 };
+                if (review.Comments != null)
+                {
+                    model.Comments = review.Comments.Select(c => c.MapCommentToDTO()).ToList();
+                }
+                else
+                {
+                    model.Comments = null;
+                }
                 return model;
             }
             catch (Exception)
@@ -38,21 +43,35 @@ namespace Services.Mappers
 
         public static Review MapDTOToReview(this ReviewDTO model)
         {
-            var review = new Review()
+            try
             {
-                ////ID = model.ID,
-                //BeerID = model.ID,
-                //Beer = model.Beer,
-                //UserID = model.UserID,
-                //User = model.User,
-                //Rating = model.Rating,
-                //Description = model.Description,
-                //LikesCount = model.LikesCount,
-                //Comments = new List<Comment>(),
-                //IsDeleted = model.IsDeleted,
-                //IsFlagged = model.IsFlagged,
-            };
-            return review;
+                var review = new Review
+                {
+                    ID = model.ID,
+                    BeerID = model.BeerID,
+                    Beer = new Beer { ID = model.Beer.ID, Name = model.Beer.Name },
+                    UserID = model.UserID,
+                    User = new User { ID = model.User.ID, Name = model.User.Name },
+                    Rating = model.Rating,
+                    Description = model.Description,
+                    LikesCount = model.LikesCount,
+                    IsFlagged = model.IsFlagged,
+                };
+                if (model.Comments != null)
+                {
+                    review.Comments = model.Comments.Select(r => r.MapDTOToComment()).ToList();
+                }
+                else
+                {
+                    review.Comments = null;
+                }
+                return review;
+            }
+            catch (Exception)
+            {
+
+                return new Review();
+            }
         }
     }
 }

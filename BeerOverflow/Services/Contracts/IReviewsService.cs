@@ -6,10 +6,10 @@ namespace Services
 {
     public interface IReviewsService
     {
-        Task<ReviewDTO> CreateReview(ReviewDTO model);
-        Task<bool> DeleteReview(int id);
-        Task<IEnumerable<ReviewDTO>> GetAllReviews();
-        Task<ReviewDTO> GetReview(int id);
-        Task<ReviewDTO> UpdateReview(int id, ReviewDTO model);
+        Task<ReviewDTO> CreateAsync(ReviewDTO model);
+        Task<bool> DeleteAsync(int? id);
+        Task<IEnumerable<ReviewDTO>> GetAllAsync();
+        Task<ReviewDTO> GetAsync(int? id);
+        Task<ReviewDTO> UpdateAsync(int? id, ReviewDTO model);
     }
 }
