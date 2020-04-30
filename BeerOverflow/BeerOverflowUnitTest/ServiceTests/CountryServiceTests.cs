@@ -147,7 +147,7 @@ namespace BeerOverflowUnitTest.ServiceTests
         public async Task GetAsync_ShouldReturnCountryDTOAsync()
         {
             //Arrange
-            var options = InMemory.GetOptions("GetAllAsync_ShouldReturnIEnumerableCountryDTOAsync");
+            var options = InMemory.GetOptions("GetAsync_ShouldReturnCountryDTOAsync");
             using (var context = new BOContext(options))
             {
                 var country = new Country()
@@ -192,7 +192,7 @@ namespace BeerOverflowUnitTest.ServiceTests
         public async Task CreateAsync_ShouldRecordCountryIfNotOnRecordAsync()
         {
             //Arrange
-            var options = InMemory.GetOptions("CreateAsync_ShouldReturnNullIfInputNullAsync");
+            var options = InMemory.GetOptions("CreateAsync_ShouldRecordCountryIfNotOnRecordAsync");
             using (var context = new BOContext(options))
             {
             }
