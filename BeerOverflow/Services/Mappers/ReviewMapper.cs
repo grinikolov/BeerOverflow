@@ -19,7 +19,7 @@ namespace Services.Mappers
                     BeerID = review.BeerID,
                     Beer = new BeerDTO { ID = review.Beer.ID , Name = review.Beer.Name},
                     UserID = review.UserID,
-                    User = new UserDTO { ID = review.User.ID , Name = review.User.Name},
+                    User = new UserDTO { ID = review.User.IDOld },
                     Rating = review.Rating,
                     Description = review.Description,
                     LikesCount = review.LikesCount,

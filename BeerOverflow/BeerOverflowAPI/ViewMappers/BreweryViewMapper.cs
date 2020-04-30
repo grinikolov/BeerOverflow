@@ -23,7 +23,7 @@ namespace BeerOverflowAPI.ViewMappers
             }
             if (view.Beers != null)
             {
-                breweryDTO.Beers = view.Beers.Select(b => new BeerDTO() { Name = b }).ToList();
+                breweryDTO.Beers = view.Beers.Select(b => new BeerDTO { Name = b }).ToList();
             }
             return breweryDTO;
         }

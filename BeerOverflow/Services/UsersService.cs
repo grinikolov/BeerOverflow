@@ -124,7 +124,7 @@ namespace Services
                     .ThenInclude(b => b.Brewery)
                     .ThenInclude(b => b.Country)
                 .Where(u => u.IsDeleted == false)
-                .FirstOrDefaultAsync(u => u.ID == userID);
+                .FirstOrDefaultAsync(u => u.IDOld == userID);
 
             var theBeer = await this._context.Beers
                 .Where(b => b.IsDeleted == false)
@@ -132,7 +132,7 @@ namespace Services
 
             var theNewDrankList = new DrankList()
             {
-                UserID = theUser.ID,
+                UserID = theUser.IDOld,
                 User = theUser,
                 BeerID = theBeer.ID,
                 Beer = theBeer,
@@ -192,7 +192,7 @@ namespace Services
                     .ThenInclude(dl => dl.Beer)
                         .ThenInclude(b => b.Brewery)
                         .ThenInclude(b => b.Country)
-                .FirstOrDefaultAsync(u => u.ID == userID);
+                .FirstOrDefaultAsync(u => u.IDOld == userID);
 
             var theBeer = await this._context.Beers
                 .Where(b => b.IsDeleted == false)
@@ -200,7 +200,7 @@ namespace Services
 
             var theNewWishList = new WishList()
             {
-                UserID = theUser.ID,
+                UserID = theUser.IDOld,
                 User = theUser,
                 BeerID = theBeer.ID,
                 Beer = theBeer,
@@ -251,7 +251,7 @@ namespace Services
         {
             var theUser = await this._context.Users
                 .Where(u => u.IsDeleted == false)
-                .FirstOrDefaultAsync(u => u.ID == userID);
+                .FirstOrDefaultAsync(u => u.IDOld == userID);
 
             var theBeer = await this._context.Beers
                 .Where(b => b.IsDeleted == false)
@@ -261,7 +261,7 @@ namespace Services
             {
                 BeerID = theBeer.ID,
                 Beer = theBeer,
-                UserID = theUser.ID,
+                UserID = theUser.IDOld,
                 User = theUser,
                 Rating = theRating,
             };
@@ -296,7 +296,7 @@ namespace Services
 
         private bool UserExists(int id)
         {
-            return this._context.Users.Any(e => e.ID == id);
+            return this._context.Users.Any(e => e.IDOld == id);
         }
 
     }
