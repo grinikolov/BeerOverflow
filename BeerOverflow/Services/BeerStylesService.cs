@@ -26,7 +26,9 @@ namespace Services
         /// <returns>Returns a modified list of countries on record</returns>
         public async Task<IEnumerable<BeerStyleDTO>> GetAllAsync()
         {
-            var beerStyles = await this._context.BeerStyles.ToListAsync();
+            var beerStyles = await this._context.BeerStyles
+                .Where(s => s.IsDeleted==false)
+                .ToListAsync();
             var beerStylesDTO = beerStyles.Select(style => style.MapStyleToDTO()).ToList();
             if (beerStylesDTO.Any(c => c.Name == null))
             {
@@ -42,7 +44,9 @@ namespace Services
         /// <returns>Returns a modified specific style on record</returns>
         public async Task<BeerStyleDTO> GetAsync(int? id)
         {
-            var theBeerStyle = await  _context.BeerStyles.FirstOrDefaultAsync(style => style.ID == id);
+            var theBeerStyle = await  _context.BeerStyles
+                .Where(s => s.IsDeleted == false)
+                .FirstOrDefaultAsync(style => style.ID == id);
 
             if (theBeerStyle == null)
             {
