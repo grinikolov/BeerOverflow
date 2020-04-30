@@ -224,7 +224,7 @@ namespace BeerOverflowUnitTest.ServiceTests
                 };
                 context.Countries.Add(country);
                 await context.SaveChangesAsync();
-                var user = new User() { Name = "SuperMan" };
+                var user = new User() { IDOld = 1, Name = "SuperMan" };
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
             }
@@ -277,7 +277,7 @@ namespace BeerOverflowUnitTest.ServiceTests
                 };
                 context.Countries.Add(country);
                 await context.SaveChangesAsync();
-                var user = new User() { Name = "SuperMan" };
+                var user = new User() { IDOld = 1, Name = "SuperMan" };
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
                 var review = new Review
@@ -322,7 +322,7 @@ namespace BeerOverflowUnitTest.ServiceTests
                 {
                     Description = "Great",
                     Beer = new Beer() { Name = "Carlsberg" },
-                    User = new User() { Name = "SuperMan" },
+                    User = new User() { IDOld = 1, Name = "SuperMan" },
                     IsDeleted = true,
                     DeletedOn = DateTime.UtcNow,
                     Comments = new List<Comment>()
@@ -330,10 +330,10 @@ namespace BeerOverflowUnitTest.ServiceTests
                         new Comment()
                         {
                             Description = "Some description",
-                            User = new User(){ Name = "Batman"},
+                            User = new User(){ IDOld = 2, Name = "Batman"},
                             IsDeleted = true,
                             DeletedOn = DateTime.UtcNow
-                            
+
                         }
                     }
                 };
@@ -395,7 +395,7 @@ namespace BeerOverflowUnitTest.ServiceTests
                 };
                 context.Countries.Add(country);
                 await context.SaveChangesAsync();
-                var user = new User() { Name = "SuperMan" };
+                var user = new User() { IDOld = 1, Name = "SuperMan" };
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
             }
@@ -447,7 +447,7 @@ namespace BeerOverflowUnitTest.ServiceTests
                 };
                 context.Countries.Add(country);
                 await context.SaveChangesAsync();
-                var user = new User() { Name = "SuperMan" };
+                var user = new User() { IDOld = 1, Name = "SuperMan" };
                 context.Users.Add(user);
                 await context.SaveChangesAsync();
             }
@@ -551,7 +551,7 @@ namespace BeerOverflowUnitTest.ServiceTests
                 {
                     Description = "Great",
                     Beer = new Beer() { Name = "Carlsberg" },
-                    User = new User() { Name = "SuperMan" },
+                    User = new User() { IDOld = 1, Name = "SuperMan" },
                 };
                 context.Reviews.Add(review);
                 await context.SaveChangesAsync();

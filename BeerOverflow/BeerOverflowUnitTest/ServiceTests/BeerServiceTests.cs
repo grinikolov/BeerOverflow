@@ -409,6 +409,7 @@ namespace BeerOverflowUnitTest.ServiceTests
                     Beer = await context.Beers.FirstOrDefaultAsync(b => b.Name == "Carlsberg"),
                     User = new User()
                     {
+                        IDOld = 1,
                         Name = "User",
                         Password = "Password"
                     }
