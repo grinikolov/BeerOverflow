@@ -7,7 +7,7 @@ namespace BeerOverflow.Models
 {
     public class BeerUserRating
     {
-        public int UserID { get; set; }
+        public int? UserID { get; set; }
         public User User { get; set; }
         public int? BeerID { get; set; }
         public Beer Beer { get; set; }
