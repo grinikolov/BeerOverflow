@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.Migrations
 {
-    public partial class IdentityUsers : Migration
+    public partial class FromScratch : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -98,7 +98,7 @@ namespace Database.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    IDOld = table.Column<int>(nullable: false),
+                    IDOld = table.Column<int>(nullable: true),
                     Name = table.Column<string>(nullable: false),
                     Password = table.Column<string>(nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -323,7 +323,7 @@ namespace Database.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BeerID = table.Column<int>(nullable: true),
-                    UserID = table.Column<int>(nullable: false),
+                    UserID = table.Column<int>(nullable: true),
                     Rating = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: false),
                     LikesCount = table.Column<int>(nullable: false),
@@ -382,7 +382,7 @@ namespace Database.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BeerID = table.Column<int>(nullable: false),
                     UserID = table.Column<int>(nullable: false),
-                    ReviewID = table.Column<int>(nullable: true),
+                    ReviewID = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: false),
                     LikesCount = table.Column<int>(nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -404,7 +404,7 @@ namespace Database.Migrations
                         column: x => x.ReviewID,
                         principalTable: "Reviews",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comments_AspNetUsers_UserID",
                         column: x => x.UserID,
@@ -576,7 +576,7 @@ namespace Database.Migrations
                 table: "Reviews",
                 columns: new[] { "BeerID", "UserID" },
                 unique: true,
-                filter: "[BeerID] IS NOT NULL");
+                filter: "[BeerID] IS NOT NULL AND [UserID] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WishLists_UserID",

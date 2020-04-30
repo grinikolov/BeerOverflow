@@ -51,7 +51,7 @@ namespace Services.Mappers
                     BeerID = model.BeerID,
                     Beer = new Beer { ID = model.Beer.ID, Name = model.Beer.Name },
                     UserID = model.UserID,
-                    User = new User { ID = model.User.ID, Name = model.User.Name },
+                    User = new User { IDOld = model.User.ID, Name = model.User.Name },
                     Rating = model.Rating,
                     Description = model.Description,
                     LikesCount = model.LikesCount,

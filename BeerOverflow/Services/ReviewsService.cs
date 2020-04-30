@@ -109,7 +109,7 @@ namespace Services
             var beer = await _context.Beers.FirstOrDefaultAsync(b => b.Name == model.Beer.Name);
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == model.User.Name);
             var returnModel = await this._context.Reviews
-                .FirstOrDefaultAsync(r => r.BeerID == beer.ID && r.UserID == user.ID);
+                .FirstOrDefaultAsync(r => r.BeerID == beer.ID && r.UserID == user.IDOld);
             model.ID = returnModel.ID;
             return model;
         }
