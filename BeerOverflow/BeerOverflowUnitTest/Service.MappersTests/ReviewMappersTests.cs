@@ -121,7 +121,7 @@ namespace BeerOverflowUnitTest.Service.MappersTests
             //Act
             var sut = cut.MapDTOToReview();
             //Assert
-            Assert.AreEqual(sut.ID, 1);
+            Assert.AreEqual(1,sut.ID);
         }
 
         [TestMethod]
