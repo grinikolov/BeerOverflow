@@ -47,6 +47,7 @@ namespace BeerOverflowAPI
             services.AddScoped<IBreweryService, BreweryServices>();
             services.AddScoped<ICountriesService, CountriesService>();
             services.AddScoped<IBeerService, BeerService>();
+            services.AddScoped<ICommentService, CommentService>();
             services.AddDbContext<BOContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")).UseLoggerFactory(MyLoggerFactory));
 

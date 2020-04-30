@@ -107,7 +107,7 @@ namespace Services
                     .Where(r => r.BeerID == theBeer.ID).ToListAsync();
                 foreach (var item in reviewsOfBeer)
                 {
-                    await new ReviewsService(_context).CreateReview(item.MapReviewToDTO());
+                    await new ReviewsService(_context).CreateAsync(item.MapReviewToDTO());
                 }
                 var wishListOfBeer = await _context.WishLists
                                                 .Where(w => w.BeerID == theBeer.ID)
@@ -191,7 +191,7 @@ namespace Services
                 beer.DeletedOn = beer.ModifiedOn = DateTime.UtcNow;
                 foreach (var item in beer.Reviews)
                 {
-                    await new ReviewsService(_context).DeleteReview(item.ID);
+                    await new ReviewsService(_context).DeleteAsync(item.ID);
                 }
                 foreach (var item in beer.WishLists)
                 {
