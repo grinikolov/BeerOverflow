@@ -7,7 +7,7 @@ using System;
 
 namespace Database
 {
-    public class BOContext : DbContext// IdentityDbContext<User, Role, Guid>
+    public class BOContext :  IdentityDbContext<User, Role, int>
     {
 
         //public static readonly ILoggerFactory MyLoggerFactory = LoggerFactory.Create(builder =>
@@ -30,13 +30,16 @@ namespace Database
         public DbSet<Country> Countries { get; set; }
         public DbSet<DrankList> DrankLists { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<BeerUserRating> BeerUserRatings { get; set; }
+        //public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            
             builder.ApplyConfiguration(new CountriesSetting());
             builder.ApplyConfiguration(new BreweriesSettings());
             builder.ApplyConfiguration(new BeerStyleSettings());

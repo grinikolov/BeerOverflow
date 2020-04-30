@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BeerOverflow.Models
 {
-    public class Role
+    public class Role :IdentityRole<int>
     {
-        [Key]
-        public int ID { get; set; }
+        //[Key]
+        //public int Id { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        //[Required]
+        //public string Name { get; set; }
 
         public ICollection<User> Users { get; set; }
 

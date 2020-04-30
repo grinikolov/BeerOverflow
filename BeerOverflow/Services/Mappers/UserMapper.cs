@@ -13,7 +13,7 @@ namespace Services.Mappers
         {
             var model = new UserDTO
             {
-                ID = u.ID,
+                ID = u.IDOld,
                 Name = u.Name,
                 Password = u.Password,
                 DrankLists = u.DrankLists.Count > 0 ?
