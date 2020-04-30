@@ -78,6 +78,7 @@ namespace BeerOverflowAPI.Areas.Identity.Pages.Account
             {
                 var user = new User { Name = Input.Name, UserName = Input.Email, Email = Input.Email, Password = Input.Password };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userManager.AddToRoleAsync(user, "user");
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");

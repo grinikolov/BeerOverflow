@@ -54,7 +54,7 @@ namespace BeerOverflowAPI
 
             
             services.AddIdentity<User, Role>()
-                .AddRoleStore<Role>()
+                .AddDefaultUI()
                 .AddEntityFrameworkStores<BOContext>()
                 .AddDefaultTokenProviders();
             

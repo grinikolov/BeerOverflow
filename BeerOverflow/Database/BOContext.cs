@@ -38,6 +38,8 @@ namespace Database
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            
             builder.ApplyConfiguration(new CountriesSetting());
             builder.ApplyConfiguration(new BreweriesSettings());
             builder.ApplyConfiguration(new BeerStyleSettings());
