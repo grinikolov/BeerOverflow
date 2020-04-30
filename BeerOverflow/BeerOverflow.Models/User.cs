@@ -6,7 +6,7 @@ namespace BeerOverflow.Models
 {
     public class User :IdentityUser<int>
     {
-        public int ID { get; set; }
+        public int IDOld { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
         public DateTime CreatedOn { get; set; }
