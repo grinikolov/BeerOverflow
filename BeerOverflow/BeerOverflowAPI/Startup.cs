@@ -53,7 +53,7 @@ namespace BeerOverflowAPI
             options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")).UseLoggerFactory(MyLoggerFactory));
 
             
-            services.AddIdentity<User, Role>()
+            services.AddIdentity<User,Role>()
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<BOContext>()
                 .AddDefaultTokenProviders();

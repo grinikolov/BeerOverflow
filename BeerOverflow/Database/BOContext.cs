@@ -39,7 +39,20 @@ namespace Database
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
-            
+            builder.Entity<Role>().HasData(
+                new Role
+                {
+                    Id = 1,
+                    Name = "member",
+                    NormalizedName = "MEMBER",
+                },
+                new Role
+                {
+                    Id = 2,
+                    Name = "admin",
+                    NormalizedName = "ADMIN",
+                });
+
             builder.ApplyConfiguration(new CountriesSetting());
             builder.ApplyConfiguration(new BreweriesSettings());
             builder.ApplyConfiguration(new BeerStyleSettings());
