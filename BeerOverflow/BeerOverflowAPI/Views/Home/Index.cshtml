@@ -1,4 +1,5 @@
-﻿@{
+﻿@model BeerViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -9,11 +10,11 @@
             Featured
         </div>
         <div class="card-body">
-            <h4 class="card-title">Title of the beer here </h4>
-            <p class="card-text"> Details of the beer.</p>
-
-            <a href="#!" class="card-link">Card link</a>
-            <a href="#!" class="card-link">View beer</a>
+            <h4 class="card-title">@Model.Name </h4>
+            <p class="card-text"> @Model.StyleName, @Model.ABV %</p>
+            <p class="card-text"> @Model.Country, @Model.Brewery %</p>
+            
+            <a asp-action="Details" asp-route-id="@Model.ID" class="card-link">Details</a>
         </div>
     </div>
 </div>

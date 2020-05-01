@@ -13,6 +13,7 @@ namespace BeerOverflowAPI.ViewMappers
         {
             var beerView = new BeerViewModel()
             {
+                ID = dto.ID,
                 Name = dto.Name,
                 StyleName = dto.Style.Name,
                 Country = dto.Country.Name,
