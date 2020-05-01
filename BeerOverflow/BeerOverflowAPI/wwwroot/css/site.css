@@ -16,7 +16,14 @@ a {
     color: #fff;
     background-color: #ffc107;
     border-color: #fff;
+    
 }
+
+    .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+        color: #fff;
+        background-color: #fab30f;
+        border-color: #fab30f; /*set the color you want here*/
+    }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
     color: #fff;
