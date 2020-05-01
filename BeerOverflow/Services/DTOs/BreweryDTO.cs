@@ -11,5 +11,6 @@ namespace Services.DTOs
         public string Country { get; set; }
         public ICollection<BeerDTO> Beers { get; set; }
         public int? CountryID { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

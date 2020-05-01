@@ -12,5 +12,6 @@ namespace BeerOverflowAPI.Models
         public int? CountryID { get; set; }
         public string Country { get; set; }
         public ICollection<string> Beers { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

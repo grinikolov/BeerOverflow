@@ -18,7 +18,9 @@ namespace Services.Mappers
                     ID = brewery.ID,
                     Name = brewery.Name,
                     Country = brewery.Country.Name,
-                    CountryID = brewery.CountryID
+                    CountryID = brewery.CountryID,
+                    IsDeleted = brewery.IsDeleted
+                    
                 };
                 if (brewery.Beers != null)
                 {
@@ -46,9 +48,8 @@ namespace Services.Mappers
                 {
                     ID = dto.ID,
                     Name = dto.Name,
-                    CountryID = dto.CountryID
-                    //TODO: Country should not be created anew
-                    //Country = new Country() { Name = dto.Country },
+                    CountryID = dto.CountryID,
+                    IsDeleted = dto.IsDeleted
                 };
                 if (dto.Beers != null)
                 {

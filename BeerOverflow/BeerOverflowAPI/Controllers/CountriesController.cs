@@ -10,22 +10,23 @@ using Database;
 using Services;
 using Services.Mappers;
 using BeerOverflowAPI.Models;
+using Services.Contracts;
 
 namespace BeerOverflowAPI.Controllers
 {
     public class CountriesController : Controller
     {
-        private readonly BOContext _context;
+        private readonly ICountriesService _service;
 
-        public CountriesController(BOContext context)
+        public CountriesController(ICountriesService _service)
         {
-            _context = context;
+            this._service = _service ?? throw new ArgumentNullException("No service");
         }
 
         // GET: Countries
         public async Task<IActionResult> Index()
         {
-            var index = await new CountriesService(this._context).GetAllAsync();
+            var index = await _service.GetAllAsync();
             return View(index.Select(c => c.MapCountryDTOToView()));
         }
 
@@ -36,10 +37,8 @@ namespace BeerOverflowAPI.Controllers
             {
                 return NotFound();
             }
-            var details = await new CountriesService(this._context).GetAsync(id);
+            var details = await _service.GetAsync(id);
             var country = details.MapCountryDTOToView();
-            //var country = await _context.Countries
-            //    .FirstOrDefaultAsync(m => m.ID == id);
             if (country == null)
             {
                 return NotFound();
@@ -63,11 +62,7 @@ namespace BeerOverflowAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var returnCountry = await new CountriesService(this._context).CreateAsync(country.MapCountryViewToDTO());
-                //country.MapCountryViewToDTO();
-                //country.CreatedOn = DateTime.UtcNow;
-                //_context.Add(country);
-                //await _context.SaveChangesAsync();
+                var returnCountry = await _service.CreateAsync(country.MapCountryViewToDTO());
                 country = returnCountry.MapCountryDTOToView();
                 return RedirectToAction(nameof(Index));
             }
@@ -81,17 +76,12 @@ namespace BeerOverflowAPI.Controllers
             {
                 return NotFound();
             }
-            var country = await new CountriesService(this._context).GetAsync(id);
-            //var country = await _context.Countries.Include(c => c.Breweries).FirstOrDefaultAsync(c => c.ID == id);
+            var country = await _service.GetAsync(id);
             if (country == null)
             {
                 return NotFound();
             }
-            return View(new CountryViewModel() { 
-                ID = country.ID, 
-                Name = country.Name,
-                Breweries = country.Breweries.Select(b => b.Name).ToList()
-            });
+            return View(country.MapCountryDTOToView());
         }
 
         // POST: Countries/Edit/5
@@ -108,24 +98,7 @@ namespace BeerOverflowAPI.Controllers
 
             if (ModelState.IsValid)
             {
-                await new CountriesService(this._context).UpdateAsync(country.ID, country.MapCountryViewToDTO());
-                //try
-                //{
-                //    country.ModifiedOn = DateTime.UtcNow;
-                //    _context.Update(country);
-                //    await _context.SaveChangesAsync();
-                //}
-                //catch (DbUpdateConcurrencyException)
-                //{
-                //    if (!CountryExists(country.ID))
-                //    {
-                //        return NotFound();
-                //    }
-                //    else
-                //    {
-                //        return BadRequest();
-                //    }
-                //}
+                await _service.UpdateAsync(id, country.MapCountryViewToDTO());
                 return RedirectToAction(nameof(Index));
             }
             return View(country);
@@ -138,20 +111,13 @@ namespace BeerOverflowAPI.Controllers
             {
                 return NotFound();
             }
-            var country = await new CountriesService(this._context).GetAsync(id);
-            //var country = await _context.Countries
-            //    .FirstOrDefaultAsync(m => m.ID == id);
+            var country = await _service.GetAsync(id);
             if (country == null)
             {
                 return NotFound();
             }
 
-            return View(new CountryViewModel()
-            {
-                ID = country.ID,
-                Name = country.Name,
-                Breweries = country.Breweries.Select(b => b.Name).ToList()
-            });
+            return View(country.MapCountryDTOToView());
         }
 
         // POST: Countries/Delete/5
@@ -159,7 +125,7 @@ namespace BeerOverflowAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (await new CountriesService(this._context).DeleteAsync(id))
+            if (await _service.DeleteAsync(id))
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -167,13 +133,7 @@ namespace BeerOverflowAPI.Controllers
             {
                 return BadRequest();
             }
-            //var country = await _context.Countries.FindAsync(id);
-            //country.DeletedOn = DateTime.UtcNow;
-            //country.IsDeleted = true;
-            ////_context.Countries.Remove(country);
-            //_context.Countries.Update(country);
-            //await _context.SaveChangesAsync();
-            
+
         }
 
         public async Task<IActionResult> Recover(int? id)
@@ -182,48 +142,30 @@ namespace BeerOverflowAPI.Controllers
             {
                 return NotFound();
             }
-            var country = await new CountriesService(this._context).GetAsync(id);
-            //var country = await _context.Countries
-            //    .FirstOrDefaultAsync(m => m.ID == id);
+            var country = await _service.GetAsync(id);
             if (country == null)
             {
                 return NotFound();
             }
 
-            return View(new CountryViewModel()
-            {
-                ID = country.ID,
-                Name = country.Name,
-                Breweries = country.Breweries.Select(b => b.Name).ToList()
-            });
+            return View(country.MapCountryDTOToView());
         }
 
-        // POST: Countries/Delete/5
+        // POST: Countries/Recover/5
         [HttpPost, ActionName("Recover")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RecoverConfirmed(int id)
         {
-            if (await new CountriesService(this._context).RecoverAsync(id))
+            try
             {
-                return RedirectToAction(nameof(Index));
+                var country = await _service.GetAsync(id);
+                await _service.CreateAsync(country);
             }
-            else
+            catch (Exception)
             {
                 return BadRequest();
             }
-            
-            //var country = await _context.Countries.FindAsync(id);
-            //country.DeletedOn = null;
-            //country.IsDeleted = false;
-            ////_context.Countries.Remove(country);
-            //_context.Countries.Update(country);
-            //await _context.SaveChangesAsync();
-            
+            return RedirectToAction("Index");
         }
-
-        //private bool CountryExists(int id)
-        //{
-        //    return _context.Countries.Any(e => e.ID == id);
-        //}
     }
 }

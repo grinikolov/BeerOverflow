@@ -12,9 +12,9 @@ namespace Services.Mappers
         public static CountryDTO MapCountryViewToDTO(this CountryViewModel view)
         {
             var countryDTO = new CountryDTO() {
-                //ID = view.ID,
+                ID = view.ID,
                 Name = view.Name,
-                //Breweries = view.Breweries.Select(n => new BreweryDTO() { Name = n}).ToList()
+                IsDeleted = view.IsDeleted
             };
             if (view.ID !=null)
             {
@@ -33,11 +33,11 @@ namespace Services.Mappers
             {
                 ID = dto.ID,
                 Name = dto.Name,
-                //Breweries = dto.Breweries.Select(n => n.Name).ToList()
+                IsDeleted = dto.IsDeleted
             };
             if (dto.Breweries != null)
             {
-                countryView.Breweries = dto.Breweries.Select(n => n.Name).ToList();
+                countryView.Breweries = dto.Breweries.Select(b => b.Name).ToList();
             }
             return countryView;
         }

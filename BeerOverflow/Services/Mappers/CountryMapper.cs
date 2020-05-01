@@ -17,6 +17,7 @@ namespace Services.Mappers
                 {
                     ID = country.ID,
                     Name = country.Name,
+                    IsDeleted = country.IsDeleted
                 };
                 if (country.Breweries != null)
                 {
@@ -43,6 +44,7 @@ namespace Services.Mappers
                 {
                     ID = dto.ID,
                     Name = dto.Name,
+                    IsDeleted = dto.IsDeleted
                     
                 };
                 if (dto.Breweries != null)

@@ -10,6 +10,7 @@ namespace Services.DTOs
         public int? ID { get; set; }
         public string Name { get; set; }
         public ICollection<BreweryDTO> Breweries { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }

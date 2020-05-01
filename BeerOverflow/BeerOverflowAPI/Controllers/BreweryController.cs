@@ -11,22 +11,25 @@ using Services;
 using BeerOverflowAPI.ViewMappers;
 using BeerOverflowAPI.Models;
 using Services.Mappers;
+using Services.Contracts;
 
 namespace BeerOverflowAPI.Controllers
 {
     public class BreweryController : Controller
     {
-        private readonly BOContext _context;
+        private readonly IBreweryService _service;
+        private readonly ICountriesService _countryService;
 
-        public BreweryController(BOContext context)
+        public BreweryController(IBreweryService service, ICountriesService _countryService)
         {
-            _context = context;
+            this._service = service ?? throw new ArgumentNullException(nameof(service)); ;
+            this._countryService = _countryService ?? throw new ArgumentNullException(nameof(service));
         }
 
         // GET: Breweries
         public async Task<IActionResult> Index()
         {
-            var index = await new BreweryServices(this._context).GetAllAsync();
+            var index = await _service.GetAllAsync();
             //var bOContext = _context.Breweries.Include(b => b.Country);
             //return View(await bOContext.ToListAsync());
             return View(index.Select(b => b.MapBreweryDTOToView()));
@@ -39,10 +42,7 @@ namespace BeerOverflowAPI.Controllers
             {
                 return NotFound();
             }
-            var brewery = await new BreweryServices(this._context).GetAsync(id);
-            //var brewery = await _context.Breweries
-            //    .Include(b => b.Country)
-            //    .FirstOrDefaultAsync(m => m.ID == id);
+            var brewery = await _service.GetAsync(id);
             if (brewery == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace BeerOverflowAPI.Controllers
         // GET: Breweries/Create
         public IActionResult Create()
         {
-            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name");
+            ViewData["CountryID"] = new SelectList(this._countryService.GetAllAsync().Result, "ID", "Name");
             return View();
         }
 
@@ -63,17 +63,17 @@ namespace BeerOverflowAPI.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,CountryID"/*,CreatedOn,ModifiedOn,DeletedOn,IsDeleted"*/)] BreweryViewModel brewery)
+        public async Task<IActionResult> Create([Bind("ID,Name,CountryID")] BreweryViewModel brewery)
         {
             if (ModelState.IsValid)
             {
-                var newBrewery = await new BreweryServices(this._context).CreateAsync(brewery.MapBreweryViewToDTO());
+                var newBrewery = await _service.CreateAsync(brewery.MapBreweryViewToDTO());
                 //_context.Add(brewery);
                 //await _context.SaveChangesAsync();
                 brewery = newBrewery.MapBreweryDTOToView();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", brewery.Name);
+            ViewData["CountryID"] = new SelectList(this._countryService.GetAllAsync().Result, "ID", "Name", brewery.Name);
             return View(brewery);
         }
 
@@ -85,13 +85,13 @@ namespace BeerOverflowAPI.Controllers
                 return NotFound();
             }
 
-            var brewery = await _context.Breweries.FindAsync(id);
+            var brewery = await _service.GetAsync(id);
             if (brewery == null)
             {
                 return NotFound();
             }
-            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", brewery.CountryID);
-            return View(brewery.MapBreweryToDTO().MapBreweryDTOToView());
+            ViewData["CountryID"] = new SelectList(this._countryService.GetAllAsync().Result, "ID", "Name", brewery.CountryID);
+            return View(brewery.MapBreweryDTOToView());
         }
 
         // POST: Breweries/Edit/5
@@ -99,34 +99,26 @@ namespace BeerOverflowAPI.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,CountryID,IsDeleted")] Brewery brewery)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,CountryID,IsDeleted")] BreweryViewModel brewery)
         {
             if (id != brewery.ID)
             {
                 return NotFound();
             }
-
+            var updateModel = brewery.MapBreweryViewToDTO();
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(brewery);
-                    await _context.SaveChangesAsync();
+                    await _service.UpdateAsync(id,updateModel);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!BreweryExists(brewery.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", brewery.CountryID);
+            ViewData["CountryID"] = new SelectList(this._countryService.GetAllAsync().Result, "ID", "Name", brewery.CountryID);
             return View(brewery);
         }
 
@@ -138,15 +130,13 @@ namespace BeerOverflowAPI.Controllers
                 return NotFound();
             }
 
-            var brewery = await _context.Breweries
-                .Include(b => b.Country)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var brewery = await _service.GetAsync(id);
             if (brewery == null)
             {
                 return NotFound();
             }
 
-            return View(brewery);
+            return View(brewery.MapBreweryDTOToView());
         }
 
         // POST: Breweries/Delete/5
@@ -154,15 +144,55 @@ namespace BeerOverflowAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var brewery = await _context.Breweries.FindAsync(id);
-            _context.Breweries.Remove(brewery);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var brewery = await _service.GetAsync(id);
+            bool result;
+            try
+            {
+                result = await _service.DeleteAsync(id);
+            }
+            catch (Exception)
+            {
+
+                return NotFound();
+            }
+            if (result)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
-        private bool BreweryExists(int? id)
+        public async Task<IActionResult> Recover(int? id)
         {
-            return _context.Breweries.Any(e => e.ID == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var brewery = await _service.GetAsync(id);
+            if (brewery == null)
+            {
+                return NotFound();
+            }
+            return View(brewery.MapBreweryDTOToView());
+        }
+
+        [HttpPost, ActionName("Recover")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RecoverConfirmed(int id)
+        {
+            try
+            {
+                var brewery = await _service.GetAsync(id);
+                await _service.CreateAsync(brewery);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            return RedirectToAction("Index");
         }
     }
 }

@@ -77,9 +77,24 @@ namespace BeerOverflowAPI.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new User { Name = Input.Name, UserName = Input.Email, Email = Input.Email, Password = Input.Password };
-                user.RoleId = 1;
+                var a = await _userManager.GetUsersInRoleAsync("admin");
+                if (a.Count == 0)
+                {
+                    user.RoleId = 2;
+                }
+                else
+                {
+                    user.RoleId = 1;
+                }
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                await _userManager.AddToRoleAsync(user, "member");
+                if (user.RoleId == 2)
+                {
+                    await _userManager.AddToRoleAsync(user, "admin");
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, "member");
+                }
                 //await _userManager.AddToRoleAsync(user, "user");
                 if (result.Succeeded)
                 {

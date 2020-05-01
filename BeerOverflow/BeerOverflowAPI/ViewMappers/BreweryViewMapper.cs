@@ -13,10 +13,10 @@ namespace BeerOverflowAPI.ViewMappers
         {
             var breweryDTO = new BreweryDTO()
             {
-                //ID = view.ID,
+                ID = view.ID,
                 Name = view.Name,
-                CountryID = view.CountryID
-                //Breweries = view.Breweries.Select(n => new BreweryDTO() { Name = n}).ToList()
+                CountryID = view.CountryID,
+                IsDeleted = view.IsDeleted
             };
             if (view.ID != null)
             {
@@ -36,8 +36,8 @@ namespace BeerOverflowAPI.ViewMappers
                 ID = dto.ID,
                 Name = dto.Name,
                 CountryID = dto.CountryID,
-                Country = dto.Country
-                //Breweries = dto.Breweries.Select(n => n.Name).ToList()
+                Country = dto.Country,
+                IsDeleted = dto.IsDeleted
             };
             if (dto.Beers != null)
             {

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Database.Seeder
 {
@@ -13,6 +14,7 @@ namespace Database.Seeder
             await SeedRolesAsync(context);
             await SeedCountriesAsync(context);
             await SeedStylesAsync(context);
+            //await SeedFirstAdmin(context);
 
         }
         private static async System.Threading.Tasks.Task SeedRolesAsync(BOContext context)
@@ -57,6 +59,28 @@ namespace Database.Seeder
                     Name = name,
                 })
             );
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedFirstAdmin(BOContext context)
+        {
+            if (context.Users.Any())
+            {
+                return;
+            }
+
+            var user = new User() 
+            {
+                Name = "Carlsberg",
+                UserName = "Carlsberg",
+                NormalizedUserName = "CARLSBERG",
+                Email = "Carlsberg@bo.com",
+                NormalizedEmail = "CARSLBERG@BO.COM",
+                Password = "carlsberg",
+                Role =await context.Roles.FindAsync(2)
+                
+            };
+            await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
         }
 
