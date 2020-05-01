@@ -21,7 +21,9 @@ namespace Database.Seeder
             await context.Roles.AddRangeAsync(
                 roleNames.Select(name => new Role()
                 {
-                    Name = name
+                    Name = name,
+                    NormalizedName = name.ToUpper(),
+
                 })
             );
             await context.SaveChangesAsync();

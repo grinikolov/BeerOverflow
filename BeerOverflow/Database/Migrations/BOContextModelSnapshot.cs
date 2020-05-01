@@ -106,7 +106,7 @@ namespace Database.Migrations
 
             modelBuilder.Entity("BeerOverflow.Models.BeerUserRating", b =>
                 {
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.Property<int?>("BeerID")
@@ -159,7 +159,7 @@ namespace Database.Migrations
 
             modelBuilder.Entity("BeerOverflow.Models.Comment", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int?>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -188,7 +188,7 @@ namespace Database.Migrations
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ReviewID")
+                    b.Property<int>("ReviewID")
                         .HasColumnType("int");
 
                     b.Property<int>("UserID")
@@ -243,7 +243,7 @@ namespace Database.Migrations
                     b.Property<int?>("BeerID")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("BeerID", "UserID");
@@ -285,7 +285,7 @@ namespace Database.Migrations
 
             modelBuilder.Entity("BeerOverflow.Models.Review", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int?>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -322,7 +322,7 @@ namespace Database.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
@@ -331,7 +331,7 @@ namespace Database.Migrations
 
                     b.HasIndex("BeerID", "UserID")
                         .IsUnique()
-                        .HasFilter("[BeerID] IS NOT NULL");
+                        .HasFilter("[BeerID] IS NOT NULL AND [UserID] IS NOT NULL");
 
                     b.ToTable("Reviews");
                 });
@@ -392,7 +392,7 @@ namespace Database.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("IDOld")
+                    b.Property<int?>("IDOld")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -467,7 +467,7 @@ namespace Database.Migrations
                     b.Property<int?>("BeerID")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("BeerID", "UserID");
@@ -633,7 +633,9 @@ namespace Database.Migrations
 
                     b.HasOne("BeerOverflow.Models.Review", "Review")
                         .WithMany("Comments")
-                        .HasForeignKey("ReviewID");
+                        .HasForeignKey("ReviewID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BeerOverflow.Models.User", "User")
                         .WithMany("CommentList")
@@ -696,8 +698,7 @@ namespace Database.Migrations
                     b.HasOne("BeerOverflow.Models.User", "User")
                         .WithMany("ReviewList")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.User", b =>

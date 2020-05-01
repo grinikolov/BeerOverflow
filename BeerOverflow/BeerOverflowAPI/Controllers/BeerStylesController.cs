@@ -26,10 +26,10 @@ namespace BeerOverflowAPI.Controllers
         // GET: BeerStyles
         public async Task<IActionResult> Index()
         {
-            var styles = this._service.GetAllAsync()
-                .Result.Select(s => s.MapDTOToView());
+            var styles = await this._service.GetAllAsync();
+            var stylesDTO = styles.Select(s => s.MapDTOToView()).ToList();
 
-            return View(styles);
+            return View(stylesDTO);
         }
 
         // GET: BeerStyles/Details/5
