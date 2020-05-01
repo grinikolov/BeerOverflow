@@ -20,6 +20,7 @@ namespace BeerOverflowAPI.Controllers
 
         public IActionResult Index()
         {
+
             return View();
         }
 

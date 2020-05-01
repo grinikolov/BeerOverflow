@@ -43,8 +43,8 @@
                     <ul class="nav flex-column">
                         <!-- Logo -->
                         <li>
-                            <div class="logo-wrapper waves-light">
-                                <a href="">
+                            <div class="logo-wrapper">
+                                <a href="/">
                                     <img src="~/BO_Logo/Logo_text.svg"
                                          class="img-fluid flex-center">
                                 </a>
@@ -52,20 +52,20 @@
                         </li>
                         <!--/. Logo -->
                         <partial name="_LoginPartial" />
+                        <li role="separator" class="divider"></li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Beers" asp-action="Index">Beers</a>
+                            <a class="nav-link btn btn-primary text-dark" asp-area="" asp-controller="Beers" asp-action="Index">Beers</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="BeerStyles" asp-action="Index">Styles</a>
+                            <a class="nav-link btn btn-primary text-dark" asp-area="" asp-controller="BeerStyles" asp-action="Index">Styles</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Brewery" asp-action="Index">Breweries</a>
+                            <a class="nav-link btn btn-primary text-dark" asp-area="" asp-controller="Brewery" asp-action="Index">Breweries</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Countries</a>
+                            <a class="nav-link btn btn-primary text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Countries</a>
                         </li>
 
-                        <!--<partial name="_LoginPartial" />-->
                     </ul>
                 </nav>
             </div>

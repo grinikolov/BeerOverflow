@@ -7,23 +7,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeerOverflow.Models;
 using Database;
+using Services.Contracts;
+using BeerOverflowAPI.ViewMappers;
+using BeerOverflowAPI.Models;
 
 namespace BeerOverflowAPI.Controllers
 {
     public class BeersController : Controller
     {
-        private readonly BOContext _context;
+        private readonly IBeerService _service;
 
-        public BeersController(BOContext context)
+        public BeersController(IBeerService service)
         {
-            _context = context;
+            this._service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         // GET: Beers
         public async Task<IActionResult> Index()
         {
-            var bOContext = _context.Beers.Include(b => b.Brewery).Include(b => b.Country).Include(b => b.Style);
-            return View(await bOContext.ToListAsync());
+            var beers = await _service.GetAllAsync();
+            var beersDTO = beers.Select(b => b.MapBeerDTOToView());
+            return View(beersDTO);
         }
 
         // GET: Beers/Details/5
@@ -34,34 +38,30 @@ namespace BeerOverflowAPI.Controllers
                 return NotFound();
             }
 
-            var beer = await _context.Beers
-                .Include(b => b.Brewery)
-                .Include(b => b.Country)
-                .Include(b => b.Style)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var beer = await this._service.GetAsync(id);
             if (beer == null)
             {
                 return NotFound();
             }
 
-            return View(beer);
+            return View(beer.MapBeerDTOToView());
         }
 
         // GET: Beers/Create
         public IActionResult Create()
         {
-            ViewData["BreweryID"] = new SelectList(_context.Breweries, "ID", "Name");
-            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name");
-            ViewData["StyleID"] = new SelectList(_context.BeerStyles, "ID", "Description");
+            //ViewData["BreweryID"] = new SelectList(_context.Breweries, "ID", "Name");
+            //ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name");
+            //ViewData["StyleID"] = new SelectList(_context.BeerStyles, "ID", "Description");
             return View();
         }
-
+        /*
         // POST: Beers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,ABV,StyleID,CountryID,BreweryID,Rating,CreatedOn,ModifiedOn,DeletedOn,IsDeleted")] Beer beer)
+        public async Task<IActionResult> Create([Bind("Name,ABV,StyleName,Country,Brewery,Rating")] BeerViewModel beer)
         {
             if (ModelState.IsValid)
             {
@@ -131,6 +131,7 @@ namespace BeerOverflowAPI.Controllers
             ViewData["StyleID"] = new SelectList(_context.BeerStyles, "ID", "Description", beer.StyleID);
             return View(beer);
         }
+        */
 
         // GET: Beers/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -140,17 +141,13 @@ namespace BeerOverflowAPI.Controllers
                 return NotFound();
             }
 
-            var beer = await _context.Beers
-                .Include(b => b.Brewery)
-                .Include(b => b.Country)
-                .Include(b => b.Style)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var beer = await this._service.GetAsync(id);
             if (beer == null)
             {
                 return NotFound();
             }
 
-            return View(beer);
+            return View(beer.MapBeerDTOToView());
         }
 
         // POST: Beers/Delete/5
@@ -158,15 +155,9 @@ namespace BeerOverflowAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            var beer = await _context.Beers.FindAsync(id);
-            _context.Beers.Remove(beer);
-            await _context.SaveChangesAsync();
+            var result = await this._service.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BeerExists(int? id)
-        {
-            return _context.Beers.Any(e => e.ID == id);
-        }
     }
 }
