@@ -10,21 +10,33 @@ using Database;
 using Services.Contracts;
 using BeerOverflowAPI.ViewMappers;
 using BeerOverflowAPI.Models;
+using System.Security.Claims;
+using Services;
 
 namespace BeerOverflowAPI.Controllers
 {
     public class BeersController : Controller
     {
         private readonly IBeerService _service;
+        private readonly IUsersService _usersService;
 
-        public BeersController(IBeerService service)
+
+        public BeersController(IBeerService service, IUsersService usersService)
         {
             this._service = service ?? throw new ArgumentNullException(nameof(service));
+            this._usersService = usersService ?? throw new ArgumentNullException(nameof(service)); ;
         }
+
+
 
         // GET: Beers
         public async Task<IActionResult> Index()
         {
+            // TODO: Approach for Wishing beer:
+            //var temp = this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //Console.WriteLine(temp);
+            // _usersService.Wish (temp, beerID); // 
+
             var beers = await _service.GetAllAsync();
             var beersDTO = beers.Select(b => b.MapBeerDTOToView());
             return View(beersDTO);
