@@ -10,6 +10,7 @@ using Database;
 using Services;
 using BeerOverflowAPI.ViewMappers;
 using BeerOverflowAPI.Models;
+using Services.Mappers;
 
 namespace BeerOverflowAPI.Controllers
 {
@@ -90,7 +91,7 @@ namespace BeerOverflowAPI.Controllers
                 return NotFound();
             }
             ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", brewery.CountryID);
-            return View(brewery);
+            return View(brewery.MapBreweryToDTO().MapBreweryDTOToView());
         }
 
         // POST: Breweries/Edit/5
@@ -98,7 +99,7 @@ namespace BeerOverflowAPI.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,CountryID,CreatedOn,ModifiedOn,DeletedOn,IsDeleted")] Brewery brewery)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,CountryID,IsDeleted")] Brewery brewery)
         {
             if (id != brewery.ID)
             {

@@ -10,5 +10,6 @@ namespace Services.DTOs
         public string Name { get; set; }
         public string Country { get; set; }
         public ICollection<BeerDTO> Beers { get; set; }
+        public int? CountryID { get; set; }
     }
 }

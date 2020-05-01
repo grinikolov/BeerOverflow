@@ -13,11 +13,11 @@ namespace BeerOverflowAPI.ApiControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersAPIController : ControllerBase
     {
         private readonly IUsersService _service;
 
-        public UsersController(IUsersService service)
+        public UsersAPIController(IUsersService service)
         {
             this._service = service ?? throw new ArgumentNullException(nameof(service));
         }

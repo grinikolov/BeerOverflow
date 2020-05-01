@@ -14,11 +14,11 @@ namespace BeerOverflowAPI.ApiControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReviewsController : ControllerBase
+    public class ReviewsAPIController : ControllerBase
     {
         private readonly IReviewsService _service;
 
-        public ReviewsController(IReviewsService service)
+        public ReviewsAPIController(IReviewsService service)
         {
             this._service = service;
         }
