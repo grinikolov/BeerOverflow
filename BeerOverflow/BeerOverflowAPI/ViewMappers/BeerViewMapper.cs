@@ -15,7 +15,7 @@ namespace BeerOverflowAPI.ViewMappers
             {
                 ID = dto.ID,
                 Name = dto.Name,
-                StyleName = dto.Style.Name,
+                Style = dto.Style.Name,
                 Country = dto.Country.Name,
                 Brewery = dto.Brewery.Name,
                 Rating = dto.Rating,

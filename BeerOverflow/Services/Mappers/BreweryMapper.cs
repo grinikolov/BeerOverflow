@@ -34,7 +34,7 @@ namespace Services.Mappers
 
                 return new BreweryDTO();
             }
-            
+
         }
 
         public static Brewery MapDTOToBrewery(this BreweryDTO dto)
@@ -45,7 +45,8 @@ namespace Services.Mappers
                 {
                     ID = dto.ID,
                     Name = dto.Name,
-                    Country = new Country() { Name = dto.Country},
+                    //TODO: Country should not be created anew
+                    Country = new Country() { Name = dto.Country },
                 };
                 if (dto.Beers != null)
                 {

@@ -12,6 +12,8 @@ namespace Database.Seeder
         {
             await SeedRolesAsync(context);
             await SeedCountriesAsync(context);
+            await SeedStylesAsync(context);
+
         }
         private static async System.Threading.Tasks.Task SeedRolesAsync(BOContext context)
         {
@@ -27,6 +29,19 @@ namespace Database.Seeder
 
                 })
             );
+            await context.SaveChangesAsync();
+        }
+
+        private static async System.Threading.Tasks.Task SeedStylesAsync(BOContext context)
+        {
+            if (context.BeerStyles.Any())
+                return;
+
+            await context.BeerStyles.AddAsync(new BeerStyle()
+            {
+                Name = "Lager",
+                Description = "Pale lagers are the standard international beer style, as personified by products from Miller to Heineken. This style is the generic spin-off of the pilsner style. Pale lagers are generally light- to medium-bodied with a light-to-medium hop impression and a clean, crisp malt character."
+            });
             await context.SaveChangesAsync();
         }
 
