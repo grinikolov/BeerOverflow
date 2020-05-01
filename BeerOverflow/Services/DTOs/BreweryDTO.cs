@@ -8,6 +8,7 @@ namespace Services.DTOs
     {
         public int? ID { get; set; }
         public string Name { get; set; }
+        public int CountryID { get; set; }
         public string Country { get; set; }
         public ICollection<BeerDTO> Beers { get; set; }
     }

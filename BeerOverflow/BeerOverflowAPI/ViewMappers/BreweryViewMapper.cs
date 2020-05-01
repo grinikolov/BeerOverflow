@@ -34,6 +34,7 @@ namespace BeerOverflowAPI.ViewMappers
             {
                 ID = dto.ID,
                 Name = dto.Name,
+                CountryID = dto.CountryID,
                 //Breweries = dto.Breweries.Select(n => n.Name).ToList()
             };
             if (dto.Beers != null)

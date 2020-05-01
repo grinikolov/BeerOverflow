@@ -46,7 +46,7 @@ namespace Services.Mappers
                     ID = dto.ID,
                     Name = dto.Name,
                     //TODO: Country should not be created anew
-                    Country = new Country() { Name = dto.Country },
+                    //Country = new Country() { Name = dto.Country },
                 };
                 if (dto.Beers != null)
                 {

@@ -69,6 +69,8 @@ namespace Services
             {
                 return null;
             }
+            brewery.Country = await this._context.Countries
+                .FirstOrDefaultAsync(c => c.Name == model.Country);
             #region Check if exists
             var theBrewery = await this._context.Breweries
                 .FirstOrDefaultAsync(b => b.Name == model.Name);
