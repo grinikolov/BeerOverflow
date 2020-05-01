@@ -36,45 +36,79 @@
  -->
 <body>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-3" role="complementary">
-                <nav class="float-left">
-                    <ul class="nav flex-column">
-                        <!-- Logo -->
-                        <li>
-                            <div class="logo-wrapper waves-light">
-                                <a href="">
-                                    <img src="~/BO_Logo/Logo_text.svg"
-                                         class="img-fluid flex-center">
-                                </a>
-                            </div>
-                        </li>
-                        <!--/. Logo -->
-                        <partial name="_LoginPartial" />
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Beers" asp-action="Index">Beers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="BeerStyles" asp-action="Index">Styles</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Brewery" asp-action="Index">Breweries</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Countries</a>
-                        </li>
 
-                        <!--<partial name="_LoginPartial" />-->
-                    </ul>
-                </nav>
-            </div>
 
-            <div class="col-md-9" role="main">
-                <main role="main" class="pb-3">
-                    @RenderBody()
-                </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class=" flex-wrap">
+        <a href="/">
+            <div class="navbar navbar-inverse navbar-fixed-top" style="width:20%"></div>
+            <img src="~/BO_Logo/Logo_text.svg" style="width:20%">
+        </a>
+        <nav class="navbar navbar-inverse navbar-fixed-top" style="width:20%">
+            <div class="container-fluid nav flex-column">
+                <partial name="_LoginPartial"   />
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Beers" asp-action="Index">Beers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="BeerStyles" asp-action="Index">Styles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Brewery" asp-action="Index">Breweries</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Countries</a>
+                    </li>
+
+                    <!--<partial name="_LoginPartial" />-->
+                </ul>
             </div>
+        </nav>
+
+        <div class="container body-content fixed-top" style=" margin-left:20% ;width:80%">
+
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
 
         <footer class="border-top footer text-muted">
