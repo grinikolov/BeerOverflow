@@ -52,10 +52,10 @@ namespace BeerOverflowAPI.Controllers
         }
 
         // GET: Review/Create
-        public IActionResult Create()
+        public IActionResult Create(int userID, int beerID)
         {
-            ViewData["BeerID"] = new SelectList(_beerService.GetAllAsync().Result, "ID", "Name");
-            ViewData["UserID"] = new SelectList(_userService.GetAllUsers().Result, "Id", "Name");
+            ViewData["BeerID"] = _beerService.GetAsync(beerID);
+            ViewData["UserID"] = _userService.GetUser(userID);
             return View();
         }
 
@@ -71,8 +71,8 @@ namespace BeerOverflowAPI.Controllers
                 await _service.CreateAsync(review.MapReviewViewToDTO());
                 return RedirectToAction(nameof(Details),"BeersController",review.BeerID);
             }
-            ViewData["BeerID"] = new SelectList(_beerService.GetAllAsync().Result, "ID", "Name");
-            ViewData["UserID"] = new SelectList(_userService.GetAllUsers().Result, "Id", "Name");
+            ViewData["BeerID"] = _beerService.GetAsync(review.BeerID);
+            ViewData["UserID"] = _userService.GetUser(review.UserID);
             return View(review);
         }
 
