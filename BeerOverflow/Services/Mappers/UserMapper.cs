@@ -13,52 +13,74 @@ namespace Services.Mappers
         {
             var model = new UserDTO
             {
-                ID = u.IDOld,
+                ID = u.Id,
                 Name = u.Name,
                 Password = u.Password,
-                DrankLists = u.DrankLists.Count > 0 ?
-                    u.DrankLists.Select(dl => new DrankListDTO()
-                    { 
-                    BeerID = dl.BeerID,
-                    BeerName = dl.Beer.Name,
-                    UserID = dl.UserID,
-                    UserName = dl.User.Name  //TODO: user name only, not object User
-                    }).ToList() : null,
+               
+                //TODO: Map FlagList and Likes
+                //FlagList
+                //LikesList = u.LikesList.Count >0 ? u.LikesList(l => )
+            };
 
-                WishLists = u.WishLists.Count > 0 ?
+            if (u.DrankLists != null)
+            {
+                model.DrankLists = u.DrankLists.Count > 0 ?
+                     u.DrankLists.Select(x => new DrankListDTO()
+                     {
+                         BeerID = x.BeerID,
+                         BeerName = x.Beer.Name,
+                         UserID = x.UserID,
+                         UserName = x.User.Name,
+                     }).ToList() : null;
+            }
+            else
+            {
+                model.DrankLists = new List<DrankListDTO>();
+            }
+            if (u.WishLists != null)
+            {
+               model.WishLists = u.WishLists.Count > 0 ?
                     u.WishLists.Select(x => new WishListDTO()
                     {
                         BeerID = x.BeerID,
                         BeerName = x.Beer.Name,
                         UserID = x.UserID,
                         UserName = x.User.Name,
-                    }).ToList() : null,
-                ReviewsList = u.ReviewList.Count > 0 ?
+                    }).ToList() : null;
+            }
+            else
+            {
+                model.WishLists = new List<WishListDTO>();
+            }
+            if (u.ReviewList != null)
+            {
+                model.ReviewsList = u.ReviewList.Count > 0 ?
                     u.ReviewList.Select(r => r.MapReviewToDTO()
-                    //new ReviewDTO()
-                    //{
-                    //    ID = r.ID,
-                    //    Description = r.Description,
-                    //    Rating = r.Rating,
-                    //}
-                    ).ToList() : null,
-                CommentsList = u.CommentList.Count > 0 ?
+                    ).ToList() : null ;
+            }
+            else
+            {
+                model.ReviewsList = new List<ReviewDTO>();
+            }
+            if (u.CommentList != null)
+            {
+                model.CommentsList = u.CommentList.Count > 0 ?
                     u.CommentList.Select(c => c.MapCommentToDTO()
-                    //new CommentDTO()
-                    //{
-                    //    ID = c.ID,
-                    //    LikesCount = c.LikesCount,
-                    //}
-                    ).ToList() : null,
-                //FlagList
-                //LikesList = u.LikesList.Count >0 ? u.LikesList(l => )
-            };
+                    ).ToList() : null;
+            }
+            else
+            {
+                model.CommentsList = new List<CommentDTO>();
+            }
+
+
             return model;
         }
         public static User MapToUser(this UserDTO model)
         {
             var theUser = new User()
             {
+                Id = model.ID ?? default,
                 Name = model.Name,
                 Password = model.Password,
                 CreatedOn = DateTime.UtcNow,

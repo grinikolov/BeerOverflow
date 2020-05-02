@@ -23,7 +23,7 @@ namespace BeerOverflowAPI.ViewMappers
             };
             if (dto.Reviews != null)
             {
-                beerView.Reviews = dto.Reviews.Select(r => r.Description).ToList();
+                beerView.Reviews = dto.Reviews.Select(r => r.MapDTOToReviewView()).ToList();
             }
             return beerView;
         }
@@ -43,10 +43,10 @@ namespace BeerOverflowAPI.ViewMappers
                 Rating = view.Rating,
                 ABV = view.ABV,
             };
-            //if (view.Reviews != null)
-            //{
-            //    beerView.Reviews = view.Reviews.Select(r => r.Description).ToList();
-            //}
+            if (view.Reviews != null)
+            {
+               dto.Reviews = view.Reviews.Select(r => r.MapReviewViewToDTO()).ToList();
+            }
             return dto;
         }
 

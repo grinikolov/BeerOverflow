@@ -16,7 +16,8 @@ namespace BeerOverflowAPI.Models
         public int? BreweryID { get; set; }
         public string Brewery { get; set; }
         public double Rating { get; set; }
-        public ICollection<string> Reviews { get; set; }
+        //public ICollection<string> Reviews { get; set; }
+        public ICollection<ReviewViewModel> Reviews { get; set; }
         public float ABV { get; set; }
 
     }

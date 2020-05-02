@@ -24,7 +24,7 @@ namespace BeerOverflowAPI.Controllers
         {
             this._service = _service ?? throw new ArgumentNullException("Service not found");
             this._beerService = _beerService ?? throw new ArgumentNullException("Service not found");
-            this._userService = _userService ?? throw new ArgumentNullException("Service not found");
+            this._userService = _usersService ?? throw new ArgumentNullException("Service not found");
         }
 
         // GET: Review
