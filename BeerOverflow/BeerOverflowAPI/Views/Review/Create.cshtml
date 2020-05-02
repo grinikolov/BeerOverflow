@@ -21,45 +21,11 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="UserID" />
             <input type="hidden" asp-for="BeerID" />
-            @*<div class="form-group">
-            <label asp-for="BeerID" class="control-label"></label>
-            <select asp-for="BeerID" class ="form-control" asp-items="ViewBag.BeerID"></select>
-        </div>
-        <div class="form-group">
-            <label asp-for="UserID" class="control-label"></label>
-            <select asp-for="UserID" class ="form-control" asp-items="ViewBag.UserID"></select>
-        </div>*@
-            @*<div class="form-group">
-            <label asp-for="Rating" class="control-label"></label>
-            <input asp-for="Rating" class="form-control" />
-            <span asp-validation-for="Rating" class="text-danger"></span>
-        </div>*@
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <textarea asp-for="Description" class="form-control" rows="10"></textarea>
-                @*<input asp-for="Description" class="form-control" />*@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-            <label asp-for="LikesCount" class="control-label"></label>
-            <input asp-for="LikesCount" class="form-control" />
-            <span asp-validation-for="LikesCount" class="text-danger"></span>
-        </div>*@
-            @*<div class="form-group">
-            <label asp-for="CreatedOn" class="control-label"></label>
-            <input asp-for="CreatedOn" class="form-control" />
-            <span asp-validation-for="CreatedOn" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="ModifiedOn" class="control-label"></label>
-            <input asp-for="ModifiedOn" class="form-control" />
-            <span asp-validation-for="ModifiedOn" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="DeletedOn" class="control-label"></label>
-            <input asp-for="DeletedOn" class="form-control" />
-            <span asp-validation-for="DeletedOn" class="text-danger"></span>
-        </div>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

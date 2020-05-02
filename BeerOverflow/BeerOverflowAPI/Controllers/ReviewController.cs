@@ -68,8 +68,17 @@ namespace BeerOverflowAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _service.CreateAsync(review.MapReviewViewToDTO());
-                return RedirectToAction(nameof(Details),"BeersController",review.BeerID);
+                try
+                {
+                    await _service.CreateAsync(review.MapReviewViewToDTO());
+                    return RedirectToAction(nameof(Details), "Beers", new { id = review.BeerID });
+                }
+                catch (Exception)
+                {
+
+                    return RedirectToAction("Index", "Home");
+                }
+                
             }
             ViewData["BeerID"] = _beerService.GetAsync(review.BeerID);
             ViewData["UserID"] = _userService.GetUser(review.UserID);

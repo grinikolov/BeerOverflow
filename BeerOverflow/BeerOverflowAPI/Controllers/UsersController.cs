@@ -23,10 +23,7 @@ namespace BeerOverflowAPI.Controllers
         {
             return View();
         }
-        // [HttpPost, ActionName("Delete")]
-        //[Route("{userID:int}")]
-        //[HttpGet]//, ActionName("Drink")
-        public async Task<IActionResult> Drink(int userID, int beerID) // was [FromBody] BeerDTO beerDTO)
+        public async Task<IActionResult> Drink(int userID, int beerID)
         {
             if (userID <= 0 || beerID == default)
             {
@@ -37,7 +34,6 @@ namespace BeerOverflowAPI.Controllers
             {
                 var model = await this._service.Drink(userID, beerID);
                 return RedirectToAction("Details", "Beers", beerID);
-                //return NotFound();
             }
             catch (Exception e)
             {

@@ -88,14 +88,14 @@
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => item.Description)
             </dd>
-            <dt>
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+            <dd>
+                <a asp-controller="Review" asp-action="Details" asp-route-id="@item.ID">Details</a>
                 @if (item.UserName == User.Identity.Name)
                 {
                     <a asp-action="Edit" asp-route-id="@item.ID">| Edit |</a>
                     <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                 }
-            </dt>
+            </dd>
         }
     </dl>
 </div>

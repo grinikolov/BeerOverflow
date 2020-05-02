@@ -48,13 +48,11 @@ namespace Services.Mappers
                 var review = new Review
                 {
                     ID = model.ID,
-                    BeerID = model.BeerID,
-                    //Beer = new Beer { ID = model.Beer.ID, Name = model.Beer.Name },
-                    UserID = model.UserID,
-                    //User = new User { IDOld = model.User.ID, Name = model.User.Name },
+                    //BeerID = model.BeerID,
+                    //UserID = model.UserID,
                     Rating = model.Rating,
                     Description = model.Description,
-                    LikesCount = model.LikesCount,
+                    //LikesCount = model.LikesCount,
                     IsFlagged = model.IsFlagged,
                 };
                 if (model.Comments != null)
@@ -63,7 +61,7 @@ namespace Services.Mappers
                 }
                 else
                 {
-                    review.Comments = null;
+                    review.Comments = new List<Comment>();
                 }
                 return review;
             }

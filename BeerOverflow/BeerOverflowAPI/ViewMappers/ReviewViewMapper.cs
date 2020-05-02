@@ -28,7 +28,7 @@ namespace BeerOverflowAPI.ViewMappers
                     ID = c.ID, 
                     BeerID = c.BeerID, 
                     UserID = c.UserID, 
-                    LikesCount = c.LikesCount,
+                    //LikesCount = c.LikesCount,
                     Description = c.Description,
                 }).ToList();
             }
@@ -41,6 +41,7 @@ namespace BeerOverflowAPI.ViewMappers
             {
                 ID = dto.ID,
                 BeerID = dto.BeerID,
+                BeerName = dto.Beer.Name,
                 UserName = dto.User.Name,
                 UserID = dto.UserID,
                 Rating = dto.Rating,
@@ -55,7 +56,7 @@ namespace BeerOverflowAPI.ViewMappers
                     ID = c.ID,
                     BeerID = c.BeerID,
                     UserID = c.UserID,
-                    LikesCount = c.LikesCount,
+                    //LikesCount = c.LikesCount,
                     Description = c.Description,
                 }).ToList();
             }
