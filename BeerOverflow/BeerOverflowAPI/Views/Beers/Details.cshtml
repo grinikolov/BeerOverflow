@@ -1,4 +1,9 @@
 ﻿@model BeerViewModel
+@using Microsoft.AspNetCore.Identity
+@using BeerOverflow.Models
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
 
 @{
     ViewData["Title"] = "Details";
@@ -78,7 +83,19 @@
 
     @if (User.Identity.IsAuthenticated)
     {
-        <a asp-controller="Users" asp-action="Drink">Add to DrankList |</a>
+
+        var user = await UserManager.GetUserAsync(User);
+        var userId = user.Id;
+
+        var parms = new Dictionary<string, string>
+{
+                { "userID", userId.ToString() },
+                { "beerID", Model.ID.ToString() }
+            };
+
+        @*<a asp-route="speakerevalscurrent"
+            asp-all-route-data="parms">Speaker Evaluations</a>*@
+        <a asp-controller="Users" asp-action="Drink" asp-all-route-data="parms">Add to DrankList |</a><!---->
     }
     @if (User.Identity.IsAuthenticated)
     {
