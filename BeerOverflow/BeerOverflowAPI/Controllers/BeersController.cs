@@ -92,10 +92,10 @@ namespace BeerOverflowAPI.Controllers
 
             ViewData["BreweryID"] = new SelectList(this._breweryService.GetAllAsync().Result, "ID", "Name");
             ViewData["CountryID"] = new SelectList(this._countriesService.GetAllAsync().Result, "ID", "Name");
-            ViewData["StyleID"] = new SelectList(this._beerStylesService.GetAllAsync().Result, "ID", "Description");
+            ViewData["StyleID"] = new SelectList(this._beerStylesService.GetAllAsync().Result, "ID", "Name");
             return View(beer);
-        }/*
-
+        }
+        /*
         // GET: Beers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -114,7 +114,7 @@ namespace BeerOverflowAPI.Controllers
             ViewData["StyleID"] = new SelectList(_context.BeerStyles, "ID", "Description", beer.StyleID);
             return View(beer);
         }
-
+        
         // POST: Beers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

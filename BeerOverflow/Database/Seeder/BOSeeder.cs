@@ -9,15 +9,17 @@ namespace Database.Seeder
 {
     public class BOSeeder
     {
-        public static async System.Threading.Tasks.Task InitAsync(BOContext context)
+        public static async Task InitAsync(BOContext context)
         {
             await SeedRolesAsync(context);
             await SeedCountriesAsync(context);
             await SeedStylesAsync(context);
             //await SeedFirstAdmin(context);
+            await SeedBreweriesAsync(context);
+            await SeedBeersAsync(context);
 
         }
-        private static async System.Threading.Tasks.Task SeedRolesAsync(BOContext context)
+        private static async Task SeedRolesAsync(BOContext context)
         {
             if (context.Roles.Any())
                 return;
@@ -34,7 +36,7 @@ namespace Database.Seeder
             await context.SaveChangesAsync();
         }
 
-        private static async System.Threading.Tasks.Task SeedStylesAsync(BOContext context)
+        private static async Task SeedStylesAsync(BOContext context)
         {
             if (context.BeerStyles.Any())
                 return;
@@ -42,12 +44,14 @@ namespace Database.Seeder
             await context.BeerStyles.AddAsync(new BeerStyle()
             {
                 Name = "Lager",
-                Description = "Pale lagers are the standard international beer style, as personified by products from Miller to Heineken. This style is the generic spin-off of the pilsner style. Pale lagers are generally light- to medium-bodied with a light-to-medium hop impression and a clean, crisp malt character."
+                Description = "Pale lagers are the standard international beer style, as personified by products from Miller to Heineken. This style is the generic spin-off of the pilsner style. Pale lagers are generally light- to medium-bodied with a light-to-medium hop impression and a clean, crisp malt character.",
+                CreatedOn = DateTime.UtcNow,
+                   
             });
             await context.SaveChangesAsync();
         }
 
-        private static async System.Threading.Tasks.Task SeedCountriesAsync(BOContext context)
+        private static async Task SeedCountriesAsync(BOContext context)
         {
             if (context.Countries.Any())
                 return;
@@ -57,48 +61,71 @@ namespace Database.Seeder
                 countryNames.Select(name => new Country()
                 {
                     Name = name,
+                    CreatedOn = DateTime.UtcNow,
                 })
             );
             await context.SaveChangesAsync();
         }
 
-        private static async Task SeedFirstAdmin(BOContext context)
-        {
-            if (context.Users.Any())
-            {
-                return;
-            }
-
-            var user = new User() 
-            {
-                Name = "Carlsberg",
-                UserName = "Carlsberg",
-                NormalizedUserName = "CARLSBERG",
-                Email = "Carlsberg@bo.com",
-                NormalizedEmail = "CARSLBERG@BO.COM",
-                Password = "carlsberg",
-                Role =await context.Roles.FindAsync(2)
-                
-            };
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-        }
-
-        //private static async System.Threading.Tasks.Task SeedBreweriesAsync(BOContext context)
+        //private static async Task SeedFirstAdmin(BOContext context)
         //{
-        //    if (context.Breweries.Any())
+        //    if (context.Users.Any())
+        //    {
         //        return;
+        //    }
 
-        //    var breweryNames = new[] { "Bulgaria", "Germany", "Chech Republic" };
-        //    await context.Countries.AddRangeAsync(
-        //        breweryNames.Select(name => new Brewery()
-        //        {
-        //            Name = name,
-        //            c
-        //        })
-        //    );
+        //    var user = new User()
+        //    {
+        //        Name = "Carlsberg",
+        //        UserName = "Carlsberg",
+        //        NormalizedUserName = "CARLSBERG",
+        //        Email = "Carlsberg@bo.com",
+        //        NormalizedEmail = "CARSLBERG@BO.COM",
+        //        Password = "carlsberg",
+        //        Role = await context.Roles.FindAsync(2)
+
+        //    };
+        //    await context.Users.AddAsync(user);
         //    await context.SaveChangesAsync();
         //}
 
+        private static async Task SeedBreweriesAsync(BOContext context)
+        {
+            if (context.Breweries.Any())
+                return;
+
+            await context.Breweries.AddAsync(
+                new Brewery()
+                {
+                    Name = "Carlsberg",
+                    CountryID = context.Countries.FirstOrDefault(c => c.Name == "Bulgaria").ID,
+                    Country = context.Countries.FirstOrDefault(c => c.Name == "Bulgaria"),
+                    CreatedOn = DateTime.UtcNow
+                });
+            await context.SaveChangesAsync();
+        }
+
+        private static async Task SeedBeersAsync(BOContext context)
+        {
+            if (context.Beers.Any())
+                return;
+
+            var beerNames = new[] { "Carlsberg", "Shumensko", "Pirinsko" };
+            await context.Beers.AddRangeAsync(
+                beerNames.Select(name => new Beer()
+                {
+                    Name = name,
+                    CountryID = context.Countries.FirstOrDefault(c => c.Name == "Bulgaria").ID,
+                    Country = context.Countries.FirstOrDefault(c => c.Name == "Bulgaria"),
+                    BreweryID = context.Breweries.FirstOrDefault(b => b.Name == "Carlsberg").ID,
+                    Brewery = context.Breweries.FirstOrDefault(b => b.Name == "Carlsberg"),
+                    ABV = 4,
+                    StyleID = context.BeerStyles.Find(1).ID,
+                    Style = context.BeerStyles.Find(1),
+                    CreatedOn = DateTime.UtcNow
+                }
+            ));
+            await context.SaveChangesAsync();
+        }
     }
 }

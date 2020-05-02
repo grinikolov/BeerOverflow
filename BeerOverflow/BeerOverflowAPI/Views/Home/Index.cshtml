@@ -1,20 +1,21 @@
 ﻿@model BeerViewModel
 @{
     ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome to Team Carlsberg's BeerOverflow</h1>
     <div class="card">
         <div class="card-header">
-            Featured
+            Featured beer
         </div>
         @*<div class="card-body">
             <h4 class="card-title">@Model.Name </h4>
-            <p class="card-text"> @Model.StyleName, @Model.ABV %</p>
+            <p class="card-text"> @Model.Style, @Model.ABV %</p>
             <p class="card-text"> @Model.Country, @Model.Brewery %</p>
             
-            <a asp-action="Details" asp-route-id="@Model.ID" class="card-link">Details</a>
+            <a asp-controller="Beers" asp-action="Details" asp-route-id="@Model.ID" class="card-link">Details</a>
         </div>*@
     </div>
 </div>
