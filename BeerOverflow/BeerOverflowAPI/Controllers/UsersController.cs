@@ -41,5 +41,43 @@ namespace BeerOverflowAPI.Controllers
             }
         }
 
+        public async Task<IActionResult> Like(int userID, int reviewID)
+        {
+            if (userID <= 0 || reviewID == default)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var result = await this._service.Like(userID, reviewID);
+                return RedirectToAction("Details", "Review", new { id = reviewID });
+
+
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        public async Task<IActionResult> Flag(int userID, int reviewID)
+        {
+            if (userID <= 0 || reviewID == default)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var result = await this._service.Flag(userID, reviewID);
+                return RedirectToAction("Details", "Review",new { id = reviewID });
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
     }
 }

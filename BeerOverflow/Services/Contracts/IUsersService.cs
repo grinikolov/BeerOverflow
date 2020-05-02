@@ -16,6 +16,8 @@ namespace Services
         Task<UserDTO> Drink(int userID, int beerID);
         Task<IEnumerable<BeerDTO>> GetDrankBeers(int userID);
         Task<UserDTO> Wish(int userID, int beerID);
+        Task<bool> Like(int userID, int reviewID);
+        Task<bool> Flag(int userID, int reviewID);
         Task<IEnumerable<BeerDTO>> GetWishBeers(int userID);
         Task<UserDTO> Rate(int userID, int? beerID, int theRating);
     }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.Migrations
 {
-    public partial class Initial : Migration
+    public partial class LastOneIPromise : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -323,7 +323,7 @@ namespace Database.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BeerID = table.Column<int>(nullable: true),
-                    UserID = table.Column<int>(nullable: true),
+                    UserID = table.Column<int>(nullable: false),
                     Rating = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: false),
                     LikesCount = table.Column<int>(nullable: false),
@@ -441,16 +441,23 @@ namespace Database.Migrations
                 name: "Likes",
                 columns: table => new
                 {
-                    CommentID = table.Column<int>(nullable: false),
-                    UserID = table.Column<int>(nullable: false)
+                    ReviewID = table.Column<int>(nullable: false),
+                    UserID = table.Column<int>(nullable: false),
+                    CommentID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => new { x.UserID, x.CommentID });
+                    table.PrimaryKey("PK_Likes", x => new { x.UserID, x.ReviewID });
                     table.ForeignKey(
                         name: "FK_Likes_Comments_CommentID",
                         column: x => x.CommentID,
                         principalTable: "Comments",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Likes_Reviews_ReviewID",
+                        column: x => x.ReviewID,
+                        principalTable: "Reviews",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -464,12 +471,12 @@ namespace Database.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { 1, "f303a6f7-d520-47bc-b60e-6062a7fee50b", "member", "MEMBER" });
+                values: new object[] { 1, "ef923487-aa10-4cf8-947a-c7903bc411e2", "member", "MEMBER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { 2, "4e29c516-d2fe-41a1-88a8-c64cd4e3984a", "admin", "ADMIN" });
+                values: new object[] { 2, "dab32b02-d3a8-4d96-8a98-af1f04ce3b9d", "admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -577,6 +584,11 @@ namespace Database.Migrations
                 column: "CommentID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Likes_ReviewID",
+                table: "Likes",
+                column: "ReviewID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reviews_UserID",
                 table: "Reviews",
                 column: "UserID");
@@ -586,7 +598,7 @@ namespace Database.Migrations
                 table: "Reviews",
                 columns: new[] { "BeerID", "UserID" },
                 unique: true,
-                filter: "[BeerID] IS NOT NULL AND [UserID] IS NOT NULL");
+                filter: "[BeerID] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WishLists_UserID",

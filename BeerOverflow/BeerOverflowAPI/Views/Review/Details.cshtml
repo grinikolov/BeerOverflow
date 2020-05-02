@@ -71,6 +71,11 @@
             var user = await UserManager.GetUserAsync(User);
             var userId = user.Id;
             <a asp-controller="Comments" asp-action="Create" asp-route-userID="@userId" asp-route-reviewID="@Model.ID">| Write a Comment </a>
+            <a asp-controller="Users" asp-action="Like" asp-route-userID="@userId" asp-route-reviewID="@Model.ID">| Like </a>
+            @if (!Model.IsFlagged)
+            {
+                <a asp-controller="Users" asp-action="Flag" asp-route-userID="@userId" asp-route-reviewID="@Model.ID">| Flag </a>
+            }
         }
     </div>
     <div>

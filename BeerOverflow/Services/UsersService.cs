@@ -292,7 +292,46 @@ namespace Services
             return theUser.MapUserToDTO();
         }
 
+        public async Task<bool> Like(int userID, int reviewID)
+        {
+            try
+            {
+                var like = new Like()
+                {
+                    User = await this._context.Users.FindAsync(userID),
+                    Review = await this._context.Reviews.FindAsync(reviewID)
+                };
+                await _context.Likes.AddAsync(like);
+                await _context.SaveChangesAsync();
+                var review = await this._context.Reviews.FindAsync(reviewID);
+                review.LikesCount = await this._context.Likes.Where(l => l.ReviewID == reviewID).CountAsync();
+                _context.Update(review);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
+        }
+
+        public async Task<bool> Flag(int userID, int reviewID)
+        {
+            try
+            {
+                var review = await this._context.Reviews.FindAsync(reviewID);
+                review.IsFlagged = true;
+                _context.Update(review);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
 
         private bool UserExists(int id)
         {

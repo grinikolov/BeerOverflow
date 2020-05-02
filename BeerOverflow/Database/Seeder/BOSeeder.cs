@@ -118,7 +118,7 @@ namespace Database.Seeder
                 {
                     Name = beer,
                     Country = await context.Countries.FirstOrDefaultAsync(c => c.Name == "Bulgaria"),
-                    Brewery = await context.Breweries.FirstOrDefaultAsync(b => b.Name == "Shumensko"),
+                    Brewery = await context.Breweries.FirstOrDefaultAsync(b => b.Name == "Carlsberg"),
                     ABV = 4,
                     Style = await context.BeerStyles.FindAsync(1),
                     CreatedOn = DateTime.UtcNow
