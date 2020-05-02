@@ -53,30 +53,6 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Rating)
         </dd>
-        @*<dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.CreatedOn)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.CreatedOn)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.ModifiedOn)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.ModifiedOn)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.DeletedOn)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.DeletedOn)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.IsDeleted)
-            </dd>*@
     </dl>
 </div>
 <div>
@@ -86,16 +62,9 @@
 
         var user = await UserManager.GetUserAsync(User);
         var userId = user.Id;
-
-        var parms = new Dictionary<string, string>
-{
-                { "userID", userId.ToString() },
-                { "beerID", Model.ID.ToString() }
-            };
-
-        @*<a asp-route="speakerevalscurrent"
-            asp-all-route-data="parms">Speaker Evaluations</a>*@
-        <a asp-controller="Users" asp-action="Drink" asp-all-route-data="parms">Add to DrankList |</a><!---->
+        <a asp-controller="Users" asp-action="Drink" asp-route-userID="@userId" asp-route-beerID ="@Model.ID" >
+            Add to DrankList |
+        </a>
     }
     @if (User.Identity.IsAuthenticated)
     {

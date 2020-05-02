@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
 namespace BeerOverflowAPI.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
 
@@ -21,19 +23,21 @@ namespace BeerOverflowAPI.Controllers
         {
             return View();
         }
-       // [HttpPost, ActionName("Delete")]
-        [HttpPut, ActionName("Drink")]
-        public async Task<IActionResult> Drink([FromQuery] int id, [FromQuery] int beerID) // was [FromBody] BeerDTO beerDTO)
+        // [HttpPost, ActionName("Delete")]
+        //[Route("{userID:int}")]
+        //[HttpGet]//, ActionName("Drink")
+        public async Task<IActionResult> Drink(int userID, int beerID) // was [FromBody] BeerDTO beerDTO)
         {
-            if (id <= 0 || beerID == default)
+            if (userID <= 0 || beerID == default)
             {
                 return BadRequest();
             }
 
             try
             {
-                var model = await this._service.Drink(id, beerID);
-                return RedirectToAction("Details","Beers",beerID);
+                var model = await this._service.Drink(userID, beerID);
+                return RedirectToAction("Details", "Beers", beerID);
+                //return NotFound();
             }
             catch (Exception e)
             {
