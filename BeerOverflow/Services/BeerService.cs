@@ -127,9 +127,12 @@ namespace Services
             }
             #endregion
             var returnModel = await this._context.Beers
+               .Include(b => b.Country)
+               .Include(b => b.Style)
+               .Include(b => b.Brewery)
                 .FirstOrDefaultAsync(c => c.Name == model.Name);
-            model.ID = returnModel.ID;
-            return model;
+            //model.ID = returnModel.ID;
+            return returnModel.MapBeerToDTO();
         }
         /// <summary>
         /// Updates the Beer's Name, Style, Brewery and Country

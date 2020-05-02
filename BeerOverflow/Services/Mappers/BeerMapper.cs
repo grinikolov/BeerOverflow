@@ -50,9 +50,12 @@ namespace Services.Mappers
                     Name = dto.Name,
                     Rating = dto.Rating,
                     ABV = dto.ABV,
-                    Country = new Country() { Name = dto.Country.Name},//dto.Country.MapDTOToCountry(),
-                    Style = new BeerStyle() {Name = dto.Style.Name },//dto.Style.MapDTOToStyle(),
-                    Brewery = new Brewery() { Name = dto.Brewery.Name, Country = new Country() { Name = dto.Brewery.Country} },//dto.Brewery.MapDTOToBrewery()
+                    CountryID = dto.CountryID,
+                    //Country = new Country() { Name = dto.Country.Name},//dto.Country.MapDTOToCountry(),
+                    StyleID = dto.StyleID,
+                    //Style = new BeerStyle() {Name = dto.Style.Name },//dto.Style.MapDTOToStyle(),
+                    BreweryID = dto.BreweryID,
+                    //Brewery = new Brewery() { Name = dto.Brewery.Name, Country = new Country() { Name = dto.Brewery.Country} },//dto.Brewery.MapDTOToBrewery()
                 };
                 if (dto.Reviews != null)
                 {

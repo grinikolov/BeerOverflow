@@ -27,5 +27,29 @@ namespace BeerOverflowAPI.ViewMappers
             }
             return beerView;
         }
+
+        public static BeerDTO MapBeerViewToDTO(this BeerViewModel view)
+        {
+            var dto = new BeerDTO()
+            {
+                ID = view.ID,
+                Name = view.Name,
+                StyleID = view.StyleID,
+                //Style = view.Style.Name,
+                CountryID = view.CountryID,
+                //Country = view.Country.Name,
+                BreweryID = view.BreweryID,
+                //Brewery = view.Brewery.Name,
+                Rating = view.Rating,
+                ABV = view.ABV,
+            };
+            //if (view.Reviews != null)
+            //{
+            //    beerView.Reviews = view.Reviews.Select(r => r.Description).ToList();
+            //}
+            return dto;
+        }
+
+
     }
 }

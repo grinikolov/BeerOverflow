@@ -15,10 +15,10 @@ namespace BeerOverflow.Models
         public string Name { get; set; }
         public float ABV { get; set; }
         public BeerStyle Style { get; set; }
-        public int StyleID { get; set; }
-        public int CountryID { get; set; }
+        public int? StyleID { get; set; }
+        public int? CountryID { get; set; }
         public Country Country { get; set; }
-        public int BreweryID { get; set; }
+        public int? BreweryID { get; set; }
         public Brewery Brewery { get; set; }
         public double Rating { get; set; }
         public ICollection<DrankList> DrankLists { get; set; }

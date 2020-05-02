@@ -19,12 +19,20 @@ namespace BeerOverflowAPI.Controllers
     {
         private readonly IBeerService _service;
         private readonly IUsersService _usersService;
-
-
-        public BeersController(IBeerService service, IUsersService usersService)
+        private readonly IBreweryService _breweryService;
+        private readonly ICountriesService _countriesService;
+        private readonly IBeerStylesService _beerStylesService;
+        public BeersController(IBeerService service,
+                            IUsersService usersService,
+                            IBreweryService breweryService,
+                            ICountriesService countriesService,
+            IBeerStylesService _beerStylesService)
         {
             this._service = service ?? throw new ArgumentNullException(nameof(service));
             this._usersService = usersService ?? throw new ArgumentNullException(nameof(service)); ;
+            this._breweryService = breweryService ?? throw new ArgumentNullException(nameof(service)); 
+            this._countriesService = countriesService ?? throw new ArgumentNullException(nameof(service)); ;
+            this._beerStylesService = _beerStylesService ?? throw new ArgumentNullException(nameof(service)); ;
         }
 
 
@@ -62,30 +70,31 @@ namespace BeerOverflowAPI.Controllers
         // GET: Beers/Create
         public IActionResult Create()
         {
-            //ViewData["BreweryID"] = new SelectList(_context.Breweries, "ID", "Name");
-            //ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name");
-            //ViewData["StyleID"] = new SelectList(_context.BeerStyles, "ID", "Description");
+            ViewData["BreweryID"] = new SelectList( this._breweryService.GetAllAsync().Result, "ID", "Name");
+            ViewData["CountryID"] = new SelectList(this._countriesService.GetAllAsync().Result, "ID", "Name");
+            ViewData["StyleID"] = new SelectList(this._beerStylesService.GetAllAsync().Result, "ID", "Name");
             return View();
         }
-        /*
+        
         // POST: Beers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,ABV,StyleName,Country,Brewery,Rating")] BeerViewModel beer)
+        public async Task<IActionResult> Create([Bind("Name,ABV,StyleID,CountryID,BreweryID,Rating")] BeerViewModel beer)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(beer);
-                await _context.SaveChangesAsync();
+                var theNewBeer = await this._service.CreateAsync(beer.MapBeerViewToDTO());
+                beer = theNewBeer.MapBeerDTOToView();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BreweryID"] = new SelectList(_context.Breweries, "ID", "Name", beer.BreweryID);
-            ViewData["CountryID"] = new SelectList(_context.Countries, "ID", "Name", beer.CountryID);
-            ViewData["StyleID"] = new SelectList(_context.BeerStyles, "ID", "Description", beer.StyleID);
+
+            ViewData["BreweryID"] = new SelectList(this._breweryService.GetAllAsync().Result, "ID", "Name");
+            ViewData["CountryID"] = new SelectList(this._countriesService.GetAllAsync().Result, "ID", "Name");
+            ViewData["StyleID"] = new SelectList(this._beerStylesService.GetAllAsync().Result, "ID", "Description");
             return View(beer);
-        }
+        }/*
 
         // GET: Beers/Edit/5
         public async Task<IActionResult> Edit(int? id)
