@@ -39,6 +39,25 @@ namespace Services
             return reviewsDto;
         }
         /// <summary>
+        /// Get all reviews on record for a specific beer
+        /// </summary>
+        /// <returns>Returns a modified list of reviews on record</returns>
+        public async Task<IEnumerable<ReviewDTO>> GetAllByBeerAsync(int id)
+        {
+            var reviews = await this._context.Reviews
+                .Include(r => r.Beer)
+                .Include(r => r.User)
+                .Where(r => r.BeerID == id)
+                .ToListAsync();
+            var reviewsDto = reviews.Select(r => r.MapReviewToDTO()).ToList();
+            if (reviewsDto.Any(c => c.Beer == null || c.User == null))
+            {
+                return null;
+            }
+            return reviewsDto;
+        }
+
+        /// <summary>
         /// Gets a review by ID
         /// </summary>
         /// <param name="id">Id of review</param>
@@ -55,7 +74,7 @@ namespace Services
                 return null;
             }
             var model = review.MapReviewToDTO();
-            if (model.BeerID == null || model.UserID == null)
+            if (model.BeerID == null || model.UserID == 0)
             {
                 return null;
             }

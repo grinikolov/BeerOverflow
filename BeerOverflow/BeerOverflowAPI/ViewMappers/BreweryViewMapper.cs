@@ -18,10 +18,6 @@ namespace BeerOverflowAPI.ViewMappers
                 CountryID = view.CountryID,
                 IsDeleted = view.IsDeleted
             };
-            if (view.ID != null)
-            {
-                breweryDTO.ID = view.ID;
-            }
             if (view.Beers != null)
             {
                 breweryDTO.Beers = view.Beers.Select(b => new BeerDTO { Name = b }).ToList();

@@ -10,7 +10,7 @@ namespace BeerOverflow.Models
         public int? ID { get; set; }
         public int? BeerID { get; set; }
         public Beer Beer { get; set; }
-        public int? UserID { get; set; }
+        public int UserID { get; set; }
         public User User { get; set; }
         [Range(0, 5)]
         public int Rating { get; set; }

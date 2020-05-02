@@ -30,8 +30,6 @@ namespace BeerOverflowAPI.Controllers
         public async Task<IActionResult> Index()
         {
             var index = await _service.GetAllAsync();
-            //var bOContext = _context.Breweries.Include(b => b.Country);
-            //return View(await bOContext.ToListAsync());
             return View(index.Select(b => b.MapBreweryDTOToView()));
         }
 
