@@ -75,9 +75,9 @@ namespace Services
             UserDTO modelToReturn;
             try
             {
-                //TODO: Why not try to find user, if already exists and isDeleted=F
-
                 User theUser = model.MapToUser();
+                theUser.CreatedOn = DateTime.Now;
+
                 this._context.Users.Add(theUser);
                 await this._context.SaveChangesAsync();
 
@@ -138,7 +138,6 @@ namespace Services
                 Beer = theBeer,
             };
 
-            //// TODO: Check if already
             if (theUser.DrankLists.Contains(theNewDrankList))
             {
                 throw new ArgumentException("Already drank this beer.");
@@ -283,6 +282,7 @@ namespace Services
             theBeer.Rating =  recalculatedRating;
             try
             {
+                this._context.Beers.Update(theBeer);
                 await this._context.SaveChangesAsync();
             }
             catch (Exception)
