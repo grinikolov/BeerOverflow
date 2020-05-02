@@ -73,7 +73,6 @@ namespace Services.Mappers
                 model.CommentsList = new List<CommentDTO>();
             }
 
-
             return model;
         }
         public static User MapToUser(this UserDTO model)
@@ -83,13 +82,13 @@ namespace Services.Mappers
                 Id = model.ID ?? default,
                 Name = model.Name,
                 Password = model.Password,
-                CreatedOn = DateTime.UtcNow,
+                //CreatedOn = DateTime.UtcNow,
                 //DrankList = new List<Beer>(),
                 //WishList = model.WishList.ToHashSet() ?? new HashSet<Beer>(),
-                ReviewList = new List<Review>(),
-                CommentList = new List<Comment>(),
-                FlagList = new List<Flag>(),
-                LikesList = new List<Like>(),
+                //ReviewList = model.ReviewsList, //new List<Review>(),
+                //CommentList = model.CommentsList, //new List<Comment>(),
+                //FlagList = model.FlagList,  //new List<Flag>(),
+                //LikesList = model.LikesList, //new List<Like>(),
             };
             return theUser;
         }
