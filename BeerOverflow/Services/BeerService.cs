@@ -267,24 +267,37 @@ namespace Services
 
         public async Task<BeerDTO> GetRandom()
         {
-            int count = await this._context.Beers.CountAsync();
-            Random random = new Random();
-            int id = random.Next(1, count + 1);
-            var beer = await this._context.Beers
-                .Include(b => b.Country)
-                .Include(b => b.Reviews)
-                .Include(b => b.Style)
-                .Include(b => b.Brewery)
-                .Where(br => br.IsDeleted == false)
-                .FirstOrDefaultAsync(br => br.ID == id);
-
-            if (beer == null)
+            var beers = await GetAllAsync();
+            var activeBeers = beers.Where(b => b.IsDeleted == false).ToList();
+            int count = activeBeers.Count();
+            if (count != 0)
             {
-                return null;
+                Random random = new Random();
+                int id = random.Next(0, count);
+                var beerDTO = activeBeers[id];
+                if (beerDTO == null)
+                {
+                    return null;
+                }
+                return beerDTO;
             }
-            var beerDTO = beer.MapBeerToDTO();
+            return null;
 
-            return beerDTO;
+            //var beer = await this._context.Beers
+            //    .Include(b => b.Country)
+            //    .Include(b => b.Reviews)
+            //    .Include(b => b.Style)
+            //    .Include(b => b.Brewery)
+            //    .Where(br => br.IsDeleted == false)
+            //    .FirstOrDefaultAsync(br => br.ID == id);
+
+            //if (beer == null)
+            //{
+            //    return null;
+            //}
+            //var beerDTO = beer.MapBeerToDTO();
+
+            //return beerDTO;
         }
 
     }

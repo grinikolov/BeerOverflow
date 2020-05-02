@@ -17,6 +17,7 @@ namespace Services.DTOs
         public double Rating { get; set; }
         public ICollection<ReviewDTO> Reviews { get; set; }
         public float ABV { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }

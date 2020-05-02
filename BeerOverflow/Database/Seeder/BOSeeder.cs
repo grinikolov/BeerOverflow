@@ -1,4 +1,5 @@
 ﻿using BeerOverflow.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,20 +112,39 @@ namespace Database.Seeder
                 return;
 
             var beerNames = new[] { "Carlsberg", "Shumensko", "Pirinsko" };
-            await context.Beers.AddRangeAsync(
-                beerNames.Select(name => new Beer()
+            foreach (var beer in beerNames)
+            {
+                var b = new Beer() 
                 {
-                    Name = name,
-                    CountryID = context.Countries.FirstOrDefault(c => c.Name == "Bulgaria").ID,
-                    Country = context.Countries.FirstOrDefault(c => c.Name == "Bulgaria"),
-                    BreweryID = context.Breweries.FirstOrDefault(b => b.Name == "Carlsberg").ID,
-                    Brewery = context.Breweries.FirstOrDefault(b => b.Name == "Carlsberg"),
+                    Name = beer,
+                    //CountryID = context.Countries.FirstOrDefault(c => c.Name == "Bulgaria").ID,
+                    Country = await context.Countries.FirstOrDefaultAsync(c => c.Name == "Bulgaria"),
+                    //BreweryID = context.Breweries.FirstOrDefault(b => b.Name == "Carlsberg").ID,
+                    Brewery = await context.Breweries.FirstOrDefaultAsync(b => b.Name == "Shumensko"),
                     ABV = 4,
-                    StyleID = context.BeerStyles.Find(1).ID,
-                    Style = context.BeerStyles.Find(1),
+                    //StyleID = context.BeerStyles.Find(1).ID,
+                    Style = await context.BeerStyles.FindAsync(1),
                     CreatedOn = DateTime.UtcNow
-                }
-            ));
+                };
+                b.CountryID = b.Country.ID;
+                b.BreweryID = b.Brewery.ID;
+                b.StyleID = b.Style.ID;
+                await context.Beers.AddAsync(b);
+            }
+            //await context.Beers.AddRangeAsync(
+            //    beerNames.SelectAsync(async name => await new Beer()
+            //    {
+            //        Name = name,
+            //        //CountryID = context.Countries.FirstOrDefault(c => c.Name == "Bulgaria").ID,
+            //        Country = await context.Countries.FirstOrDefaultAsync(c => c.Name == "Bulgaria"),
+            //        //BreweryID = context.Breweries.FirstOrDefault(b => b.Name == "Carlsberg").ID,
+            //        Brewery = await context.Breweries.FirstOrDefaultAsync(b => b.Name == "Carlsberg"),
+            //        ABV = 4,
+            //        //StyleID = context.BeerStyles.Find(1).ID,
+            //        Style = await context.BeerStyles.FindAsync(1),
+            //        CreatedOn = DateTime.UtcNow
+            //    }
+            //));
             await context.SaveChangesAsync();
         }
     }

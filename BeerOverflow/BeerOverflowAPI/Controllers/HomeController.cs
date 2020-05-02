@@ -24,9 +24,9 @@ namespace BeerOverflowAPI.Controllers
 
         public IActionResult Index()
         {
-            //var randomBeer = this._beersService.GetRandom().Result.MapBeerDTOToView();
-            //return View(randomBeer);
-            return View();
+            var randomBeer = this._beersService.GetRandom().Result.MapBeerDTOToView();
+            return View(randomBeer);
+            //return View();
         }
 
         public IActionResult Privacy()
