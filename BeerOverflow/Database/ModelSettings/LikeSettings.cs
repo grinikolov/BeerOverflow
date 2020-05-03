@@ -11,7 +11,7 @@ namespace Database.ModelSettings
     {
         public void Configure(EntityTypeBuilder<Like> builder)
         {
-            builder.HasKey(k => new { k.UserID, k.CommentID });
+            builder.HasKey(k => new { k.UserID, k.ReviewID });
         }
     }
 }

@@ -69,13 +69,16 @@ namespace Services
         public async Task<CommentDTO> CreateAsync(CommentDTO model)
         {
             var comment = model.MapDTOToComment();
+            comment.Review =await _context.Reviews.FindAsync(model.ReviewID);
+            comment.User = await _context.Users.FindAsync(model.UserID);
+            comment.Beer = await _context.Beers.FindAsync(comment.Review.BeerID);
             if (comment.Description == null)
             {
                 return null;
             }
             #region Check if exists
             var theComment = await this._context.Comments
-                .FirstOrDefaultAsync(c => c.ReviewID == model.ReviewID && c.UserID == model.UserID);
+                .FirstOrDefaultAsync(c => c.ReviewID == comment.ReviewID && c.UserID == comment.UserID);
 
             if (theComment == null)
             {

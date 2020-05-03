@@ -29,10 +29,12 @@ namespace Database.Migrations
                     b.Property<float>("ABV")
                         .HasColumnType("real");
 
-                    b.Property<int>("BreweryID")
+                    b.Property<int?>("BreweryID")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int>("CountryID")
+                    b.Property<int?>("CountryID")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
@@ -56,7 +58,8 @@ namespace Database.Migrations
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
-                    b.Property<int>("StyleID")
+                    b.Property<int?>("StyleID")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("ID");
@@ -129,7 +132,8 @@ namespace Database.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CountryID")
+                    b.Property<int?>("CountryID")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedOn")
@@ -273,12 +277,17 @@ namespace Database.Migrations
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
-                    b.Property<int>("CommentID")
+                    b.Property<int>("ReviewID")
                         .HasColumnType("int");
 
-                    b.HasKey("UserID", "CommentID");
+                    b.Property<int?>("CommentID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserID", "ReviewID");
 
                     b.HasIndex("CommentID");
+
+                    b.HasIndex("ReviewID");
 
                     b.ToTable("Likes");
                 });
@@ -322,7 +331,7 @@ namespace Database.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserID")
+                    b.Property<int>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
@@ -331,7 +340,7 @@ namespace Database.Migrations
 
                     b.HasIndex("BeerID", "UserID")
                         .IsUnique()
-                        .HasFilter("[BeerID] IS NOT NULL AND [UserID] IS NOT NULL");
+                        .HasFilter("[BeerID] IS NOT NULL");
 
                     b.ToTable("Reviews");
                 });
@@ -368,14 +377,14 @@ namespace Database.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "f303a6f7-d520-47bc-b60e-6062a7fee50b",
+                            ConcurrencyStamp = "ef923487-aa10-4cf8-947a-c7903bc411e2",
                             Name = "member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "4e29c516-d2fe-41a1-88a8-c64cd4e3984a",
+                            ConcurrencyStamp = "dab32b02-d3a8-4d96-8a98-af1f04ce3b9d",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -692,9 +701,13 @@ namespace Database.Migrations
 
             modelBuilder.Entity("BeerOverflow.Models.Like", b =>
                 {
-                    b.HasOne("BeerOverflow.Models.Comment", "Comment")
+                    b.HasOne("BeerOverflow.Models.Comment", null)
                         .WithMany("Likes")
-                        .HasForeignKey("CommentID")
+                        .HasForeignKey("CommentID");
+
+                    b.HasOne("BeerOverflow.Models.Review", "Review")
+                        .WithMany()
+                        .HasForeignKey("ReviewID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -714,7 +727,8 @@ namespace Database.Migrations
                     b.HasOne("BeerOverflow.Models.User", "User")
                         .WithMany("ReviewList")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BeerOverflow.Models.User", b =>
