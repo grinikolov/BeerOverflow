@@ -12,6 +12,7 @@ using BeerOverflowAPI.ViewMappers;
 using BeerOverflowAPI.Models;
 using System.Security.Claims;
 using Services;
+using Services.DTOs;
 
 namespace BeerOverflowAPI.Controllers
 {
@@ -38,15 +39,25 @@ namespace BeerOverflowAPI.Controllers
 
 
         // GET: Beers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             // TODO: Approach for Wishing beer:
             //var temp = this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //Console.WriteLine(temp);
             // _usersService.Wish (temp, beerID); // 
 
-            var beers = await _service.GetAllAsync();
+            IEnumerable<BeerDTO> beers = null;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                beers = await _service.Search(searchString);
+            }
+            else
+            {
+                beers = await _service.GetAllAsync();
+            }
+
             var beersDTO = beers.Select(b => b.MapBeerDTOToView());
+
             return View(beersDTO);
         }
 
@@ -179,6 +190,7 @@ namespace BeerOverflowAPI.Controllers
             var result = await this._service.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
+
 
     }
 }
