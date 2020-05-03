@@ -33,7 +33,25 @@ namespace BeerOverflowAPI.Controllers
             try
             {
                 var model = await this._service.Drink(userID, beerID);
-                return RedirectToAction("Details", "Beers", beerID);
+                return RedirectToAction("Details", "Beers",new { id = beerID });
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        public async Task<IActionResult> Wish(int userID, int beerID)
+        {
+            if (userID <= 0 || beerID == default)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var model = await this._service.Wish(userID, beerID);
+                return RedirectToAction("Details", "Beers", new { id = beerID });
             }
             catch (Exception e)
             {

@@ -65,7 +65,7 @@
         <a asp-controller="Users" asp-action="Drink" asp-route-userID="@userId" asp-route-beerID ="@Model.ID" >
             Add to DrankList |
         </a>
-        <a asp-controller="Users" asp-action="Wish">Add to WishList |</a>
+        <a asp-controller="Users" asp-action="Wish" asp-route-userID="@userId" asp-route-beerID ="@Model.ID" >Add to WishList |</a>
 
         <a asp-controller="Review" asp-action="Create" asp-route-userID="@userId" asp-route-beerID ="@Model.ID"> Write a Review |</a>
 

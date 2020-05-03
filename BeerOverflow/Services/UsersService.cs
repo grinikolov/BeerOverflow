@@ -123,16 +123,14 @@ namespace Services
                     .ThenInclude(dl => dl.Beer)
                     .ThenInclude(b => b.Brewery)
                     .ThenInclude(b => b.Country)
-                .Where(u => u.IsDeleted == false)
-                .FirstOrDefaultAsync(u => u.IDOld == userID);
+                .FirstOrDefaultAsync(u => u.Id == userID);
 
             var theBeer = await this._context.Beers
-                .Where(b => b.IsDeleted == false)
                 .FirstOrDefaultAsync(b => b.ID == beerID);
 
             var theNewDrankList = new DrankList()
             {
-                UserID = theUser.IDOld,
+                UserID = theUser.Id,
                 User = theUser,
                 BeerID = theBeer.ID,
                 Beer = theBeer,
@@ -143,11 +141,12 @@ namespace Services
                 throw new ArgumentException("Already drank this beer.");
             }
 
-            this._context.DrankLists.Add(theNewDrankList);
+            
 
             UserDTO modelToReturn;
             try
             {
+                this._context.DrankLists.Add(theNewDrankList);
                 await this._context.SaveChangesAsync();
 
                 modelToReturn = theUser.MapUserToDTO();
@@ -183,7 +182,6 @@ namespace Services
         public async Task<UserDTO> Wish(int userID, int beerID)
         {
             var theUser = await this._context.Users
-                .Where(u => u.IsDeleted == false)
                 .Include(u => u.WishLists)
                     .ThenInclude(dl => dl.Beer)
                     .ThenInclude(b => b.Style)
@@ -191,15 +189,14 @@ namespace Services
                     .ThenInclude(dl => dl.Beer)
                         .ThenInclude(b => b.Brewery)
                         .ThenInclude(b => b.Country)
-                .FirstOrDefaultAsync(u => u.IDOld == userID);
+                .FirstOrDefaultAsync(u => u.Id == userID);
 
             var theBeer = await this._context.Beers
-                .Where(b => b.IsDeleted == false)
                 .FirstOrDefaultAsync(b => b.ID == beerID);
 
             var theNewWishList = new WishList()
             {
-                UserID = theUser.IDOld,
+                UserID = theUser.Id,
                 User = theUser,
                 BeerID = theBeer.ID,
                 Beer = theBeer,
@@ -211,11 +208,12 @@ namespace Services
                 throw new ArgumentException("Already desire this beer.");
             }
 
-            this._context.WishLists.Add(theNewWishList);
+            
 
             UserDTO modelToReturn;
             try
             {
+                this._context.WishLists.Add(theNewWishList);
                 await this._context.SaveChangesAsync();
                 modelToReturn = theUser.MapUserToDTO();
             }
