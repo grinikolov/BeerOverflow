@@ -12,11 +12,11 @@ namespace BeerOverflowAPI.ApiControllers
     [Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
-    public class BeersController : ControllerBase
+    public class BeersAPIController : ControllerBase
     {
         private readonly IBeerService _service;
 
-        public BeersController(IBeerService service)
+        public BeersAPIController(IBeerService service)
         {
             this._service = service ?? throw new ArgumentNullException(nameof(service));
         }

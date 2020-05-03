@@ -20,6 +20,7 @@ namespace BeerOverflowAPI.ViewMappers
                 Brewery = dto.Brewery.Name,
                 Rating = dto.Rating,
                 ABV = dto.ABV,
+                IsDeleted = dto.IsDeleted,                
             };
             if (dto.Reviews != null)
             {
@@ -42,6 +43,7 @@ namespace BeerOverflowAPI.ViewMappers
                 //Brewery = view.Brewery.Name,
                 Rating = view.Rating,
                 ABV = view.ABV,
+                IsDeleted = view.IsDeleted,
             };
             if (view.Reviews != null)
             {

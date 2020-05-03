@@ -12,6 +12,8 @@ using BeerOverflowAPI.ViewMappers;
 using BeerOverflowAPI.Models;
 using System.Security.Claims;
 using Services;
+using Services.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BeerOverflowAPI.Controllers
 {
@@ -38,15 +40,29 @@ namespace BeerOverflowAPI.Controllers
 
 
         // GET: Beers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             // TODO: Approach for Wishing beer:
             //var temp = this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //Console.WriteLine(temp);
             // _usersService.Wish (temp, beerID); // 
 
-            var beers = await _service.GetAllAsync();
+            IEnumerable<BeerDTO> beers = null;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                beers = await _service.Search(searchString);
+            }
+            else
+            {
+                beers = await _service.GetAllAsync();
+            }
+            if (!User.IsInRole("admin"))
+            {
+                beers = beers.Where(b => b.IsDeleted == false).ToList();
+            }
+
             var beersDTO = beers.Select(b => b.MapBeerDTOToView());
+
             return View(beersDTO);
         }
 
@@ -67,6 +83,7 @@ namespace BeerOverflowAPI.Controllers
             return View(beer.MapBeerDTOToView());
         }
 
+        [Authorize]
         // GET: Beers/Create
         public IActionResult Create()
         {
@@ -81,6 +98,7 @@ namespace BeerOverflowAPI.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Name,ABV,StyleID,CountryID,BreweryID,Rating")] BeerViewModel beer)
         {
             if (ModelState.IsValid)
@@ -155,6 +173,7 @@ namespace BeerOverflowAPI.Controllers
         */
 
         // GET: Beers/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -167,18 +186,21 @@ namespace BeerOverflowAPI.Controllers
             {
                 return NotFound();
             }
-
             return View(beer.MapBeerDTOToView());
+
+            //return RedirectToAction(nameof(Index));
         }
 
         // POST: Beers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             var result = await this._service.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
+
 
     }
 }

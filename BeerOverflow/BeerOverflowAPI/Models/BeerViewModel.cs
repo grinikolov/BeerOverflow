@@ -19,6 +19,7 @@ namespace BeerOverflowAPI.Models
         //public ICollection<string> Reviews { get; set; }
         public ICollection<ReviewViewModel> Reviews { get; set; }
         public float ABV { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }

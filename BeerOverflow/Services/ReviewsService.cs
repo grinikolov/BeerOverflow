@@ -67,6 +67,7 @@ namespace Services
             var review = await this._context.Reviews
                     .Include(r => r.Beer)
                     .Include(r => r.User)
+                    .Include(r => r.Comments)
                     .FirstOrDefaultAsync(r => r.ID == id);
 
             if (review == null)
@@ -89,7 +90,7 @@ namespace Services
         public async Task<ReviewDTO> CreateAsync(ReviewDTO model)
         {
             var review = model.MapDTOToReview();
-            review.Beer =await _context.Beers.FindAsync(model.BeerID);
+            review.Beer = await _context.Beers.FindAsync(model.BeerID);
             review.User = await _context.Users.FindAsync(model.UserID);
             if (review.Beer == null || review.User == null)
             {
@@ -99,7 +100,7 @@ namespace Services
             var theReview = await _context.Reviews
                 .Include(r => r.Beer)
                 .Include(r => r.User)
-                .FirstOrDefaultAsync(r => r.Beer.Name == review.Beer.Name || r.User.Name == review.User.Name);
+                .FirstOrDefaultAsync(r => r.BeerID== review.BeerID || r.UserID == review.UserID);
             if (theReview == null)
             {
                 review.CreatedOn = DateTime.UtcNow;
@@ -123,11 +124,6 @@ namespace Services
                 await this._context.SaveChangesAsync();
             }
             #endregion
-            //var beer = await _context.Beers.FirstOrDefaultAsync(b => b.Name == review.Beer.Name);
-            //var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == review.User.Name);
-            //var returnModel = await this._context.Reviews
-            //    .FirstOrDefaultAsync(r => r.BeerID == beer.ID && r.UserID == user.Id);
-            //model.ID = returnModel.ID;
             return review.MapReviewToDTO();
         }
 

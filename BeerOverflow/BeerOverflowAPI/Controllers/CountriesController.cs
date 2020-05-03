@@ -11,6 +11,7 @@ using Services;
 using Services.Mappers;
 using BeerOverflowAPI.Models;
 using Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BeerOverflowAPI.Controllers
 {
@@ -48,6 +49,7 @@ namespace BeerOverflowAPI.Controllers
         }
 
         //// GET: Countries/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -58,6 +60,7 @@ namespace BeerOverflowAPI.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Name")] CountryViewModel country)
         {
             if (ModelState.IsValid)
@@ -70,6 +73,7 @@ namespace BeerOverflowAPI.Controllers
         }
 
         // GET: Countries/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,6 +93,7 @@ namespace BeerOverflowAPI.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Breweries")] CountryViewModel country)
         {
             if (id != country.ID)
@@ -105,6 +110,7 @@ namespace BeerOverflowAPI.Controllers
         }
 
         // GET: Countries/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,6 +129,7 @@ namespace BeerOverflowAPI.Controllers
         // POST: Countries/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (await _service.DeleteAsync(id))
@@ -136,6 +143,7 @@ namespace BeerOverflowAPI.Controllers
 
         }
 
+        [Authorize]
         public async Task<IActionResult> Recover(int? id)
         {
             if (id == null)
@@ -154,6 +162,7 @@ namespace BeerOverflowAPI.Controllers
         // POST: Countries/Recover/5
         [HttpPost, ActionName("Recover")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> RecoverConfirmed(int id)
         {
             try

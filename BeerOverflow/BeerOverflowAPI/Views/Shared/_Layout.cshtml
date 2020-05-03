@@ -65,8 +65,15 @@
                         <li class="nav-item">
                             <a class="nav-link btn btn-primary text-dark" asp-area="" asp-controller="Countries" asp-action="Index">Countries</a>
                         </li>
-
                     </ul>
+                    <!-- Search form -->
+                    <form asp-controller="Beers" asp-action="Index">
+                        <p>
+                            <input type="text" name="SearchString">
+                            <input type="submit" value="Search" class="btn btn-primary" />
+                        </p>
+                    </form>
+                    <!--/. Search form -->
                 </nav>
             </div>
 

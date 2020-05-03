@@ -5,16 +5,20 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
+
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
 
 <h1>Details</h1>
 
 <div>
     <h4>Beer</h4>
     <hr />
+
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
@@ -50,9 +54,24 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Rating)
         </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-2">
             @Html.DisplayFor(model => model.Rating)
         </dd>
+        @if (User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(User);
+            var userId = user.Id;
+
+            <dd class="col-sm-6">
+
+                <form asp-controller="Users" asp-action="Rate" asp-route-beerID="@Model.ID" asp-route-userID="@userId">
+                    <p>
+                        <input type="text" name="rating">
+                        <input type="submit" value="Rate" class="btn btn-primary" />
+                    </p>
+                </form>
+            </dd>
+        }
     </dl>
 </div>
 <div>
@@ -62,12 +81,12 @@
 
         var user = await UserManager.GetUserAsync(User);
         var userId = user.Id;
-        <a asp-controller="Users" asp-action="Drink" asp-route-userID="@userId" asp-route-beerID ="@Model.ID" >
+        <a asp-controller="Users" asp-action="Drink" asp-route-userID="@userId" asp-route-beerID="@Model.ID">
             Add to DrankList |
         </a>
-        <a asp-controller="Users" asp-action="Wish">Add to WishList |</a>
+        <a asp-controller="Users" asp-action="Wish" asp-route-userID="@userId" asp-route-beerID="@Model.ID">Add to WishList |</a>
 
-        <a asp-controller="Review" asp-action="Create" asp-route-userID="@userId" asp-route-beerID ="@Model.ID"> Write a Review |</a>
+        <a asp-controller="Review" asp-action="Create" asp-route-userID="@userId" asp-route-beerID="@Model.ID"> Write a Review |</a>
 
     }
     @if (User.IsInRole("admin"))
@@ -88,14 +107,14 @@
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => item.Description)
             </dd>
-            <dt>
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+            <dd>
+                <a asp-controller="Review" asp-action="Details" asp-route-id="@item.ID">Details</a>
                 @if (item.UserName == User.Identity.Name)
                 {
                     <a asp-action="Edit" asp-route-id="@item.ID">| Edit |</a>
                     <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                 }
-            </dt>
+            </dd>
         }
     </dl>
 </div>

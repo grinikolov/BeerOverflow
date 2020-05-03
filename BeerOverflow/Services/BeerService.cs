@@ -205,7 +205,7 @@ namespace Services
                     _context.DrankLists.Remove(item);
                 }
                 _context.Beers.Update(beer);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }

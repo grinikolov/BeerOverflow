@@ -75,9 +75,9 @@ namespace Services
             UserDTO modelToReturn;
             try
             {
-                //TODO: Why not try to find user, if already exists and isDeleted=F
-
                 User theUser = model.MapToUser();
+                theUser.CreatedOn = DateTime.Now;
+
                 this._context.Users.Add(theUser);
                 await this._context.SaveChangesAsync();
 
@@ -123,32 +123,30 @@ namespace Services
                     .ThenInclude(dl => dl.Beer)
                     .ThenInclude(b => b.Brewery)
                     .ThenInclude(b => b.Country)
-                .Where(u => u.IsDeleted == false)
-                .FirstOrDefaultAsync(u => u.IDOld == userID);
+                .FirstOrDefaultAsync(u => u.Id == userID);
 
             var theBeer = await this._context.Beers
-                .Where(b => b.IsDeleted == false)
                 .FirstOrDefaultAsync(b => b.ID == beerID);
 
             var theNewDrankList = new DrankList()
             {
-                UserID = theUser.IDOld,
+                UserID = theUser.Id,
                 User = theUser,
                 BeerID = theBeer.ID,
                 Beer = theBeer,
             };
 
-            //// TODO: Check if already
             if (theUser.DrankLists.Contains(theNewDrankList))
             {
                 throw new ArgumentException("Already drank this beer.");
             }
 
-            this._context.DrankLists.Add(theNewDrankList);
+            
 
             UserDTO modelToReturn;
             try
             {
+                this._context.DrankLists.Add(theNewDrankList);
                 await this._context.SaveChangesAsync();
 
                 modelToReturn = theUser.MapUserToDTO();
@@ -184,7 +182,6 @@ namespace Services
         public async Task<UserDTO> Wish(int userID, int beerID)
         {
             var theUser = await this._context.Users
-                .Where(u => u.IsDeleted == false)
                 .Include(u => u.WishLists)
                     .ThenInclude(dl => dl.Beer)
                     .ThenInclude(b => b.Style)
@@ -192,15 +189,14 @@ namespace Services
                     .ThenInclude(dl => dl.Beer)
                         .ThenInclude(b => b.Brewery)
                         .ThenInclude(b => b.Country)
-                .FirstOrDefaultAsync(u => u.IDOld == userID);
+                .FirstOrDefaultAsync(u => u.Id == userID);
 
             var theBeer = await this._context.Beers
-                .Where(b => b.IsDeleted == false)
                 .FirstOrDefaultAsync(b => b.ID == beerID);
 
             var theNewWishList = new WishList()
             {
-                UserID = theUser.IDOld,
+                UserID = theUser.Id,
                 User = theUser,
                 BeerID = theBeer.ID,
                 Beer = theBeer,
@@ -212,11 +208,12 @@ namespace Services
                 throw new ArgumentException("Already desire this beer.");
             }
 
-            this._context.WishLists.Add(theNewWishList);
+            
 
             UserDTO modelToReturn;
             try
             {
+                this._context.WishLists.Add(theNewWishList);
                 await this._context.SaveChangesAsync();
                 modelToReturn = theUser.MapUserToDTO();
             }
@@ -251,7 +248,7 @@ namespace Services
         {
             var theUser = await this._context.Users
                 .Where(u => u.IsDeleted == false)
-                .FirstOrDefaultAsync(u => u.IDOld == userID);
+                .FirstOrDefaultAsync(u => u.Id == userID);
 
             var theBeer = await this._context.Beers
                 .Where(b => b.IsDeleted == false)
@@ -261,7 +258,7 @@ namespace Services
             {
                 BeerID = theBeer.ID,
                 Beer = theBeer,
-                UserID = theUser.IDOld,
+                UserID = theUser.Id,
                 User = theUser,
                 Rating = theRating,
             };
@@ -283,6 +280,7 @@ namespace Services
             theBeer.Rating =  recalculatedRating;
             try
             {
+                this._context.Beers.Update(theBeer);
                 await this._context.SaveChangesAsync();
             }
             catch (Exception)
@@ -292,7 +290,46 @@ namespace Services
             return theUser.MapUserToDTO();
         }
 
+        public async Task<bool> Like(int userID, int reviewID)
+        {
+            try
+            {
+                var like = new Like()
+                {
+                    User = await this._context.Users.FindAsync(userID),
+                    Review = await this._context.Reviews.FindAsync(reviewID)
+                };
+                await _context.Likes.AddAsync(like);
+                await _context.SaveChangesAsync();
+                var review = await this._context.Reviews.FindAsync(reviewID);
+                review.LikesCount = await this._context.Likes.Where(l => l.ReviewID == reviewID).CountAsync();
+                _context.Update(review);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
+        }
+
+        public async Task<bool> Flag(int userID, int reviewID)
+        {
+            try
+            {
+                var review = await this._context.Reviews.FindAsync(reviewID);
+                review.IsFlagged = true;
+                _context.Update(review);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
 
         private bool UserExists(int id)
         {

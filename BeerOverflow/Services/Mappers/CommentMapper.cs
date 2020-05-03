@@ -38,11 +38,8 @@ namespace Services.Mappers
                 var comment = new Comment()
                 {
                     ID = c.ID,
-                    BeerID = c.BeerID,
-                    UserID = c.UserID,
                     ReviewID = c.ReviewID,
-                    Description = c.Description,
-                    LikesCount = c.LikesCount,
+                    Description = c.Description
                 };
                 return comment;
             }
