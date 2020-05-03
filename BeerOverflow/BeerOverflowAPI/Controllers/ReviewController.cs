@@ -11,6 +11,7 @@ using Services;
 using Services.Contracts;
 using BeerOverflowAPI.ViewMappers;
 using BeerOverflowAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BeerOverflowAPI.Controllers
 {
@@ -27,12 +28,12 @@ namespace BeerOverflowAPI.Controllers
             this._userService = _usersService ?? throw new ArgumentNullException("Service not found");
         }
 
-        // GET: Review
-        public async Task<IActionResult> Index(int id)
-        {
-            var reviews = await _service.GetAllByBeerAsync(id);
-            return View(reviews.Select(r => r.MapDTOToReviewView()));
-        }
+        //// GET: Review
+        //public async Task<IActionResult> Index(int id)
+        //{
+        //    var reviews = await _service.GetAllByBeerAsync(id);
+        //    return View(reviews.Select(r => r.MapDTOToReviewView()));
+        //}
 
         // GET: Review/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -52,6 +53,8 @@ namespace BeerOverflowAPI.Controllers
         }
 
         // GET: Review/Create
+
+        [Authorize]
         public IActionResult Create(int userID, int beerID)
         {
             ViewData["BeerID"] = _beerService.GetAsync(beerID);
@@ -64,6 +67,7 @@ namespace BeerOverflowAPI.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("ID,BeerID,UserID,Rating,Description,LikesCount,IsDeleted,IsFlagged")] ReviewViewModel review)
         {
             if (ModelState.IsValid)
@@ -86,6 +90,7 @@ namespace BeerOverflowAPI.Controllers
         }
 
         // GET: Review/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -108,6 +113,7 @@ namespace BeerOverflowAPI.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int? id, [Bind("ID,BeerID,UserID,Rating,Description,LikesCount,IsDeleted,IsFlagged")] ReviewViewModel review)
         {
             if (id != review.ID)
@@ -134,6 +140,7 @@ namespace BeerOverflowAPI.Controllers
         }
 
         // GET: Review/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -153,6 +160,7 @@ namespace BeerOverflowAPI.Controllers
         // POST: Review/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             var review = await _service.GetAsync(id);
@@ -176,6 +184,7 @@ namespace BeerOverflowAPI.Controllers
             }
         }
 
+        [Authorize]
         public async Task<IActionResult> Recover(int? id)
         {
             if (id == null)
@@ -192,6 +201,7 @@ namespace BeerOverflowAPI.Controllers
 
         [HttpPost, ActionName("Recover")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> RecoverConfirmed(int id)
         {
             try

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using BeerOverflowAPI.Models;
 using BeerOverflowAPI.ViewMappers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using Services.Contracts;
 
 namespace BeerOverflowAPI.Controllers
 {
+    [Authorize]
     public class CommentsController : Controller
     {
         private readonly ICommentService _service;
@@ -23,10 +25,10 @@ namespace BeerOverflowAPI.Controllers
             this._reviewService = _reviewService ?? throw new ArgumentNullException("Service not found");
             this._userService = _usersService ?? throw new ArgumentNullException("Service not found");
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
 
         //public async Task<IActionResult> Details(int? id)
         //{

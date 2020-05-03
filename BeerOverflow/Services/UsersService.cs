@@ -248,7 +248,7 @@ namespace Services
         {
             var theUser = await this._context.Users
                 .Where(u => u.IsDeleted == false)
-                .FirstOrDefaultAsync(u => u.IDOld == userID);
+                .FirstOrDefaultAsync(u => u.Id == userID);
 
             var theBeer = await this._context.Beers
                 .Where(b => b.IsDeleted == false)
@@ -258,7 +258,7 @@ namespace Services
             {
                 BeerID = theBeer.ID,
                 Beer = theBeer,
-                UserID = theUser.IDOld,
+                UserID = theUser.Id,
                 User = theUser,
                 Rating = theRating,
             };

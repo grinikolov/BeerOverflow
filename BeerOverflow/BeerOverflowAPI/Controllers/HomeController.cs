@@ -29,6 +29,10 @@ namespace BeerOverflowAPI.Controllers
             //return View();
         }
 
+        public IActionResult Missing()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

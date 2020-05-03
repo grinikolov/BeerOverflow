@@ -33,7 +33,7 @@ namespace BeerOverflowAPI.Controllers
             try
             {
                 var model = await this._service.Drink(userID, beerID);
-                return RedirectToAction("Details", "Beers",new { id = beerID });
+                return RedirectToAction("Details", "Beers", new { id = beerID });
             }
             catch (Exception e)
             {
@@ -89,7 +89,25 @@ namespace BeerOverflowAPI.Controllers
             try
             {
                 var result = await this._service.Flag(userID, reviewID);
-                return RedirectToAction("Details", "Review",new { id = reviewID });
+                return RedirectToAction("Details", "Review", new { id = reviewID });
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+        public async Task<IActionResult> Rate(int userID, int beerID, int rating)
+        {
+
+            if (rating <= 0 || beerID == default || userID ==default )
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var model = await this._service.Rate(userID, beerID, rating);
+                return RedirectToAction("Details", "Beers", new { id = beerID });
             }
             catch (Exception e)
             {

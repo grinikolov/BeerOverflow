@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using BeerOverflow.Models;
 using Microsoft.AspNetCore.Identity;
+using BeerOverflowAPI.Middlewares;
 
 namespace BeerOverflowAPI
 {
@@ -53,12 +54,12 @@ namespace BeerOverflowAPI
             services.AddDbContext<BOContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("BOCDATA"), m => m.MigrationsAssembly("Database")).UseLoggerFactory(MyLoggerFactory));
 
-            
+            //services.AddTransient<MissingMiddleware>();
+
             services.AddIdentity<User,Role>()
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<BOContext>()
                 .AddDefaultTokenProviders();
-            
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -98,6 +99,8 @@ namespace BeerOverflowAPI
             
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<MissingMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

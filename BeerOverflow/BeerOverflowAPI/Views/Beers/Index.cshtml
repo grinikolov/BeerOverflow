@@ -96,9 +96,9 @@
                         <a asp-action="Details" asp-route-id="@item.ID">Details</a>
                         @if (User.IsInRole("admin"))
                         {
-                            <a asp-action="Edit" asp-route-id="@item.ID">| Edit |</a>
+                            <a asp-controller="Beers" asp-action="Edit" asp-route-id="@item.ID">| Edit |</a>
 
-                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                            <a asp-controller="Beers" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
 
                         }
                     </td>
