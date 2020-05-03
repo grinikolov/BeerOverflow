@@ -7,9 +7,13 @@
 
 <h1>Countries on record</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -20,27 +24,28 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
-                @if (User.IsInRole("admin"))
-                {
-                    <a asp-action="Edit" asp-route-id="@item.ID">| Edit |</a>
-                    if (item.IsDeleted == true)
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                    @if (User.IsInRole("admin"))
                     {
-                        <a asp-action="Recover" asp-route-id="@item.ID">Recover</a>
+                        <a asp-action="Edit" asp-route-id="@item.ID">| Edit |</a>
+                        if (item.IsDeleted == true)
+                        {
+                            <a asp-action="Recover" asp-route-id="@item.ID">Recover</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        }
                     }
-                    else
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                    }
-                }
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
