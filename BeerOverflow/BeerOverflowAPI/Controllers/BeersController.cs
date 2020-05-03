@@ -173,7 +173,7 @@ namespace BeerOverflowAPI.Controllers
         */
 
         // GET: Beers/Delete/5
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -194,7 +194,7 @@ namespace BeerOverflowAPI.Controllers
         // POST: Beers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             var result = await this._service.DeleteAsync(id);
